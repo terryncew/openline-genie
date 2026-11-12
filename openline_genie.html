@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpenLine Genie — Private Preview</title>
+<style>
+  :root {
+    --bg-app:#F8FAFC; --bg-surface:#FFFFFF; --bg-subtle:#F1F5F9; --bg-dark:#0F172A;
+    --text-primary:#0F172A; --text-secondary:#334155; --text-muted:#64748B;
+    --border-color:#E2E8F0; --border-strong:#CBD5E1;
+    --accent-brand:#059669; --accent-brand-soft:#ECFDF5;
+    --accent-blue:#0284C7; --accent-blue-soft:#E0F2FE;
+    --accent-amber:#D97706; --accent-amber-soft:#FFFBEB;
+    --accent-red:#DC2626; --accent-red-soft:#FEF2F2;
+    --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    --font-mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:var(--font-sans);background:var(--bg-app);color:var(--text-primary);
+    line-height:1.45;font-size:15px;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .top-bar{background:var(--bg-dark);color:#F8FAFC;padding:8px 14px;font-size:12px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    border-bottom:2px solid var(--accent-brand)}
+  .conn-pill{font-family:var(--font-mono);font-size:11px;padding:3px 8px;border-radius:4px;border:1px solid #10B981;
+    background:rgba(16,185,129,.18);color:#A7F3D0}
+  .conn-pill.off{border-color:#F59E0B;background:rgba(245,158,11,.15);color:#FDE68A}
+  .wrap{max-width:720px;margin:0 auto;padding:12px 12px 40px}
+  @media (min-width:900px){.wrap{max-width:1100px}}
+  header h1{font-size:20px;font-weight:800;letter-spacing:-.01em}
+  .tagline{font-size:13px;color:var(--text-muted);margin:2px 0 12px}
+  .honesty{background:var(--accent-amber-soft);border-left:3px solid var(--accent-amber);
+    padding:8px 10px;font-size:12.5px;color:#78350F;border-radius:4px;margin-bottom:12px}
+  .card{background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04);overflow:hidden;margin-bottom:14px}
+  .card-head{padding:10px 14px;border-bottom:1px solid var(--border-color);background:#FCFDFE;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .card-title{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text-secondary)}
+  .card-body{padding:12px 14px}
+  .prompt-input{flex:1 1 220px;padding:12px;border:1px solid var(--border-strong);border-radius:8px;
+    font-size:16px;font-family:var(--font-sans);background:var(--bg-surface);width:100%}
+  .btn{border:1px solid var(--border-strong);background:var(--bg-surface);color:var(--text-primary);
+    padding:12px 16px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn-primary{background:var(--accent-brand);color:#fff;border-color:#047857}
+  .btn-blue{background:var(--accent-blue);color:#fff;border-color:#0369A1}
+  .btn-stop{background:var(--accent-red);color:#fff;border-color:#991B1B;font-weight:700}
+  .btn-small{padding:8px 12px;min-height:40px;font-size:13px}
+  .preset-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  .preset-chip{background:var(--bg-surface);border:1px solid var(--border-strong);color:var(--text-secondary);
+    padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;min-height:40px}
+  .preset-chip.active{background:var(--accent-brand-soft);border-color:var(--accent-brand);color:#065F46}
+  .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;
+    font-family:var(--font-mono);font-size:11px;font-weight:700}
+  .badge-accepted{background:var(--accent-brand-soft);color:#065F46;border:1px solid #A7F3D0}
+  .badge-exploratory{background:var(--accent-blue-soft);color:#0369A1;border:1px solid #BAE6FD}
+  .badge-rejected{background:var(--accent-red-soft);color:#991B1B;border:1px solid #FECACA}
+  .badge-warn{background:var(--accent-amber-soft);color:#92400E;border:1px solid #FDE68A}
+  .mono{font-family:var(--font-mono)}
+  #artifact-frame{width:100%;height:560px;border:0;display:block;background:#fff}
+  @media (min-width:900px){#artifact-frame{height:640px}}
+  .artifact-wrap{border-top:1px solid var(--border-color)}
+  .empty-artifact{padding:28px 16px;text-align:center;color:var(--text-muted);font-size:14px}
+  .status-line{font-size:13px;color:var(--text-secondary);padding:10px 14px;border-top:1px solid var(--border-color)}
+  .status-line.error{color:#991B1B;background:var(--accent-red-soft)}
+  .decide-bar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;border-top:1px solid var(--border-color)}
+  .decide-bar .prompt-input{flex:1 1 200px;font-size:14px;padding:10px}
+  details.tech{margin-bottom:14px}
+  details.tech summary{cursor:pointer;font-weight:700;font-size:14px;padding:12px 14px;
+    background:var(--bg-surface);border:1px solid var(--border-color);border-radius:10px}
+  details.tech .tech-body{background:var(--bg-surface);border:1px solid var(--border-color);
+    border-top:0;border-radius:0 0 10px 10px;padding:12px 14px}
+  pre.code{background:#0F172A;color:#A7F3D0;padding:10px;border-radius:6px;font-size:11px;
+    max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+  table.data-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  table.data-table th{text-align:left;padding:6px 8px;background:var(--bg-subtle);
+    border-bottom:1px solid var(--border-strong);color:var(--text-secondary);font-weight:600}
+  table.data-table td{padding:6px 8px;border-bottom:1px solid var(--border-color);word-break:break-word}
+  .field-group{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+  .field-group label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+  .field-group select,.field-group textarea{padding:10px;border:1px solid var(--border-strong);
+    border-radius:6px;font-size:14px;width:100%}
+  .hidden{display:none!important}
+  .stop-banner{background:var(--accent-red-soft);border:1px solid #FECACA;color:#991B1B;
+    padding:10px 12px;border-radius:8px;font-weight:700;margin-bottom:12px}
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
+  .kpi-card{background:var(--bg-subtle);border:1px solid var(--border-color);border-radius:6px;padding:8px 10px}
+  .kpi-label{font-size:10.5px;color:var(--text-muted);text-transform:uppercase}
+  .kpi-val{font-family:var(--font-mono);font-size:13px;font-weight:700;margin-top:2px;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span><strong>OPENLINE // GENIE</strong> &nbsp;Private preview &middot; local server only</span>
+  <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <span class="conn-pill off" id="conn-pill">Checking server&hellip;</span>
+    <span class="mono" id="model-pill" style="font-size:11px">Model: unknown</span>
+  </span>
+</div>
+
+<div class="wrap">
+  <header>
+    <h1>What do you want to build?</h1>
+    <p class="tagline">Describe it in plain words. Genie builds a working app you can use, change, and keep.</p>
+  </header>
+
+  <div class="honesty" id="honesty-note">
+    <strong>Private preview.</strong> This page talks to a local server on this machine only.
+    It does not send anything to the internet, make payments, or contact anyone.
+    <span id="honesty-model">Model status unknown until the server answers.</span>
+  </div>
+
+  <div class="stop-banner hidden" id="stop-banner">STOP is active. Changes are blocked by the server. Your accepted work is preserved.</div>
+
+  <!-- WISH: prompt in -->
+  <section class="card" aria-label="Build something">
+    <div class="card-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="text" id="genie-prompt-input" class="prompt-input"
+               value="Build a free quoting and invoicing tool for my small service business."
+               placeholder="Describe a tool, business app, learning game, or calculator you want to build..." />
+        <button class="btn btn-primary" id="btn-genie-build">Build it</button>
+      </div>
+      <div class="preset-row">
+        <span style="font-size:12px;color:var(--text-muted);font-weight:600">Try:</span>
+        <button class="preset-chip" id="btn-preset-demo-a">Demo A: Quoting &amp; Invoicing</button>
+        <button class="preset-chip" id="btn-preset-demo-b">Demo B: Kids Robot Academy</button>
+        <button class="preset-chip" id="btn-preset-synth">Tool library tracker</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center">
+        <label for="model-select" style="font-size:13px;font-weight:600">Model</label>
+        <select id="model-select" style="padding:10px;border:1px solid var(--border-strong);border-radius:6px;font-size:14px">
+          <option value="claude-haiku-5-5">Haiku 5.5</option>
+          <option value="claude-sonnet-5-5">Sonnet 5.5</option>
+        </select>
+        <span class="mono" id="spend-line" style="font-size:12px;color:var(--text-muted)">Spend: unknown</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WATCH: the artifact itself -->
+  <section class="card" aria-label="Your app">
+    <div class="card-head">
+      <span class="card-title" id="artifact-title">Your app</span>
+      <span style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <span class="badge badge-accepted" id="project-badge">No project yet</span>
+        <span class="badge badge-warn hidden" id="project-closed-badge">CLOSED</span>
+      </span>
+    </div>
+    <div class="artifact-wrap" id="artifact-wrap">
+      <div class="empty-artifact" id="artifact-empty">Nothing built yet. Describe what you want above and press <strong>Build it</strong>.</div>
+      <!-- The generated app runs here, sandboxed: scripts allowed, no same-origin
+           (stricter than the allowed maximum) so it cannot reach this page or the API. -->
+      <iframe id="artifact-frame" class="hidden" sandbox="allow-scripts" title="Generated app"></iframe>
+    </div>
+    <div class="status-line" id="build-status">Waiting for your first request.</div>
+
+    <!-- DECIDE: explicit accept / reject -->
+    <div class="decide-bar" id="decide-bar">
+      <input type="text" id="change-request-input" class="prompt-input"
+             value="Enable 10% repeat-customer discount banner and Net 10 terms"
+             placeholder="Describe a change to try..." />
+      <button class="btn btn-blue" id="btn-propose-change">Try a change</button>
+    </div>
+    <div id="proposal-box" class="hidden" style="padding:0 14px 14px">
+      <div style="background:var(--accent-blue-soft);border:1px solid #38BDF8;border-radius:8px;padding:12px">
+        <div style="display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+          <span class="badge badge-exploratory">PROPOSED CHANGE — not accepted yet</span>
+          <span class="mono" style="font-size:11px" id="exp-prop-id">—</span>
+        </div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:4px" id="exp-prop-summary">—</div>
+        <div class="mono" style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px" id="exp-prop-diff">—</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="btn-accept-proposal">Accept &amp; keep</button>
+          <button class="btn btn-stop" id="btn-reject-proposal">Reject — keep current app</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 14px">
+      <button class="btn btn-stop" id="btn-global-stop">STOP — preserve accepted work</button>
+      <button class="btn hidden" id="btn-clear-stop">Resume (clear STOP)</button>
+      <button class="btn" id="btn-export">Download this app</button>
+      <button class="btn btn-small" id="btn-close-project">Close project</button>
+      <button class="btn btn-small hidden" id="btn-reopen-project">Reopen project</button>
+    </div>
+  </section>
+
+  <!-- Project list -->
+  <section class="card" aria-label="Projects">
+    <div class="card-head"><span class="card-title">Your projects</span>
+      <button class="btn btn-small" id="btn-refresh-projects">Refresh</button></div>
+    <div class="card-body" id="project-list"><p style="color:var(--text-muted);font-size:13px">Loading projects from the server&hellip;</p></div>
+  </section>
+
+  <!-- Technical details, out of the ordinary user's way -->
+  <details class="tech" id="details-tech">
+    <summary>Details: source code, receipts, worker &amp; model</summary>
+    <div class="tech-body">
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">App SHA-256</div><div class="kpi-val" id="kpi-sha">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Version</div><div class="kpi-val" id="kpi-version">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Worker</div><div class="kpi-val" id="kpi-worker">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Model</div><div class="kpi-val" id="kpi-model">—</div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn btn-small" id="btn-replace-worker">Switch worker</button>
+        <button class="btn btn-small" id="btn-view-source">Show app source</button>
+      </div>
+      <div id="source-wrap" class="hidden">
+        <div style="font-size:12px;font-weight:700;margin-bottom:4px">App source (<span class="mono" id="source-filename">—</span>)</div>
+        <pre class="code" id="source-pre"></pre>
+      </div>
+      <div style="font-size:12px;font-weight:700;margin:12px 0 4px">Signed receipts (from the server)</div>
+      <div class="table-wrap"><table class="data-table"><thead><tr><th>Receipt</th><th>SHA-256</th></tr></thead>
+      <tbody id="receipts-tbody"><tr><td colspan="2">No receipts yet.</td></tr></tbody></table></div>
+      <div style="font-size:12px;font-weight:700;margin:12px 0 4px">Activity</div>
+      <div class="table-wrap"><table class="data-table"><thead><tr><th>What happened</th></tr></thead>
+      <tbody id="trace-tbody"><tr><td>Nothing yet.</td></tr></tbody></table></div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:10px" id="cache-note">
+        Offline cache: this browser keeps a copy of the last server answer so you can
+        re-read it with no connection. The cache is never the authority — the server is.
+      </p>
+    </div>
+  </details>
+</div>
+
+<script>
+"use strict";
+/* OpenLine Genie RC3 frontend — real client of the local Genie server.
+   Server is the source of truth. localStorage is an OFFLINE CACHE only.
+   No simulated success: every button calls the API and reports what the
+   server actually answered. If the server cannot be reached, the UI says
+   "not connected" and does not pretend the action happened. */
+const CACHE_KEY = "openline_genie_rc3_cache_v1";
+
+let currentProject = null;   // last server bundle (source of truth when connected)
+let pendingProposal = null;  // {proposal_id, summary, app_content, sha256}
+let stopped = false;         // server STOP state, as last reported by the server
+let connected = false;
+let serverStatus = null;     // /api/status payload
+let trace = [];
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function logTrace(text) {
+  trace.unshift(new Date().toLocaleTimeString() + " — " + text);
+  trace = trace.slice(0, 8);
+  $("trace-tbody").innerHTML = trace.map(t => "<tr><td>" + esc(t) + "</td></tr>").join("");
+}
+
+function setStatus(msg, isError) {
+  const el = $("build-status");
+  el.textContent = msg;
+  el.classList.toggle("error", !!isError);
+}
+
+function setConnected(ok) {
+  connected = ok;
+  const pill = $("conn-pill");
+  pill.textContent = ok ? "Connected to local server" : "Not connected — offline cache only";
+  pill.classList.toggle("off", !ok);
+  ["btn-genie-build","btn-propose-change","btn-export","btn-global-stop",
+   "btn-replace-worker","btn-close-project","btn-refresh-projects"].forEach(id => {
+    const b = $(id); if (b) b.disabled = !ok;
+  });
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, Object.assign({
+    headers: {"Content-Type": "application/json"}
+  }, opts || {}));
+  let data = null;
+  try { data = await res.json(); } catch (e) { data = null; }
+  if (!res.ok) {
+    const err = (data && data.error) ? data.error : ("server error " + res.status);
+    throw new Error(err);
+  }
+  return data;
+}
+
+/* ---------- rendering from a server bundle ---------- */
+function renderBundle(bundle) {
+  currentProject = bundle;
+  const app = bundle.app || {};
+  const title = bundle.title || bundle.project_id || "Untitled project";
+  $("artifact-title").textContent = title;
+  $("project-badge").textContent =
+    (bundle.status === "closed" ? "CLOSED • " : "") + "v" + (bundle.version ?? "?") +
+    (app.sha256 ? " • " + app.sha256.slice(0, 10) + "…" : "");
+  $("project-closed-badge").classList.toggle("hidden", bundle.status !== "closed");
+  $("btn-close-project").classList.toggle("hidden", bundle.status === "closed");
+  $("btn-reopen-project").classList.toggle("hidden", bundle.status !== "closed");
+  $("kpi-sha").textContent = app.sha256 || "—";
+  $("kpi-version").textContent = "v" + (bundle.version ?? "?");
+  $("kpi-model").textContent = (bundle.model && bundle.model.id) || (serverStatus && serverStatus.model_id) || "—";
+  const receipts = bundle.receipts || [];
+  if (typeof bundle.stopped === "boolean") setStoppedUI(bundle.stopped);
+  $("receipts-tbody").innerHTML = receipts.length ? receipts.map(r =>
+    "<tr><td class='mono'>" + esc(r.receipt_id || r.id || "—") + "</td><td class='mono'>" +
+    esc(r.sha256 || r.state_sha256 || "—") + "</td></tr>").join("")
+    : "<tr><td colspan='2'>No receipts returned by the server.</td></tr>";
+  if (app.content) showArtifact(app);
+  else { $("artifact-frame").classList.add("hidden"); $("artifact-empty").classList.remove("hidden"); }
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(bundle)); } catch (e) {}
+}
+
+function showArtifact(app) {
+  const frame = $("artifact-frame");
+  $("artifact-empty").classList.add("hidden");
+  frame.classList.remove("hidden");
+  // srcdoc: the app runs inside a sandboxed iframe (allow-scripts only).
+  frame.srcdoc = app.content;
+  $("source-filename").textContent = app.filename || "app.html";
+  $("source-pre").textContent = app.content;
+}
+
+function showCachedBundle() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return false;
+    const bundle = JSON.parse(raw);
+    if (!bundle || !bundle.project_id) return false;
+    renderBundle(bundle);
+    setStatus("Offline cache: showing the last server answer (" +
+      esc(bundle.project_id) + "). It may be out of date — reconnect to refresh.", true);
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ---------- server calls ---------- */
+async function refreshStatus() {
+  try {
+    serverStatus = await api("/api/status");
+    setConnected(true);
+    const avail = serverStatus.model_available;
+    $("model-pill").textContent = "Model: " + (serverStatus.model_id || "none") +
+      (avail ? " (available)" : " (not available)");
+    // Keep the selector honest: reflect the server's actual model.
+    if (serverStatus.model_id) {
+      const sel = $("model-select");
+      if ([...sel.options].some(o => o.value === serverStatus.model_id)) sel.value = serverStatus.model_id;
+    }
+    $("spend-line").textContent = "Spend: $" + Number(serverStatus.spend_usd || 0).toFixed(2) +
+      " / $" + Number(serverStatus.cap_usd || 0).toFixed(2) + " cap";
+    $("honesty-model").textContent = avail
+      ? "A model (" + serverStatus.model_id + ") is configured; builds may use it."
+      : "No model is configured, so builds use the deterministic local worker only. No autonomy is claimed.";
+    return true;
+  } catch (e) {
+    setConnected(false);
+    $("model-pill").textContent = "Model: unknown (server unreachable)";
+    $("spend-line").textContent = "Spend: unknown (server unreachable)";
+    return false;
+  }
+}
+
+async function refreshProjects() {
+  try {
+    const data = await api("/api/projects");
+    const list = data.projects || [];
+    if (!list.length) { $("project-list").innerHTML = "<p style='color:var(--text-muted);font-size:13px'>No projects yet.</p>"; return; }
+    $("project-list").innerHTML = list.map(p =>
+      "<div style='display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border-color)'>" +
+      "<span><strong>" + esc(p.title || p.project_id) + "</strong><br><span class='mono' style='font-size:11px;color:var(--text-muted)'>" +
+      esc(p.project_id) + " • v" + (p.version ?? "?") + " • " + esc(p.status || "open") + "</span></span>" +
+      "<button class='btn btn-small' data-open-project='" + esc(p.project_id) + "'>Open</button></div>").join("");
+    document.querySelectorAll("[data-open-project]").forEach(b =>
+      b.addEventListener("click", () => loadProject(b.dataset.openProject)));
+  } catch (e) {
+    $("project-list").innerHTML = "<p style='color:#991B1B;font-size:13px'>Projects unavailable: the server could not be reached (" + esc(e.message) + ").</p>";
+  }
+}
+
+async function loadProject(projectId) {
+  setStatus("Loading project " + projectId + "…");
+  try {
+    const bundle = await api("/api/project?project_id=" + encodeURIComponent(projectId));
+    renderBundle(bundle);
+    setStatus("Loaded " + (bundle.title || projectId) + " from the server.");
+    logTrace("Loaded project " + projectId + " v" + (bundle.version ?? "?"));
+  } catch (e) {
+    setStatus("Could not load project: " + e.message, true);
+  }
+}
+
+function setStoppedUI(isStopped) {
+  stopped = isStopped;
+  $("stop-banner").classList.toggle("hidden", !isStopped);
+  $("btn-global-stop").classList.toggle("hidden", isStopped);
+  $("btn-clear-stop").classList.toggle("hidden", !isStopped);
+}
+
+async function buildFromPrompt(prompt) {
+  if (!prompt) { setStatus("Type what you want to build first.", true); return; }
+  if (stopped) {
+    // The UI already knows STOP is active (the server said so). Refuse
+    // locally instead of issuing a request the server will reject; the
+    // server still enforces STOP for any client that tries anyway.
+    setStatus("Build blocked: STOP is active (server-enforced). Clear STOP first. Nothing was changed.", true);
+    logTrace("Build refused locally: STOP active");
+    return;
+  }
+  setStatus("Building… the server is working on your request.");
+  $("btn-genie-build").disabled = true;
+  try {
+    const bundle = await api("/api/build", {
+      method: "POST",
+      body: JSON.stringify({prompt: prompt, use_model: !!$("model-select").value})
+    });
+    renderBundle(bundle);
+    await refreshProjects();
+    setStatus("Built. Your app is below — use it, then try a change or accept it as it is.");
+    logTrace("Build: \"" + prompt.slice(0, 60) + "\" → " + (bundle.project_id || "?"));
+  } catch (e) {
+    setStatus("Build failed: " + e.message + ". Nothing was changed.", true);
+    logTrace("Build failed: " + e.message);
+  } finally {
+    $("btn-genie-build").disabled = !connected;
+  }
+}
+
+async function proposeChange() {
+  if (!currentProject) { setStatus("Build something first, then propose a change.", true); return; }
+  if (stopped) { setStatus("Proposal blocked: STOP is active (server-enforced). Clear STOP first.", true); return; }
+  const summary = $("change-request-input").value.trim();
+  if (!summary) { setStatus("Describe the change to try first.", true); return; }
+  setStatus("Asking the server to prepare that change as a proposal…");
+  try {
+    const data = await api("/api/propose", {
+      method: "POST",
+      body: JSON.stringify({project_id: currentProject.project_id, summary: summary, patch: {}})
+    });
+    // The server returns the full bundle; the new proposal is the latest
+    // EXPLORATORY_PENDING entry (the server generates the candidate app
+    // itself for model-built projects — see engine.propose).
+    const pending = (data.exploratory || []).find(e => e.status === "EXPLORATORY_PENDING");
+    if (!pending) throw new Error("server returned no proposal");
+    const prop = {proposal_id: pending.proposal_id, summary: pending.summary,
+      sha256: pending.candidate_sha256, candidate_state: pending.candidate_state};
+    pendingProposal = prop;
+    $("proposal-box").classList.remove("hidden");
+    $("exp-prop-id").textContent = prop.proposal_id;
+    $("exp-prop-summary").textContent = prop.summary || summary;
+    $("exp-prop-diff").textContent = "Proposed app SHA-256: " + (prop.sha256 || "not returned") +
+      ". Your accepted app is unchanged until you press Accept.";
+    const candVersion = prop.candidate_state && prop.candidate_state.app_version;
+    if (candVersion != null) {
+      // Preview the candidate app in the iframe, clearly marked unaccepted.
+      const art = await api("/api/artifact?project_id=" + encodeURIComponent(currentProject.project_id) +
+        "&version=" + encodeURIComponent(candVersion));
+      if (art.content) {
+        showArtifact({content: art.content, filename: art.filename});
+        setStatus("Proposal ready — previewing it above. Accept to keep it, Reject to go back.");
+      } else {
+        setStatus("Proposal ready. Accept to apply it, Reject to discard it.");
+      }
+    } else {
+      setStatus("Proposal ready. Accept to apply it, Reject to discard it.");
+    }
+    logTrace("Proposed: " + (prop.summary || summary).slice(0, 60));
+  } catch (e) {
+    setStatus("Could not propose that change: " + e.message + ". Accepted app unchanged.", true);
+  }
+}
+
+async function acceptProposal() {
+  if (!pendingProposal || !currentProject) return;
+  try {
+    const bundle = await api("/api/accept", {
+      method: "POST",
+      body: JSON.stringify({project_id: currentProject.project_id, proposal_id: pendingProposal.proposal_id})
+    });
+    pendingProposal = null;
+    $("proposal-box").classList.add("hidden");
+    renderBundle(bundle);
+    setStatus("Accepted. The change is now part of your app (new version, new receipt).");
+    logTrace("Accepted proposal; now v" + (bundle.version ?? "?"));
+  } catch (e) {
+    setStatus("Accept failed: " + e.message + ". The proposal is still pending.", true);
+  }
+}
+
+async function rejectProposal() {
+  if (!pendingProposal || !currentProject) return;
+  const beforeSha = (currentProject.app || {}).sha256;
+  try {
+    const bundle = await api("/api/reject", {
+      method: "POST",
+      body: JSON.stringify({project_id: currentProject.project_id,
+        proposal_id: pendingProposal.proposal_id, reason: "user_rejected_proposal"})
+    });
+    pendingProposal = null;
+    $("proposal-box").classList.add("hidden");
+    renderBundle(bundle);
+    const afterSha = (bundle.app || {}).sha256;
+    setStatus("Rejected. Accepted app " + (beforeSha === afterSha ? "unchanged" : "reloaded from server") +
+      " (SHA " + String(afterSha || "").slice(0, 10) + "…).");
+    logTrace("Rejected proposal; accepted SHA " + String(afterSha || "").slice(0, 10) + "…");
+  } catch (e) {
+    setStatus("Reject failed: " + e.message + ". The proposal is still pending.", true);
+  }
+}
+
+async function doStop() {
+  try {
+    const data = await api("/api/stop", {method: "POST", body: JSON.stringify({reason: "owner_stop"})});
+    setStoppedUI(true);
+    setStatus("STOP is active (server-enforced). Builds and proposals are blocked; accepted work is preserved.");
+    logTrace("STOP issued" + (data && data.reason ? ": " + data.reason : ""));
+  } catch (e) {
+    setStatus("STOP failed: " + e.message + ". STOP is NOT active — do not assume it is.", true);
+  }
+}
+
+async function clearStop() {
+  try {
+    await api("/api/clear_stop", {method: "POST", body: JSON.stringify({reason: "owner_clear"})});
+    setStoppedUI(false);
+    setStatus("STOP cleared by the server. Building is allowed again.");
+    logTrace("STOP cleared");
+  } catch (e) {
+    setStatus("Could not clear STOP: " + e.message, true);
+  }
+}
+
+async function replaceWorker() {
+  try {
+    const data = await api("/api/replace_worker", {method: "POST", body: JSON.stringify({})});
+    $("kpi-worker").textContent = data.active_worker || data.worker || "switched";
+    setStatus("Worker switched to " + ($("kpi-worker").textContent) +
+      ". Accepted work preserved: " + (data.accepted_preserved === false ? "NO — check the server" : "yes, per server."));
+    logTrace("Worker replaced → " + $("kpi-worker").textContent);
+    if (currentProject) await loadProject(currentProject.project_id);
+  } catch (e) {
+    setStatus("Worker switch failed: " + e.message + ". The worker did not change.", true);
+  }
+}
+
+async function replaceModel() {
+  const model = $("model-select").value;
+  try {
+    const data = await api("/api/replace_model", {method: "POST", body: JSON.stringify({model: model})});
+    serverStatus = serverStatus || {};
+    serverStatus.model_id = data.model_id || model;
+    if (typeof data.model_available === "boolean") serverStatus.model_available = data.model_available;
+    $("model-pill").textContent = "Model: " + serverStatus.model_id +
+      (serverStatus.model_available ? " (available)" : " (not available)");
+    $("kpi-model").textContent = serverStatus.model_id;
+    setStatus("Model is now " + serverStatus.model_id + ". Prior accepted work is unchanged.");
+    logTrace("Model switched → " + serverStatus.model_id);
+  } catch (e) {
+    setStatus("Model switch is not available on this server (" + e.message + "). Selection unchanged.", true);
+    await refreshStatus(); // restore the selector to the server's actual model
+    if (serverStatus && serverStatus.model_id) $("model-select").value = serverStatus.model_id;
+  }
+}
+
+async function exportApp() {
+  if (!currentProject) { setStatus("Build something first, then export it.", true); return; }
+  try {
+    const data = await api("/api/export?project_id=" + encodeURIComponent(currentProject.project_id));
+    const content = data.content || data.html || "";
+    if (!content) throw new Error("server returned no app file");
+    const filename = data.filename || ("openline-genie-" + currentProject.project_id + ".html");
+    const blob = new Blob([content], {type: "text/html"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    setStatus("Downloaded " + filename + " — a runnable standalone app (SHA-256 " +
+      String(data.app_sha256 || "").slice(0, 12) + "…, runs standalone: " +
+      (data.runs_standalone === false ? "no" : "yes") + ").");
+    logTrace("Exported " + filename);
+  } catch (e) {
+    setStatus("Export failed: " + e.message + ". No file was downloaded.", true);
+  }
+}
+
+async function closeProject() {
+  if (!currentProject) return;
+  try {
+    const bundle = await api("/api/close", {method: "POST",
+      body: JSON.stringify({project_id: currentProject.project_id})});
+    renderBundle(bundle); await refreshProjects();
+    setStatus("Project closed. It is frozen at this version until reopened.");
+    logTrace("Closed " + currentProject.project_id);
+  } catch (e) { setStatus("Close failed: " + e.message, true); }
+}
+
+async function reopenProject() {
+  if (!currentProject) return;
+  try {
+    const bundle = await api("/api/reopen", {method: "POST",
+      body: JSON.stringify({project_id: currentProject.project_id})});
+    renderBundle(bundle); await refreshProjects();
+    setStatus("Project reopened.");
+    logTrace("Reopened " + currentProject.project_id);
+  } catch (e) { setStatus("Reopen failed: " + e.message, true); }
+}
+
+/* ---------- wiring ---------- */
+$("btn-genie-build").addEventListener("click", () => buildFromPrompt($("genie-prompt-input").value.trim()));
+$("genie-prompt-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") buildFromPrompt($("genie-prompt-input").value.trim());
+});
+$("btn-preset-demo-a").addEventListener("click", () => {
+  $("genie-prompt-input").value = "Build a free quoting and invoicing tool for my small service business.";
+  buildFromPrompt($("genie-prompt-input").value);
+});
+$("btn-preset-demo-b").addEventListener("click", () => {
+  $("genie-prompt-input").value = "Build an interactive robotics learning environment for children who don\u2019t own robots.";
+  buildFromPrompt($("genie-prompt-input").value);
+});
+$("btn-preset-synth").addEventListener("click", () => {
+  $("genie-prompt-input").value = "Build a neighborhood tool library and lending tracker with refundable deposits.";
+  buildFromPrompt($("genie-prompt-input").value);
+});
+$("btn-propose-change").addEventListener("click", proposeChange);
+$("btn-accept-proposal").addEventListener("click", acceptProposal);
+$("btn-reject-proposal").addEventListener("click", rejectProposal);
+$("btn-global-stop").addEventListener("click", doStop);
+$("btn-clear-stop").addEventListener("click", clearStop);
+$("btn-replace-worker").addEventListener("click", replaceWorker);
+$("model-select").addEventListener("change", replaceModel);
+$("btn-export").addEventListener("click", exportApp);
+$("btn-close-project").addEventListener("click", closeProject);
+$("btn-reopen-project").addEventListener("click", reopenProject);
+$("btn-refresh-projects").addEventListener("click", refreshProjects);
+$("btn-view-source").addEventListener("click", () => $("source-wrap").classList.toggle("hidden"));
+
+/* ---------- boot: server first, cache only as fallback ---------- */
+(async function boot() {
+  const ok = await refreshStatus();
+  if (ok) {
+    await refreshProjects();
+    try {
+      const data = await api("/api/projects");
+      if (data.projects && data.projects.length) await loadProject(data.projects[0].project_id);
+      else setStatus("Connected. No projects yet — describe what you want to build.");
+    } catch (e) {
+      setStatus("Connected, but the project list failed: " + e.message, true);
+    }
+  } else {
+    setStatus("Not connected to the local server. Showing the offline cache if one exists — nothing here is live.", true);
+    if (!showCachedBundle()) {
+      $("project-list").innerHTML = "<p style='color:#991B1B;font-size:13px'>Not connected. Start the local Genie server (port 8795) and refresh.</p>";
+    }
+    await refreshProjects();
+  }
+})();
+</script>
+</body>
+</html>

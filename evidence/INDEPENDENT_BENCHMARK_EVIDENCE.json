@@ -1,0 +1,24 @@
+{
+  "competent_conventional_coding_agent_baseline": {
+    "git_scaffold_and_commit_ms": 733.04,
+    "single_developer_stationary_verdict": "PARITY on raw code generation, unit-test math, and single-user Git commits",
+    "where_conventional_baseline_wins": "Unconstrained custom third-party library ecosystems (e.g., arbitrary npm/PyPI frameworks) where a full IDE + CLI coding agent writes arbitrary multi-file backend code.",
+    "where_openline_genie_adds_value": "1) Non-technical user effort (zero-CLI browser & iPhone workflow with instant Accepted/Exploratory/Rejected visual separation); 2) Mechanical protection against in-workspace destructive edits and rejected proposals; 3) Two-phase external outbox reconciliation (UNKNOWN_RECONCILIATION_REQUIRED -> 0 duplicate sends on timeout); 4) Cross-worker succession (Worker-A -> Worker-B) with offline-verifiable Ed25519 receipts."
+  },
+  "openline_genie_measured": {
+    "completeness_score": "3/3 runnable visual apps with persistence & portable exports",
+    "correctness_verified": true,
+    "duplicate_external_effects_after_timeout": 0,
+    "paid_api_cost_dollars": 0.0,
+    "preserved_quotes_after_rejected_wipe": 2,
+    "recovery_and_reconciliation_ms": 66.49,
+    "time_to_3_functioning_artifacts_ms": 313.29,
+    "user_effort_steps": "1 natural-language prompt + 1-tap Accept/Reject/Export (no CLI/Git required)"
+  },
+  "schema": "openline.genie.independent_benchmark.v1",
+  "tasks_evaluated": [
+    "Demonstration A: Small Service Business Quoting & Invoicing App",
+    "Demonstration B: Free Interactive Robotics Learning Environment for Kids",
+    "Unfamiliar Request (100-Yard Jump): Neighborhood Tool Library & Deposit Tracker"
+  ]
+}

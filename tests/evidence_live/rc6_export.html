@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Design Small Neighborhood Bakery Hearth Crumb — Autonomous Genie Workspace — Read-Only Export</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 24px; background: #F8FAFC; color: #0F172A; }
+  .box { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; padding: 18px; max-width: 960px; margin: 0 auto 16px; }
+  h1 { font-size: 20px; margin-bottom: 6px; }
+  pre { background: #0F172A; color: #F8FAFC; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; background: #ECFDF5; color: #059669; font-weight: 700; font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <span class="badge">PORTABLE STANDALONE EXPORT (READ-ONLY SNAPSHOT) • ZERO OPENLINE LOCK-IN • $0 SUBSCRIPTION</span>
+    <h1>Design Small Neighborhood Bakery Hearth Crumb — Autonomous Genie Workspace</h1>
+    <p>SYNTHESIZED LOCAL-FIRST APPLICATION: Compiled deterministically from your request with local storage, editable records, live calculations, and standalone HTML/CSV/JSON export. External actions remain owner-controlled.</p>
+    <p><strong>Accepted State SHA-256:</strong> <code>dca565c5b6e96c3d33c9dd47623f975331848ba4c12bd27fab8855c76f831def</code> (Version 2)</p>
+    <p><strong>Source Receiver Public Key:</strong> <code>p8FUG1660M0LOErT62OtN6h-subTegvcq9K5nS7ps6s</code></p>
+  </div>
+  <div class="box">
+    <h2>Exported CSV Table</h2>
+    <pre>Metric,Value,BindingConstraint,DailyMargin($)
+AcceptedBakeryThroughput,240,staff,925
+Option:add_baker,Add a second baker,600,
+Option:hours,Adjust shift schedule,0,
+Option:oven2,Another oven?,18500,
+Option:retarder_rack,Add cold retarder rack,3200,
+</pre>
+  </div>
+  <div class="box">
+    <h2>Portable JSON State (Take Anywhere)</h2>
+    <pre id="portable-json">{
+  &quot;app_slug&quot;: &quot;design-small-neighborhood-bakery-hearth&quot;,
+  &quot;bakery&quot;: {
+    &quot;assumptions&quot;: {
+      &quot;bake_window_minutes&quot;: 300,
+      &quot;bakers&quot;: 1,
+      &quot;batch_size_loaves&quot;: 29,
+      &quot;cycle_minutes&quot;: 50,
+      &quot;decks_per_oven&quot;: 1,
+      &quot;demand_loaves_per_day&quot;: 320,
+      &quot;extra_baker_loaves&quot;: 160,
+      &quot;extra_retarder_racks&quot;: 0,
+      &quot;fixed_cost_usd_per_day&quot;: 140,
+      &quot;loaf_price_usd&quot;: 8.5,
+      &quot;loaves_per_baker_per_shift&quot;: 240,
+      &quot;margin_per_loaf_usd&quot;: 4.5,
+      &quot;ovens&quot;: 2,
+      &quot;proofing_rack_loaves&quot;: 280,
+      &quot;retarder_rack_loaves&quot;: 60,
+      &quot;scenario_capacity_loaves&quot;: 400,
+      &quot;schedule_capacity_loaves&quot;: 360,
+      &quot;shift_pattern&quot;: &quot;05:00-13:00&quot;,
+      &quot;shop_capacity_loaves&quot;: 300,
+      &quot;staggered_shift&quot;: false,
+      &quot;staggered_shift_bonus_loaves&quot;: 60,
+      &quot;uncertainty_pct&quot;: 7,
+      &quot;variable_cost_per_loaf_usd&quot;: 4,
+      &quot;wish_capacity_loaves&quot;: 500
+    },
+    &quot;computed&quot;: {
+      &quot;bottleneck_id&quot;: &quot;staff&quot;,
+      &quot;bottleneck_label&quot;: &quot;Staff&quot;,
+      &quot;capacities&quot;: {
+        &quot;demand&quot;: 320,
+        &quot;ingredients&quot;: 280,
+        &quot;oven&quot;: 348,
+        &quot;scenario&quot;: 400,
+        &quot;schedule&quot;: 360,
+        &quot;shop&quot;: 300,
+        &quot;staff&quot;: 240,
+        &quot;wish&quot;: 500
+      },
+      &quot;capex_usd&quot;: 18500,
+      &quot;fixed_cost_usd_per_day&quot;: 155.0,
+      &quot;ingredient_capacity&quot;: 280,
+      &quot;margin_per_loaf_usd&quot;: 4.5,
+      &quot;net_daily_band_usd&quot;: [
+        848,
+        1002
+      ],
+      &quot;net_daily_usd&quot;: 925,
+      &quot;oven_batches_per_day&quot;: 6.0,
+      &quot;oven_capacity&quot;: 348,
+      &quot;staff_capacity&quot;: 240,
+      &quot;throughput_band_loaves_per_day&quot;: [
+        223,
+        257
+      ],
+      &quot;throughput_loaves_per_day&quot;: 240,
+      &quot;uncertainty_pct&quot;: 7,
+      &quot;unit&quot;: &quot;loaves/day&quot;
+    },
+    &quot;notes&quot;: &quot;Computed capacity/cost/throughput from stated assumptions only. No customer behaviour, demand forecast, or savings invented. Uncertainty band is +/-7% around throughput.&quot;,
+    &quot;paths&quot;: {
+      &quot;add_baker&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;bakers&quot;: 2
+        },
+        &quot;capex_usd&quot;: 600,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 165,
+        &quot;label&quot;: &quot;Add a second baker&quot;
+      },
+      &quot;hours&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;shift_pattern&quot;: &quot;04:30-14:30 staggered&quot;,
+          &quot;staggered_shift&quot;: true
+        },
+        &quot;capex_usd&quot;: 0,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 35,
+        &quot;label&quot;: &quot;Adjust shift schedule&quot;
+      },
+      &quot;oven2&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;ovens&quot;: 3
+        },
+        &quot;capex_usd&quot;: 18500,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 15,
+        &quot;label&quot;: &quot;Another oven?&quot;
+      },
+      &quot;retarder_rack&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;extra_retarder_racks&quot;: 1
+        },
+        &quot;capex_usd&quot;: 3200,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 12,
+        &quot;label&quot;: &quot;Add cold retarder rack&quot;
+      }
+    }
+  },
+  &quot;category&quot;: &quot;synthesized_custom_application&quot;,
+  &quot;fields&quot;: [
+    {
+      &quot;key&quot;: &quot;ovens&quot;,
+      &quot;label&quot;: &quot;Deck ovens&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;batch_size_loaves&quot;,
+      &quot;label&quot;: &quot;Loaves per batch&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;cycle_minutes&quot;,
+      &quot;label&quot;: &quot;Bake cycle (minutes)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;bakers&quot;,
+      &quot;label&quot;: &quot;Bakers on shift&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;proofing_rack_loaves&quot;,
+      &quot;label&quot;: &quot;Proofing rack (loaves/day)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;demand_loaves_per_day&quot;,
+      &quot;label&quot;: &quot;Stated demand (loaves/day)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;margin_per_loaf_usd&quot;,
+      &quot;label&quot;: &quot;Margin per loaf (USD)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;fixed_cost_usd_per_day&quot;,
+      &quot;label&quot;: &quot;Fixed cost (USD/day)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    }
+  ],
+  &quot;formula_description&quot;: &quot;net_total_dollars = round((quantity_units * unit_rate_dollars) + adjustments_dollars, 2)&quot;,
+  &quot;honesty_boundary&quot;: &quot;SYNTHESIZED LOCAL-FIRST APPLICATION: Compiled deterministically from your request with local storage, editable records, live calculations, and standalone HTML/CSV/JSON export. External actions remain owner-controlled.&quot;,
+  &quot;primary_entity&quot;: &quot;Work Item&quot;,
+  &quot;project_family&quot;: &quot;bakery&quot;,
+  &quot;project_id&quot;: &quot;genie-synth-design-small-neighborhood-bakery-hearth&quot;,
+  &quot;prompt&quot;: &quot;Design a small neighborhood bakery \u2014 Hearth &amp; Crumb Bakery: a single-file HTML app to plan daily baking, track batches, and see capacity.&quot;,
+  &quot;records&quot;: [
+    {
+      &quot;adjustments_dollars&quot;: 25.0,
+      &quot;category_tag&quot;: &quot;Standard Service&quot;,
+      &quot;computed_metric_label&quot;: &quot;Calculated Net Total ($)&quot;,
+      &quot;computed_metric_value&quot;: 285.0,
+      &quot;item_title&quot;: &quot;Design Small Neighborhood Bakery Hearth Crumb \u2014 Initial Pilot Entry&quot;,
+      &quot;quantity_units&quot;: 4.0,
+      &quot;record_id&quot;: &quot;REC-101&quot;,
+      &quot;status&quot;: &quot;COMPLETED_VERIFIED&quot;,
+      &quot;unit_rate_dollars&quot;: 65.0
+    },
+    {
+      &quot;adjustments_dollars&quot;: 15.0,
+      &quot;category_tag&quot;: &quot;Priority Request&quot;,
+      &quot;computed_metric_label&quot;: &quot;Calculated Net Total ($)&quot;,
+      &quot;computed_metric_value&quot;: 215.0,
+      &quot;item_title&quot;: &quot;Design Small Neighborhood Bakery Hearth Crumb \u2014 Secondary Batch&quot;,
+      &quot;quantity_units&quot;: 2.5,
+      &quot;record_id&quot;: &quot;REC-102&quot;,
+      &quot;status&quot;: &quot;ACTIVE&quot;,
+      &quot;unit_rate_dollars&quot;: 80.0
+    }
+  ],
+  &quot;schema&quot;: &quot;openline.genie.synthesized_app.v1&quot;,
+  &quot;subtitle&quot;: &quot;Synthesized Stateful Operations, Calculator &amp; Export Tool&quot;,
+  &quot;title&quot;: &quot;Design Small Neighborhood Bakery Hearth Crumb \u2014 Autonomous Genie Workspace&quot;,
+  &quot;workflow_states&quot;: [
+    &quot;ACTIVE&quot;,
+    &quot;COMPLETED_VERIFIED&quot;,
+    &quot;NEEDS_REVIEW&quot;
+  ]
+}</pre>
+  </div>
+</body>
+</html>
