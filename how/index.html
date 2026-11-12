@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>How it works — OpenLine Genie v0.7.1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="../index.html">Genie v0.7.1</a>
+  <a href="../try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="../how/index.html">How it works</a>
+  <a href="../see/index.html">See Genie</a>
+</nav>
+<main>
+
+  <h1>How it works</h1>
+  <p>Genie builds a working local-first app and interactive operating model from your request, previews what changing an assumption or bottleneck would do, and only commits changes you explicitly accept. Every consequential step goes through a local receiver that checks authority and signs a receipt.</p>
+  <section class="card" aria-label="The loop">
+    <h2>The loop</h2>
+    <ol>
+      <li><strong>Describe a project.</strong> Genie builds a working local app and a living model of how it runs.</li>
+      <li><strong>Inspect real parts.</strong> Tap a station and see its real formula, its capacity, and what limits output now.</li>
+      <li><strong>Preview before you commit.</strong> Change an assumption or try an option. The preview shows the new output and the new limit. Accepted work does not move.</li>
+      <li><strong>You decide.</strong> Accept commits the change with a signed receipt from your local receiver. Reject leaves accepted work byte-identical.</li>
+      <li><strong>STOP freezes changes.</strong> While STOP is on, no new change can be proposed or accepted. Reject still works. Clear STOP to continue.</li>
+      <li><strong>Keep the work.</strong> Export the accepted app and state, re-import it, restart, or hand the job to a different worker. Accepted work stays intact.</li>
+    </ol>
+  </section>
+  <section class="card" aria-label="Try it first">
+    <h2>Try it first</h2>
+    <p>The <a href="../try/index.html">sandbox</a> runs the same deterministic capacity math in your browser, on three fixed projects. It is a simulation: it has no receiver and issues no signed receipts. Nothing you accept there leaves the page.</p>
+  </section>
+  <section class="card" aria-label="Documentation">
+    <h2>Documentation</h2>
+    <ul>
+      <li><a href="install.html">Install guide</a> — get the v0.7.1 release, run the local server, verify your install, uninstall.</li>
+      <li><a href="owner-guide.html">Owner guide</a> — plain-language guide to using Genie: build, explore, accept or reject, STOP, export.</li>
+      <li><a href="owner-walkthrough.html">Owner walkthrough</a> — step-by-step first run.</li>
+      <li><a href="capability-register.html">Capability &amp; limitation register</a> — what is verified, what Genie is not, and the honest limits of this release.</li>
+      <li><a href="adapter-boundary.html">Adapter boundary</a> — how receiver adapters are bounded.</li>
+      <li><a href="license.html">License</a> — Apache License 2.0.</li>
+      <li><a href="third-party-notices.html">Third-party notices</a> — cryptography, Playwright.</li>
+    </ul>
+    <p class="fine">These pages are the public documentation from the v0.7.1 source release, rendered for the web. The full source is at <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">GitHub Releases, v0.7.1</a>.</p>
+  </section>
+  <section class="card" aria-label="What Genie can and cannot do">
+    <h2>What it can and cannot do</h2>
+    <p><strong>It can:</strong> build a working local-first app and interactive operating model from a request; preview assumption and bottleneck changes; record every accepted version, rejection, worker replacement, and STOP with an offline-verifiable Ed25519 receipt in your local workspace; keep inspection, preview, accept, reject, and STOP usable by keyboard without a canvas.</p>
+    <p><strong>It cannot:</strong> generate any working app for any request. It builds the project types it knows and is honest about the rest. It does not prove production isolation: the local server is a loopback boundary on one machine, not OS process isolation. It does not guarantee earnings: throughput and dollar figures are deterministic projections from stated assumptions, with a stated planning margin, not measured revenue.</p>
+    <p class="fine">Not tested: iPhone Safari, VoiceOver, and uncoached human usability. Those stay NOT TESTED until they are actually run.</p>
+  </section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Adapter Boundary — OpenLine Genie v0.7.1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="../index.html">Genie v0.7.1</a>
+  <a href="../try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="../how/index.html">How it works</a>
+  <a href="../see/index.html">See Genie</a>
+</nav>
+<main>
+<p class="fine">Source: <code>ADAPTER_BOUNDARY.md</code> from the OpenLine Genie v0.7.1 public source release. Rendered for the web; wording unchanged unless a note on this page says otherwise.</p>
+<h1>Genie Receiver Adapter Boundary (design only, RC6)</h1>
+<p>A third-party AI agent can drive the same Genie receiver/project interface
+the built-in worker uses. This is a documented design. It is NOT a
+compatibility claim: no Claude, ChatGPT, or MCP integration has been built
+or tested against it. Do not claim one until an actual integration passes
+end-to-end tests (criteria at the bottom).</p>
+<h2>Transport</h2>
+<ul>
+<li>HTTP, loopback only: the server binds <code>127.0.0.1:8795</code> by default.
+  The loopback server is not an OS permission boundary (inherited RC3 limit).</li>
+<li>Same-origin browser UI only. There is no remote endpoint, no bearer
+  scheme, and no owner-issued capability grant implemented in RC6.
+  Any future remote adapter must add owner-issued grants and is out of
+  scope for this release.</li>
+</ul>
+<h2>Endpoints (all JSON; POSTs need <code>Content-Type: application/json</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/status</code></td>
+<td>Liveness + spend ledger summary</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/projects</code></td>
+<td>List projects</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/project?project_id=</code></td>
+<td>Full bundle (see state shape)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/bakery/paths?project_id=</code></td>
+<td>Next-step assumption patches for a bakery project</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/build</code></td>
+<td>Create a project. Body: <code>{prompt, use_model}</code>. <code>use_model:false</code> is the deterministic fallback; <code>use_model:true</code> runs the Haiku worker through <code>src/core/model_adapter.py</code> (spend-capped, $5.00 cumulative — reservation-based: the adapter reserves the worst-case cost before dispatch and holds the reservation as recorded spend when usage metadata is missing; see "Spend cap" below).</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/propose</code></td>
+<td>Create an exploratory proposal. Body: <code>{project_id, summary, patch}</code>. The patch is a partial state (e.g. <code>{bakery:{assumptions:{...}}}</code>); the engine recomputes derived values and validates. Never mutates accepted state.</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/accept</code></td>
+<td>Accept a proposal. Body: <code>{project_id, proposal_id}</code>. Accepted state changes; a signed receipt is issued.</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/reject</code></td>
+<td>Reject a proposal. Body: <code>{project_id, proposal_id, reason}</code>. Accepted state is byte-identical afterward.</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/stop</code></td>
+<td>Freeze the project. Propose/accept then return 409; reject still allowed.</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/replace_worker</code></td>
+<td>Replace the active worker (new Haiku worker). Accepted state and its SHA are preserved.</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/close</code>, <code>/api/reopen</code></td>
+<td>Close / reopen a project.</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/export?project_id=</code></td>
+<td>The real runnable accepted app (single HTML file).</td>
+</tr>
+</tbody>
+</table>
+<h2>State shape (GET /api/project)</h2>
+<pre><code class="language-json">{
+  &quot;project_id&quot;: &quot;...&quot;,
+  &quot;project_family&quot;: &quot;bakery&quot;,
+  &quot;accepted&quot;: {
+    &quot;version&quot;: 2,
+    &quot;state_sha256&quot;: &quot;...&quot;,
+    &quot;state&quot;: { &quot;...&quot;: &quot;canonical accepted state&quot; },
+    &quot;state_canonical_json&quot;: &quot;{... exact bytes the receipt binds ...}&quot;,
+    &quot;receipt&quot;: { &quot;receipt&quot;: { &quot;payload&quot;: { &quot;receipt_id&quot;: &quot;...&quot; } } }
+  },
+  &quot;exploratory&quot;: [
+    { &quot;proposal_id&quot;: &quot;...&quot;, &quot;summary&quot;: &quot;...&quot;,
+      &quot;candidate_state&quot;: { &quot;...&quot;: &quot;...&quot; },
+      &quot;candidate_sha256&quot;: &quot;...&quot;, &quot;status&quot;: &quot;EXPLORATORY_PENDING&quot; }
+  ],
+  &quot;rejected&quot;: [ { &quot;proposal_id&quot;: &quot;...&quot;, &quot;summary&quot;: &quot;...&quot; } ],
+  &quot;stopped&quot;: false,
+  &quot;status&quot;: &quot;open&quot;,
+  &quot;active_worker_id&quot;: &quot;worker-a&quot;,
+  &quot;receiver_public_key&quot;: &quot;...&quot;,
+  &quot;owner_public_key&quot;: &quot;...&quot;
+}
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>exploratory</code> lists every proposal row, including rejected ones; filter
+  by <code>status === "EXPLORATORY_PENDING"</code> for open proposals.</li>
+<li>Receipts are Ed25519 signatures over the canonical accepted state.
+  Verify <code>accepted.state_sha256</code> against <code>accepted.state_canonical_json</code>
+  (the exact bytes) and the receipt against the pinned
+  <code>receiver_public_key</code>. The living-world UI pins the key on first load
+  and marks any later mismatch UNVERIFIED_IMPORT.</li>
+<li>The project graph, constraints, and signed evidence are
+  model-independent: they are functions of accepted state, not of which
+  model built the project. Discovery (counterfactuals, synergy combos,
+  opportunities) is computed from that state by the frozen
+  <code>graph_core.mjs</code> and needs no model call.</li>
+</ul>
+<h2>Rules an adapter must follow</h2>
+<ol>
+<li>Read state only through <code>/api/project</code>; never invent a parallel store.</li>
+<li>Change state only through <code>/api/propose</code> + owner accept/reject.
+   Discovery NEVER auto-applies: every improvement is a reversible
+   exploratory proposal until the owner accepts it.</li>
+<li>Respect STOP (409 on propose/accept while stopped) and the 60-second
+   in-flight token TTL: revocation bounds, never instant.</li>
+<li>Keep prompts under 100K and all model calls spend-capped through
+   <code>src/core/model_adapter.py</code>. The $5.00 cumulative cap binds in full.</li>
+</ol>
+<h2>Spend cap (reservation-based, r5)</h2>
+<p>Before any model call the adapter atomically checks the cap against
+committed spend (settled total + open reservations) and persists an
+open reservation for the call's worst-case cost in <code>spend.json</code>
+before dispatch; a call whose worst case would exceed the remaining
+cap is refused before dispatch and recorded as a <code>refused</code>
+reservation entry. After the call the reservation is reconciled to
+actual usage when the provider returns usage metadata. When usage is
+missing — or the call fails after dispatch (timeout, unparseable
+output, unexpected shape) — the reservation is held at worst case as
+recorded spend (flagged <code>reservation_held</code> / <code>usage_missing</code>), never
+$0. A call the provider explicitly refuses (429/529/…) releases its
+reservation at $0. The running total is therefore an upper bound on
+true provider spend, never a lower bound. <code>spend.json</code> gains only a
+top-level <code>"reservations"</code> list; <code>total_usd()</code> keeps its
+settled-only meaning, while <code>committed_usd()</code> (settled + open
+reservations) is what the cap is enforced against. Residual gaps:
+ledger disk failure, input-token estimate approximation,
+cross-process race, direct helper calls bypassing the adapter
+(see <code>REPAIRS_R5_B2.md</code> §6).</p>
+<h2>What an end-to-end test of a third-party adapter must show</h2>
+<p>A second agent implementation, built independently of the RC3 worker,
+driving the endpoints above against a fresh project: fetch bundle, verify
+the receipt against the pinned key, propose a real change, have the owner
+accept it in the UI, and confirm the accepted state, receipt, and
+re-projected graph all change consistently — with reject restoring the
+exact accepted state. Until that run exists, there is no compatibility
+claim.</p>
+</main>
+</body>
+</html>

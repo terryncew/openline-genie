@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Capability & Limitation Register — OpenLine Genie v0.7.1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="../index.html">Genie v0.7.1</a>
+  <a href="../try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="../how/index.html">How it works</a>
+  <a href="../see/index.html">See Genie</a>
+</nav>
+<main>
+<p class="fine">Source: <code>OpenLine_Genie_Capability_And_Limitation_Register.md</code> from the OpenLine Genie v0.7.1 public source release. Rendered for the web; wording unchanged unless a note on this page says otherwise.</p>
+<div class="note"><p><strong>Pages note (2026-11-12).</strong> The source-tree register lists <code>core/acs.py</code> among the implementation modules for the Adversarial Workflow Lab 4 repairs; that module is not in the v0.7.1 public source tree, so it is omitted from that row here. One other mention of <code>acs.py</code> remains below (section 3, item 4): it is a historical statement about the older <code>openline-genie-001.zip</code> bundle, retained verbatim — it does not describe the v0.7.1 tree. The source tree itself is unchanged.</p></div>
+<h1>OpenLine Genie — Honest Capability &amp; Limitation Register</h1>
+<p><strong>Date:</strong> November 10, 2026<br />
+<strong>Governing Standard:</strong> OpenLine Agent Operating Law v1.0 (Zero fabricated passes, zero disguised simulations, explicit <code>PARITY</code> disclosure)</p>
+<h2>1. Verified Capabilities (Proven by Executable Tests &amp; Receipts)</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Implementation File &amp; Mechanism</th>
+<th>Verification Test</th>
+<th>Observed Metric / Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Demonstration A: Small Service Business Quoting &amp; Invoicing</strong></td>
+<td><code>genie_engine.py</code> (<code>calculate_quote_totals</code>, <code>demo_a_*</code>) + <code>openline_genie.html</code></td>
+<td><code>test_01_demonstration_a_quoting_invoicing_cent_math_and_export</code></td>
+<td>Cent-accurate subtotal, discount %, taxable subtotal, tax %, total, and 25% deposit; 1-click Quote-to-Invoice conversion (<code>Q-1003 -&gt; INV-2002</code>); local SQLite + <code>localStorage</code> persistence; standalone HTML/CSV/JSON export.</td>
+</tr>
+<tr>
+<td><strong>Demonstration B: Free Interactive Kids Robotics Environment</strong></td>
+<td><code>genie_engine.py</code> (<code>simulate_robot_academy_program</code>, <code>ROBOT_ACADEMY_LEVELS</code>) + <code>openline_genie.html</code></td>
+<td><code>test_02_demonstration_b_robot_academy_levels_and_safety_permit</code></td>
+<td>4 progressive levels (<code>MISSION_COMPLETE</code>), D-Pad &amp; block programming, ultrasonic obstacle clearance (<code>&gt;= 0.40 m</code>), workcell permit speed gate (<code>&gt; 0.75 m/s</code> blocked), and human walkway boundary (<code>x &lt;= 4.20 m</code>).</td>
+</tr>
+<tr>
+<td><strong>Permanent Project Ownership (<code>ACCEPTED</code> / <code>EXPLORATORY</code> / <code>REJECTED</code>)</strong></td>
+<td><code>genie_engine.py</code> (<code>propose_exploratory_change</code>, <code>reject_exploratory_change</code>, <code>accept_exploratory_change</code>)</td>
+<td><code>test_03_rejected_proposals_never_overwrite_accepted_work_and_approved_promotes</code></td>
+<td><code>0</code> overwrites of <code>ACCEPTED</code> state across rejected destructive proposals; <code>100%</code> state survival across browser reload and engine restart.</td>
+</tr>
+<tr>
+<td><strong>Hundred-Yard Jump: Unfamiliar Request Micro-App Synthesizer</strong></td>
+<td><code>GenieAppSynthesizer</code> (<code>openline.genie.synthesized_app.v1</code>)</td>
+<td><code>test_04_hundred_yard_jump_unfamiliar_request_synthesis_and_falsifiers</code></td>
+<td>Compiles unfamiliar natural-language requests into working CRUD + live formula + status workflow apps in <code>~313 ms</code> (for 3 apps) with domain falsifiers.</td>
+</tr>
+<tr>
+<td><strong>Adversarial Workflow Lab 4 Repairs (<code>D-01</code>/<code>D-01b</code>, <code>D-02</code>, <code>D-03</code>, <code>D-04</code>)</strong></td>
+<td><code>core/openline_guard.py</code>, <code>core/ipc_protocol.py</code></td>
+<td><code>test_05_adversarial_workflow_lab_four_repairs_and_external_reconciliation</code></td>
+<td>Two-phase external outbox (<code>UNKNOWN_RECONCILIATION_REQUIRED -&gt; RECONCILED_DELIVERED</code> with <code>0</code> duplicate sends), <code>&gt;=1s</code> clock-invariant <code>ipc_request_intent_sha256</code>, transitive <code>set_basis</code> reopen, and <code>FAILED_REALITY_CHECK</code> replay quarantine.</td>
+</tr>
+<tr>
+<td><strong>iPhone Mobile (<code>390x844</code>) &amp; Desktop (<code>1440x920</code>) Browser UX</strong></td>
+<td><code>openline_genie.html</code> (CSS Grid responsive breakpoint + <code>localStorage</code>)</td>
+<td><code>test_06_iphone_mobile_and_desktop_browser_customer_journey</code></td>
+<td><code>0</code> console errors, <code>0</code> horizontal overflow (<code>scrollWidth &lt;= clientWidth</code>), full interactive customer flow verified in headless Chromium.</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Fair Comparison Against Competent Conventional Coding Agent + Ordinary Tools</h2>
+<p>Measured in <code>record_and_benchmark_genie.py</code> (<code>evidence/INDEPENDENT_BENCHMARK_EVIDENCE.json</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>OpenLine Genie (<code>OpenLineGenieEngine</code> + <code>openline_genie.html</code>)</th>
+<th>Competent Conventional Coding Agent + Git/Tests</th>
+<th>Honest Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single-Developer Stationary Code &amp; Math</strong></td>
+<td>Cent-accurate Python/JS calculation &amp; unit tests</td>
+<td>Cent-accurate Python/JS calculation &amp; unit tests</td>
+<td><strong><code>PARITY</code></strong></td>
+</tr>
+<tr>
+<td><strong>Unconstrained Arbitrary Multi-File Backend Frameworks</strong></td>
+<td>Scoped to browser/SQLite micro-apps and registered domain adapters</td>
+<td>Can install arbitrary npm/PyPI packages and write multi-service backends</td>
+<td><strong>Conventional Agent Wins on Arbitrary Stack Breadth</strong></td>
+</tr>
+<tr>
+<td><strong>Non-Technical User Effort (iPhone / Zero-CLI)</strong></td>
+<td><strong>1 prompt + 1-tap Accept/Reject/Export directly in mobile browser (<code>~313 ms</code>)</strong></td>
+<td>Requires terminal, Git checkout, local runtime setup, and manual branch/stash commands</td>
+<td><strong>OpenLine Genie Advantage on Accessibility &amp; Zero-CLI UX</strong></td>
+</tr>
+<tr>
+<td><strong>Rejected Proposal &amp; Mid-Task Interruption Safety</strong></td>
+<td><strong>Mechanically isolated <code>EXPLORATORY</code> / <code>REJECTED</code> tables + <code>ReceiverGuard</code> <code>SAVEPOINT</code></strong></td>
+<td>In-workspace agent edits overwrite working files unless user manually manages <code>git stash</code>/<code>git checkout</code></td>
+<td><strong>OpenLine Genie Advantage on Accepted-Work Preservation</strong></td>
+</tr>
+<tr>
+<td><strong>Unknown External Outcome Recovery (<code>D-01b</code>)</strong></td>
+<td><strong>Fences <code>UNKNOWN_RECONCILIATION_REQUIRED</code> rows (<code>0</code> silent retries) &amp; reconciles via destination probe</strong></td>
+<td>Standard retry-on-timeout re-sends webhook (<code>2</code> deliveries / duplicate external effect)</td>
+<td><strong>OpenLine Genie Advantage on Consequential Recovery</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>3. Hard Safety, Financial &amp; Execution Provenance Limitations (Never Overclaim)</h2>
+<ol>
+<li><strong>Demonstration A (Service Quoting &amp; Invoicing) Honesty Boundary</strong>:
+   - Produces real, usable quotes, cent-accurate totals, numbered invoices, local persistence, and printable/portable exports at <code>$0</code> subscription cost.
+   - <strong>Does NOT</strong> generate customer leads, process live credit-card/ACH payments, file taxes, or guarantee business revenue.</li>
+<li><strong>Demonstration B (Kids Robot Academy) &amp; Robotics Safety Boundary</strong>:
+   - Teaches movement, sensor logic, obstacle clearance, and workcell permit concepts in a free 2D browser simulator.
+   - Application-level permit revocation (<code>STOP</code>) does <strong>NOT</strong> establish physical emergency stopping, safety-rated isolation (ISO 13849 / IEC 61508), or real robot hardware actuation.</li>
+<li><strong>Model &amp; Worker Execution Provenance</strong>:
+   - In this offline <code>$0</code>-spend sandbox, <code>OpenLineGenieEngine</code> and <code>GenieAppSynthesizer</code> execute deterministic local synthesis, AST/invariant self-tests, and OS subprocess receiver verification (<code>LOCAL_AUTONOMOUS_COMPILER_AND_VERIFIER</code>). No scripted or deterministic step is ever represented as a live paid cloud LLM call.</li>
+<li><strong>Cold-Extraction Packaging Defect Found &amp; Resolved in Inherited Shared-Receiver Bundle</strong>:
+   - During Milestone 1 verification of the inherited shared-receiver bundle, we found that a module expected a source path outside the ZIP root. In <code>openline-genie-001.zip</code>, all core modules in <code>core/</code> (<code>openline_guard.py</code>, <code>ipc_protocol.py</code>, <code>recall.py</code>, <code>tc_controller_v2.py</code>, <code>acs.py</code>) run 100% self-contained from a cold unzip with zero external path dependencies.</li>
+</ol>
+</main>
+</body>
+</html>

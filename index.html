@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Genie v0.7.1 — Change the AI. Keep the work.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="index.html">Genie v0.7.1</a>
+  <a href="try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="how/index.html">How it works</a>
+  <a href="see/index.html">See Genie</a>
+</nav>
+<main>
+
+  <h1>Genie: change the AI. Keep the work.</h1>
+  <p>Genie builds a working local-first app and interactive operating model from your request, previews what changing an assumption or bottleneck would do, and only commits changes you explicitly accept.</p>
+  <p class="fine">Version v0.7.1. Local-first. No sign-in. No paid API calls unless you turn them on yourself.</p>
+
+  <p><a class="cta" href="try/index.html">Try Genie &rarr;</a></p>
+  <p class="fine">Open the sandbox in your browser. No sign-in, no account, no data sent anywhere.</p>
+
+  <section class="card" aria-label="Try Genie">
+    <h2>Try Genie</h2>
+    <p>Open the sandbox in your browser. Inspect a bakery, a garden, or a neural checkpoint. Change an assumption, preview the consequence, accept or reject it, and stop it cold.</p>
+    <p><a href="try/index.html">Open the sandbox</a></p>
+    <p class="fine">The sandbox is local only. It has no receiver and issues no signed receipts. The full product runs on your own machine with a signed local receiver. See <a href="how/index.html">How it works</a>.</p>
+  </section>
+
+  <section class="card" aria-label="Get Genie">
+    <h2>Get Genie</h2>
+    <p>The full Genie runs on your own machine. It needs Python 3 and a local loopback server. Paid model dispatch stays off unless you turn it on yourself.</p>
+    <p><a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Download Genie v0.7.1 from GitHub Releases</a></p>
+    <p class="fine">Source release: <code>terryncew/openline-genie</code>, release <code>v0.7.1</code>. Apache License 2.0. Install steps: <a href="how/install.html">Install guide</a>.</p>
+    <p class="fine">Local run, from the release tree: <code>python3 genie_server.py --host 127.0.0.1 --port 8795 --state-dir &lt;fresh local folder&gt;</code>, then open <code>http://127.0.0.1:8795/</code> in your browser. That address works only on your own machine.</p>
+  </section>
+
+  <section class="card" aria-label="How it works">
+    <h2>How it works</h2>
+    <ul>
+      <li><strong>Describe a project.</strong> Genie builds a working local app and a living model of how it runs.</li>
+      <li><strong>Inspect real parts.</strong> Tap a station and see its real formula, its capacity, and what limits output now.</li>
+      <li><strong>Preview before you commit.</strong> Change an assumption or try an option. The preview shows the new output and the new limit. Accepted work does not move.</li>
+      <li><strong>You decide.</strong> Accept commits the change with a signed receipt from your local receiver. Reject leaves accepted work byte-identical.</li>
+      <li><strong>STOP freezes changes.</strong> While STOP is on, no new change can be proposed or accepted. Reject still works. Clear STOP to continue.</li>
+      <li><strong>Keep the work.</strong> Export the accepted app and state, re-import it, restart, or hand the job to a different worker. Accepted work stays intact.</li>
+    </ul>
+    <p><a href="how/index.html">Read the full documentation</a></p>
+  </section>
+
+  <section class="card" aria-label="What Genie can and cannot do">
+    <h2>What it can and cannot do</h2>
+    <p><strong>It can:</strong> build a working local-first app and interactive operating model from a request; preview assumption and bottleneck changes; record every accepted version, rejection, worker replacement, and STOP with an offline-verifiable Ed25519 receipt in your local workspace; keep inspection, preview, accept, reject, and STOP usable by keyboard without a canvas.</p>
+    <p><strong>It cannot:</strong> generate any working app for any request. It builds the project types it knows and is honest about the rest. It does not prove production isolation: the local server is a loopback boundary on one machine, not OS process isolation. It does not guarantee earnings: throughput and dollar figures are deterministic projections from stated assumptions, with a stated planning margin, not measured revenue.</p>
+    <p class="fine">Not tested: iPhone Safari, VoiceOver, and uncoached human usability. Those stay NOT TESTED until they are actually run.</p>
+  </section>
+
+  <section class="card" aria-label="See Genie">
+    <h2>See Genie</h2>
+    <p>Watch a real 54-second browser session: a bakery goes from 174 to 280 loaves a day, a signed receipt is recorded, and STOP freezes changes.</p>
+    <p><a href="see/index.html">Watch the demo (54 seconds, silent)</a></p>
+  </section>
+
+  <section class="card" aria-label="Privacy">
+    <h2>Privacy</h2>
+    <p>The sandbox sends nothing anywhere and saves nothing beyond your browser session. The local product keeps your project, state, and receipts on your own machine. Genie has no account, no analytics in this build, and no paid API calls unless you enable a model yourself.</p>
+  </section>
+
+  <footer>
+    <p class="fine">OpenLine Genie v0.7.1, November 2026. Apache License 2.0. OpenLine branding and trademarks are governed separately.</p>
+  </footer>
+
+</main>
+</body>
+</html>

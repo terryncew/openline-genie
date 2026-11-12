@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>See Genie — OpenLine Genie v0.7.1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="../index.html">Genie v0.7.1</a>
+  <a href="../try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="../how/index.html">How it works</a>
+  <a href="../see/index.html">See Genie</a>
+</nav>
+<main>
+
+  <h1>See Genie</h1>
+  <p>A real browser session, recorded in one continuous take: the Hearth &amp; Crumb bakery goes from 174 to 280 loaves a day, a signed receipt is recorded, and STOP freezes changes. 54 seconds, silent.</p>
+  <figure>
+    <video controls preload="metadata" poster="../demo/genie-demo-poster.jpg" src="../demo/genie-genuine-demo-take3.mp4">
+      Your browser cannot play this video. <a href="../demo/genie-genuine-demo-take3.mp4">Download the demo (MP4, 54 seconds)</a>.
+    </video>
+    <figcaption>OpenLine Genie v0.7.1 demo — genuine browser recording, 54.27 seconds, 1280&times;800, silent. <a href="../demo/genie-genuine-demo-take3.mp4">Download the MP4</a>.</figcaption>
+  </figure>
+  <div class="warn">
+    <p><strong>About this recording.</strong> This demo was recorded against the RC7 r4 build label, before the final version-label update: the browser tab title visible in the recording reads &ldquo;Genie &bull; Living World RC7 r4&rdquo;, while the published version is v0.7.1. The product behavior shown — the bakery journey, the signed receipt, and STOP — is the v0.7.1 behavior.</p>
+  </div>
+  <h2>What happens when</h2>
+  <ul>
+    <li><strong>~0 s</strong> — Build starts: &ldquo;Design a small neighborhood bakery.&rdquo;</li>
+    <li><strong>~5 s</strong> — Living World loads. Baseline 174 loaves/day; the oven is the limit.</li>
+    <li><strong>~15 s</strong> — Discovery: another oven, 174 &rarr; 240; the combination with a shift change, 174 &rarr; 280.</li>
+    <li><strong>~20&ndash;25 s</strong> — An assumption edit is previewed, then rejected. Accepted work stays at 174.</li>
+    <li><strong>~35&ndash;36 s</strong> — The combination is accepted. Baseline becomes 280 loaves/day; the limit moves to Ingredients.</li>
+    <li><strong>~44 s</strong> — Receipt scene: the receiver record, receipt <code>e97006700cbd788987268dd79038948</code>, status <code>open &middot; RECEIVER_VERIFIED</code>.</li>
+    <li><strong>~49 s</strong> — STOP engaged: &ldquo;Emergency STOP active; mutations frozen.&rdquo;</li>
+  </ul>
+  <p class="fine">The numbers are deterministic projections from stated assumptions, not measured revenue. The receipt proves what the receiver recorded and signed — not what happened afterward, and not business outcomes.</p>
+  <p><a href="../try/index.html">Try it yourself in the sandbox</a> &middot; <a href="../how/index.html">How it works</a></p>
+
+</main>
+</body>
+</html>

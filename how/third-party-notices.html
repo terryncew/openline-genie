@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Third-Party Notices — OpenLine Genie v0.7.1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="../index.html">Genie v0.7.1</a>
+  <a href="../try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="../how/index.html">How it works</a>
+  <a href="../see/index.html">See Genie</a>
+</nav>
+<main>
+<p class="fine">Source: <code>THIRD_PARTY_NOTICES.md</code> from the OpenLine Genie v0.7.1 public source release. Rendered for the web; wording unchanged unless a note on this page says otherwise.</p>
+<h1>Third-Party Notices — OpenLine Genie</h1>
+<p>Audit date: 2026-11-11. Scope: the launch candidate source tree only.
+This source tree redistributes no third-party software. Dependencies below are
+installed by the user at install time (see <code>requirements.txt</code>,
+<code>pyproject.toml</code>); they are not bundled in this tree.</p>
+<h2>Runtime dependencies</h2>
+<ul>
+<li><strong>cryptography</strong> (<code>cryptography&gt;=41.0.0</code>, required): Ed25519 signing and
+  verification. Dual-licensed under the Apache License 2.0 OR the BSD
+  License, at the user's choice. Source:
+  https://github.com/pyca/cryptography (LICENSE.APACHE / LICENSE.BSD in the
+  installed distribution). Compatible with this project's Apache 2.0 release.</li>
+<li><strong>playwright</strong> (<code>playwright&gt;=1.40.0</code>, optional, browser tests only):
+  Apache License 2.0. Source: https://github.com/microsoft/playwright</li>
+</ul>
+<h2>Tooling</h2>
+<ul>
+<li>Python standard library only beyond the above; no CPython redistribution
+  in this tree.</li>
+<li>Node.js tests use the built-in <code>node --test</code> runner only. There is no
+  <code>package.json</code> and no npm dependency in this tree.</li>
+</ul>
+<h2>Fonts, imagery, vendored code</h2>
+<ul>
+<li>None. No third-party fonts, images, icons, or vendored libraries are in
+  this tree. No external CDN, font, or script references exist in the HTML,
+  JavaScript, or template files (checked 2026-11-11).</li>
+<li>All PNG and MP4 files in the tree are OpenLine-generated screenshots,
+  evidence captures, and demo artifacts.</li>
+</ul>
+<h2>Branding</h2>
+<p>OpenLine branding and trademarks are governed separately and are not licensed
+under the Apache License 2.0.</p>
+</main>
+</body>
+</html>

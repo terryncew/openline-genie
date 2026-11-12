@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'none'; connect-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Genie Sandbox. Local only. No receiver. v0.7.1.</title>
+<link rel="stylesheet" href="sandbox.css">
+</head>
+<body>
+<main id="sandboxApp">
+  <p id="sandboxBanner" role="status"><strong>SANDBOX DEMO. Local only.</strong> This page runs in your browser only. There is no receiver, no signed receipt, and nothing is saved or sent anywhere. Reloading this page resets everything.</p>
+
+  <header class="lead">
+    <h1>Genie, in a sandbox</h1>
+    <p>Inspect a real project. Change an assumption. Preview the consequence. Accept or reject it yourself. Then stop it cold.</p>
+    <p class="scope">What this sandbox does: it runs the same deterministic capacity math as the real Genie engine, in this browser, on three fixed projects. What it does not do: it cannot sign anything, it cannot prove anything to anyone else, and nothing you accept here leaves this page.</p>
+  </header>
+
+  <nav id="domainTabs" aria-label="Sandbox project">
+    <button type="button" data-domain="bakery" aria-pressed="true">Bakery</button>
+    <button type="button" data-domain="garden" aria-pressed="false">Garden</button>
+    <button type="button" data-domain="neural" aria-pressed="false">Neural checkpoint</button>
+  </nav>
+
+  <section class="strip" aria-label="Current accepted project">
+    <p><strong>Accepted output:</strong> <span id="acceptedLine">174 loaves/day</span></p>
+    <p><strong>Limit:</strong> <span id="limitLine">Oven (174 loaves/day)</span></p>
+    <p><strong>Local state checksum:</strong> <span id="stateChecksum">-</span> <span class="fine">(a local checksum, not a receipt)</span></p>
+    <p><strong>Version:</strong> <span id="versionLine">Local sandbox v1</span></p>
+  </section>
+
+  <p id="previewBanner" class="previewBanner" hidden role="status"></p>
+  <p id="stopBanner" class="stopBanner" hidden role="status"><strong>STOP is on (local only).</strong> Previews and accepts are frozen in this sandbox. Reject still works. Nothing here is a signed receiver STOP.</p>
+
+  <section aria-label="Project stations">
+    <h2>Stations. Tap one to inspect it.</h2>
+    <div id="stationList" role="list"></div>
+  </section>
+
+  <section class="inspector" aria-live="polite">
+    <h2 id="inspectTitle">Tap a station</h2>
+    <p id="inspectDetail">Pick a station above. Its real formula and numbers appear here.</p>
+    <div id="assumptionEditor" hidden>
+      <h3>Assumptions</h3>
+      <div id="assumptionFields"></div>
+      <p id="assumptionFormula" class="formula">Edit a value to see its formula.</p>
+      <button type="button" id="applyAssumptionBtn">Preview assumption change</button>
+      <p class="fine">Preview only. Local only. Accepted work does not change until you accept, and there is no receiver to accept it for real.</p>
+    </div>
+  </section>
+
+  <section aria-label="Options to compare">
+    <h2>Options. Compare before you decide.</h2>
+    <p class="fine">Each option is priced from the same stated assumptions. Figures are planning projections, not real earnings and not a promise.</p>
+    <div id="optionsList"></div>
+  </section>
+
+  <section class="decisions" aria-label="Decisions. Local only.">
+    <h2>Decide. Local only.</h2>
+    <p class="fine">Accept and Reject here change only this browser page. No signed receipt is issued. No receiver checks anything.</p>
+    <div class="decisionRow">
+      <button type="button" id="acceptBtn" disabled>Accept (local only)</button>
+      <button type="button" id="rejectBtn" disabled>Reject (local only)</button>
+    </div>
+    <div class="decisionRow">
+      <button type="button" id="stopBtn">STOP (local only)</button>
+      <button type="button" id="clearStopBtn" hidden>Clear STOP (local only)</button>
+    </div>
+    <div class="decisionRow">
+      <button type="button" id="resetBtn">Reset sandbox</button>
+      <button type="button" id="downloadBtn">Download local copy (JSON)</button>
+    </div>
+  </section>
+
+  <section aria-label="Local sandbox log">
+    <h2>Local log. Notes only, not receipts.</h2>
+    <p class="fine">Each entry is a note this page wrote to itself. It proves nothing to anyone else.</p>
+    <ol id="logList"></ol>
+  </section>
+
+  <footer>
+    <p>Sandbox for OpenLine Genie v0.7.1. The full product runs locally with a signed receiver. This page is not that product. It makes no network calls.</p>
+  </footer>
+</main>
+<script type="module" src="sandbox.js"></script>
+</body>
+</html>

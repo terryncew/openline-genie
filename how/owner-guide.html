@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e06">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Owner Guide — OpenLine Genie v0.7.1</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav class="topnav" aria-label="Genie destinations">
+  <a class="brand" href="../index.html">Genie v0.7.1</a>
+  <a href="../try/index.html">Try Genie</a>
+  <a href="https://github.com/terryncew/openline-genie/releases/tag/v0.7.1">Get Genie</a>
+  <a href="../how/index.html">How it works</a>
+  <a href="../see/index.html">See Genie</a>
+</nav>
+<main>
+<p class="fine">Source: <code>OWNER_GUIDE.md</code> from the OpenLine Genie v0.7.1 public source release. Rendered for the web; wording unchanged unless a note on this page says otherwise.</p>
+<h1>OpenLine Genie — Owner Guide (RC6)</h1>
+<p>Plain-language guide to using Genie. Genie builds a working app from a
+sentence, shows you the plan as a living picture, and only keeps the
+changes you accept. Nothing it proposes changes your accepted work
+until you say so.</p>
+<h2>What Genie is</h2>
+<p>You describe what you want. Genie builds a working single-file app,
+tests it, and shows it to you. You can explore changes (a second oven,
+a different shift pattern), see what each change would do, and accept
+or reject each one. Accepted work is kept, signed, and survives the
+worker being replaced. Rejected work disappears without touching what
+you accepted.</p>
+<p>Genie is not the Living Projects Studio. The Studio's workers are
+scripted demonstrations. Genie's workers are real: they call a model
+(Claude Haiku) to build and revise the app. Do not confuse the two.</p>
+<h2>Start the server</h2>
+<p>From the source tree:</p>
+<pre><code class="language-bash">python3 genie_server.py --port 8795 --state-dir /tmp/genie-state
+</code></pre>
+<p>Then open <code>http://127.0.0.1:8795/</code> in a browser. The server only
+listens on your own machine (loopback). That is not a security
+boundary in the operating-system sense: anything already running on
+your machine can reach it. Do not expose the port to a network.</p>
+<p>The first run needs no model call for the built-in bakery: click
+"Design a neighborhood bakery" on the wish screen and the demo bakery
+loads from the engine's own numbers.</p>
+<h2>Ask for a project</h2>
+<p>Type one sentence, for example "Help me build a neighborhood bakery."
+Click Build. A real model build takes about half a minute and costs a
+few tenths of a cent. The spend line at the top of the page shows the
+running total against the $5.00 cap. If the build fails, nothing is
+kept and you can try again.</p>
+<p>You can also build without the model (deterministic bakery only) by
+posting to <code>/api/build</code> with <code>"use_model": false</code>. That costs nothing.</p>
+<h2>Explore changes</h2>
+<p>The picture shows your project as connected parts. Each part shows its
+number: how much it can do per day. The part that limits your output
+is marked LIMIT.</p>
+<ul>
+<li>Tap a part to see it in detail.</li>
+<li>The "Try one change" card offers one change at a time. It shows the
+  numbers before and after, and what the next limit would be.</li>
+<li>The discovery card appears on its own when it finds something
+  surprising. For the bakery it says the shift change looks useless
+  alone but is worth +40 loaves a day with another oven. That is real
+  arithmetic from your accepted project, not a guess. Exploring it
+  creates a preview only.</li>
+<li>"Explore" makes a preview. A preview changes nothing you accepted.
+  The picture marks previews clearly, and the banner tells you the
+  original numbers are kept.</li>
+</ul>
+<h2>Accept or reject</h2>
+<ul>
+<li><strong>Accept</strong> keeps the change. The accepted version moves forward and
+  a signed receipt records it.</li>
+<li><strong>Reject</strong> throws the preview away. Your accepted work stays exactly
+  as it was. You can reject at three places, and they do different
+  things: "Discard preview" (top) throws away every unaccepted
+  preview; "Reject this change" (in the detail panel) rejects only the
+  change you are looking at; "Keep what I have" (on a choice card)
+  throws away previews and keeps your accepted baseline.</li>
+<li>Nothing is accepted unless you accept it. Dismissing the discovery
+  card changes nothing.</li>
+</ul>
+<h2>STOP</h2>
+<p>The STOP / Freeze button freezes all changes. While STOP is on, no new
+change can be proposed or accepted, and no build can run. Rejecting
+still works. Your accepted work stays exactly as it was. Click "Clear
+STOP" to resume. STOP stays directly tappable by mouse, touch, and
+keyboard at every screen width even while the discovery card is open:
+when the page footer is in view the card lifts above it instead of
+covering STOP.</p>
+<p>Use STOP when something looks wrong and you want everything to hold
+still while you look.</p>
+<h2>Replace the worker, close, reopen</h2>
+<ul>
+<li><strong>Replace worker</strong> (in Details) retires the current worker and starts
+  a new one. The old worker cannot do anything afterwards. Your
+  accepted work is unchanged, and the new worker can carry on.</li>
+<li><strong>Close</strong> shuts the project. Nothing can change while it is closed.
+  <strong>Reopen</strong> brings it back with the accepted work intact.</li>
+</ul>
+<h2>Export</h2>
+<p>The "Export app" button at the top downloads your accepted work as one
+HTML file. It runs on its own in a browser with no server and no
+internet. It contains only accepted work: previews and simulated
+numbers are never exported. Keep the file; it is your project.</p>
+<h2>What the words mean</h2>
+<ul>
+<li><strong>Accepted — saved</strong>: this is your kept work, recorded with a signed
+  receipt.</li>
+<li><strong>Preview</strong>: a change you are looking at but have not accepted.</li>
+<li><strong>RECEIVER VERIFIED</strong>: the receiver checked the signed receipt
+  against the key it pinned when the project loaded. It means the
+  record is genuine, not that the business numbers are guaranteed.</li>
+<li><strong>±7%</strong>: a stated planning margin around the numbers, not a measured
+  error.</li>
+<li><strong>Sim</strong>: a simulated preview. It shows what would happen; it changes
+  nothing until it goes through propose and accept.</li>
+<li>The Details panel ("What the labels mean") defines every label
+  in the app.</li>
+</ul>
+<h2>What Genie can and cannot do</h2>
+<p>Can:
+- Build a working single-file app from a short description.
+- Show the plan, test changes as previews, and keep only what you accept.
+- Prove what was accepted, rejected, stopped, and replaced, with
+  signed receipts you can check.
+- Replace the worker without losing accepted work.
+- Export accepted work as a standalone file.</p>
+<p>Cannot:
+- Guarantee the business numbers. Demand (320 loaves a day), shop
+  capacity (300), and prices are assumptions you or the engine stated.
+  Throughput and profit are computed from those assumptions only.
+  Genie does not measure a real bakery.
+- Build any unfamiliar domain on demand. It has been shown working for
+  a bakery, a barber booking tool, and a community fridge tracker. A
+  new domain may fail; a failed build costs a little money and keeps
+  nothing.
+- Undo something that already happened outside Genie. A receipt proves
+  what the receiver recorded. It cannot cover actions that never
+  crossed a recording boundary.
+- Revoke instantly. In-flight permissions live to their 60-second
+  lifetime. STOP freezes new changes; it does not rewind the world.
+- Run in a real browser on Safari (unverified), or as a shared service.
+  The server is loopback-only by design.</p>
+<h2>Honest limits of this release</h2>
+<ul>
+<li><strong>Discovery-first is NOT YET VERIFIED.</strong> The discovery card works and
+  its numbers are real, but no first-time user who had never seen Genie
+  has yet used it and found a useful consequence they did not ask about.
+  Until that happens, "discovery-first" is a design claim, not a proven
+  experience.</li>
+<li><strong>The Steve Jobs gate is NOT YET VERIFIED</strong> for the same reason: no
+  naive human participant has been available. The usability walkthrough
+  so far is an AI simulation, not a human test.</li>
+<li><strong>The demo video shows the UI before the last 12 fixes.</strong> The engine
+  states it shows (accepted work, rejections, STOP, replacement) are
+  unchanged, but two labels you will see in the video are old: a button
+  that read "(+174)" now reads "(output +66/day)", and Export has moved
+  from the page footer to a button at the top. The current UI is the one
+  in the app, not the video.</li>
+<li><strong>One browser test is flaky, not stale.</strong> The old <code>test_06</code> customer-journey
+  test looked for buttons the current UI no longer has; that requirement was
+  retired by recorded decision and the journey was rewritten as the new
+  <code>test_06_living_world_journey.py</code> regression (1/1). The rewritten test has
+  a known test-side race in its Reject leg (the UI diagnostic can still read
+  the old number when the test reads it, while the engine state is already
+  correct); it fails occasionally under load and passes on retry. It is a
+  test problem, not a product problem.</li>
+<li><strong>The empty-text anomaly is unexplained.</strong> A bike-repair build once
+  failed twice with empty model responses and the cause could not be
+  seen through the adapter. The adapter now logs the response
+  structure before failing, so a repeat can be diagnosed, but the
+  original failure has no explanation. If a build fails this way,
+  report it with the time and the prompt; do not retry blindly.</li>
+</ul>
+<h2>If something goes wrong</h2>
+<ul>
+<li>A build fails: check the spend line and try once more. If it fails
+  the same way twice, stop and report the prompt and the time.</li>
+<li>The page shows an error: reload. Your accepted work lives on the
+  server, not in the page.</li>
+<li>STOP is on and you cannot change anything: that is STOP working.
+  Clear it from the button at the top.</li>
+<li>You accepted something by mistake: propose the reverse change and
+  accept that. There is no undo button; acceptance is the record.</li>
+</ul>
+<h2>Cost</h2>
+<p>Every model call is logged in <code>SPEND_LEDGER.md</code> and <code>spend.json</code> in
+the project folder, with message id, tokens, and cost. The cap is
+$5.00 total. Haiku only. Model spend is tracked against the cap as
+calls are made; deterministic builds and all tests cost $0.</p>
+<p>The cap is enforced by reservation: before a model call the adapter
+reserves the call's worst-case cost against the cap and writes that
+reservation to the ledger before dispatching. If the provider's reply
+carries usage numbers, the reservation is reconciled to the actual
+cost; if usage is missing, the worst-case amount stands as the
+recorded cost rather than $0. A call the provider explicitly refuses
+costs $0. So the running total can overstate true provider spend
+when usage goes missing, but it can never understate it.</p>
+<h2>Final Product Pass (RC7 r4) — Reusable Living World &amp; Interactive Controls</h2>
+<ul>
+<li><strong>First-5-Seconds Orientation Strip (<code>#fiveSecStrip</code>)</strong>: Directly below the project title, four quiet badges state (1) what you are building, (2) what Genie created (<code>Runnable App + Living Model</code> vs <code>Verified State + Quarantined Snapshot</code>), (3) the active bottleneck and how to inspect or edit it, and (4) who controls the result (<code>You decide · Receiver Verified · STOP ready</code>).</li>
+<li><strong>Reusable Multi-Domain Living World</strong>:</li>
+<li><strong>Hearth &amp; Crumb Bakery (<code>bakery</code>)</strong>: Projects steam-injected hearth deck ovens (<code>174 loaves/day</code> baseline), shaping bench &amp; baker shift (<code>240 loaves/day</code>), cold retarder proofing rack (<code>280 loaves/day</code>), storefront counter (<code>300 loaves/day</code>), and neighborhood demand (<code>320 loaves/day</code>).</li>
+<li><strong>Sunnyvale Community Garden (<code>garden</code>)</strong>: Projects the rainwater cistern &amp; drip header (<code>105 lbs/week</code> baseline), volunteer crew (<code>135 lbs/week</code>), 4-family raised crop beds (<code>150 lbs/week</code>), cold-rinse wash shed (<code>180 lbs/week</code>), and neighborhood share demand (<code>200 lbs/week</code>), surfacing the <code>drip_mulch + weekend_workday</code> super-additive synergy (<code>+15 lbs/week</code> bonus).</li>
+<li><strong>ResidualMLP Checkpoint Optimizer (<code>neural_model</code>)</strong>: Projects locally executable neural checkpoints (<code>gen0_baseline.npz</code> <code>40.4%</code> -&gt; <code>gen3_calibrated_int8.npz</code> <code>64.2%</code>, <code>7,444B -&gt; 1,623B</code>) across <code>Spectral SVD &amp; GELU</code> (<code>52 -&gt; 92 frontier_pts</code>), <code>Curriculum Filter</code> (<code>64 -&gt; 90 frontier_pts</code>), <code>INT8 &amp; Temp Calib</code> (<code>74 -&gt; 94 frontier_pts</code>), and <code>Evaluator Holdout</code> (<code>95 frontier_pts</code>), surfacing the <code>spectral_repair + curriculum_finetune</code> synergy (<code>+10 frontier_pts</code> bonus).</li>
+<li><strong>Generic Unfamiliar Projects (<code>generic</code>)</strong>: Projects an honest operational-flow diagram (<code>Typed Inputs</code>, <code>Formula &amp; Rules</code>, <code>Active Records</code>, <code>Portable App &amp; Export</code>) from your synthesized app without pretending Genie built a bespoke 3D machine.</li>
+<li><strong>Interactive Assumption Editor (<code>⚙ Assumptions</code>)</strong>: Tap any station (such as the Oven, Staff, Ingredients, Cistern, Volunteer Crew, or Neural Stage) and click <code>⚙ Assumptions</code> in the Inspector to view and edit the underlying operating numbers. Clicking <code>Preview assumption change →</code> sends a real <code>POST /api/propose</code> to the engine, previews the updated capacities and bottleneck on the canvas while keeping your accepted baseline untouched, and lets you <strong>Accept</strong> or <strong>Reject</strong> the change. Invalid numbers (zero or negative capacities/cycle times) fail closed.</li>
+<li><strong>Non-Canvas Accessible Station View (<code>☰ Stations</code>)</strong>: Click <code>☰ Stations</code> in the toolbar (or navigate via keyboard/screen reader) to open the synchronized station list (<code>#worldFallbackPanel</code>). Every station, assumption editor, preview, Accept, Reject, and STOP control works 100% without relying on 2D canvas rendering.</li>
+<li><strong>Portable Bundle Import &amp; Worker Model Switcher (<code>Details</code>)</strong>: Open <code>Details</code> to import a portable bundle JSON (<code>Import portable bundle</code>), view runnable-artifact trust (<code>TRUSTED_LOCAL_RECEIVER</code> vs <code>UNTRUSTED_IMPORTED_HTML_QUARANTINED</code>), or switch the AI worker model (<code>Switch model</code>) while preserving accepted state byte-identically.</li>
+</ul>
+</main>
+</body>
+</html>
