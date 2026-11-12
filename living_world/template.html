@@ -7,7 +7,7 @@
 .lead{padding:0 2px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.leadTitleWrap{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.lead h2{margin:0;font-size:clamp(20px,3vw,28px);font-weight:640;letter-spacing:-.025em;color:#f3f7ff}.lead p{color:#b6c8e5;font-size:12px;margin:0}.resonanceBadge{padding:4px 10px;border-radius:999px;border:1px solid #b9a7ff66;background:#162540eb;font-size:11px;color:#dbeafe;display:inline-flex;align-items:center;gap:5px}.resonanceBadge strong{color:#d7caff}
 .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:min(100%,400px);padding:3px;border:1px solid #6e9abc33;border-radius:999px;background:#071527eb;gap:2px}.actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.tab,.pill{border:1px solid #a4c5ff33;background:#0a1931ba;color:#c3d4ec;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:580;min-height:44px}.tab{padding:6px 4px;border:0;background:transparent;white-space:nowrap;border-radius:50px;font-size:11px}.tab[aria-pressed=true]{background:linear-gradient(130deg,#1d5d73cc,#3f3973bb);color:#f0ffff;box-shadow:inset 0 0 0 1px #8ee9fd88,0 0 12px #5dd9ec28}.pill.primary{background:linear-gradient(120deg,#1f6fa8,#312c77);border-color:#68e8eaaa;color:#edffff}
 .scene{position:relative;isolation:isolate;height:clamp(520px,68svh,780px);min-height:480px;border-radius:22px;overflow:hidden;border:1px solid #71b9ff44;box-shadow:0 22px 64px #000916,inset 0 0 65px #8e9cff12;background:radial-gradient(ellipse 58% 54% at 50% 50%,#18254b 0,transparent 78%),linear-gradient(160deg,#101a34,#070d1f 56%,#0c1530)}
-/* Phase 2 — domain tint on the scene frame: the same warm architecture,
+/* Phase 2 — domain tint on the scene frame: a unified cool architecture,
    a different dusk per project kind. The canvas background() reads the
    same domain from session.graph.domainType. */
 .scene[data-domain="bakery"]{border-color:rgba(113,185,255,.5)}
@@ -40,8 +40,8 @@ canvas{width:100%;height:100%;display:block;touch-action:pan-y;cursor:pointer}
    auto-hides. Its click-to-dismiss handler stays (dead while this rule
    holds; it would work again if the rule were ever reverted). */
 .toastBar{font-size:11px;color:#aef6ec;background:#0d293be6;border:1px solid #5eead466;border-radius:10px;padding:8px 11px;display:flex;visibility:hidden;align-items:center;justify-content:space-between;gap:8px;position:fixed;left:12px;right:88px;bottom:12px;z-index:75;max-width:560px;pointer-events:none}.toastBar.show{visibility:visible}
-.inspector{display:flex;align-items:center;gap:10px;justify-content:space-between;border:1px solid #648bbc48;background:linear-gradient(125deg,#0d2038cc,#091428d8);border-radius:14px;padding:9px 13px;min-height:52px;flex-wrap:wrap}.inspStatus{flex:1 1 100%;border:1px dashed #4ade8088;background:#052e22aa;border-radius:9px;padding:6px 10px;font-size:11px;line-height:1.45;color:#b7ffd6;height:calc(2*11px*1.45 + 12px);overflow:hidden}.inspStatus.saved{border-color:#b9a7ff66;background:#2b1d0caa;color:#d9cbff}.inspTitleRow{flex:1 1 100%;display:flex;flex-direction:column;align-items:flex-start;gap:2px}.inspTitleRow .state{flex-shrink:0}.inspector>p{flex:1 1 100%}.inspector .right{flex:1 1 100%}.inspector strong{font-size:13px;font-weight:620;color:#f0f8ff}.inspector p{color:#adc3de;font-size:11px;line-height:1.36;margin:2px 0 0}.inspector .right{display:flex;align-items:center;gap:6px;flex-shrink:1;max-width:100%;flex-wrap:wrap;justify-content:flex-start}
-.state{color:var(--teal);background:#69e6c41a;border-radius:50px;padding:4px 8px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}.state.planned{color:#a8bedb;background:#b6c8fa17}.state.building,.state.tentative{color:#d7b3ff;background:#b68dff24}.state.accepted,.state.reopened{color:#d7caff;background:#b9a7ff1c}.state.rejected,.state.blocked{color:#ffa4b7;background:#ff6b6b24}.state.stopped,.state.unknown_external_effect{color:#ffd479;background:#ff6d8d29}
+.inspector{display:flex;align-items:center;gap:10px;justify-content:space-between;border:1px solid #648bbc48;background:linear-gradient(125deg,#0d2038cc,#091428d8);border-radius:14px;padding:9px 13px;min-height:52px;flex-wrap:wrap}.inspStatus{flex:1 1 100%;border:1px dashed #4ade8088;background:#052e22aa;border-radius:9px;padding:6px 10px;font-size:11px;line-height:1.45;color:#b7ffd6;height:calc(2*11px*1.45 + 12px);overflow:hidden}.inspStatus.saved{border-color:#b9a7ff66;background:#192348cc;color:#d9cbff}.inspTitleRow{flex:1 1 100%;display:flex;flex-direction:column;align-items:flex-start;gap:2px}.inspTitleRow .state{flex-shrink:0}.inspector>p{flex:1 1 100%}.inspector .right{flex:1 1 100%}.inspector strong{font-size:13px;font-weight:620;color:#f0f8ff}.inspector p{color:#adc3de;font-size:11px;line-height:1.36;margin:2px 0 0}.inspector .right{display:flex;align-items:center;gap:6px;flex-shrink:1;max-width:100%;flex-wrap:wrap;justify-content:flex-start}
+.state{color:var(--teal);background:#69e6c41a;border-radius:50px;padding:4px 8px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}.state.planned{color:#a8bedb;background:#b6c8fa17}.state.building,.state.tentative{color:#d7b3ff;background:#b68dff24}.state.accepted,.state.reopened{color:#d7caff;background:#b9a7ff1c}.state.rejected,.state.blocked{color:#ffa4b7;background:#ff6b6b24}.state.stopped,.state.unknown_external_effect{color:#ffabbf;background:#ff6d8d29}
 /* R3: the state pill no longer sits in the button row above the upgrade
    button (that grouping read as "the second oven is already accepted").
    It lives next to the node title in the left block; the full-width
@@ -230,8 +230,8 @@ canvas:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 .fallbackHead span{font-size:10.5px;color:#9fb6d6}
 .fallbackGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px}
 .fallbackStationBtn{min-height:44px;padding:8px 10px;border-radius:10px;border:1px solid #3c608c;background:#0a182e;color:#e8f3ff;text-align:left;display:flex;flex-direction:column;gap:2px;font-size:11px}
-.fallbackStationBtn[aria-current="true"]{border-color:#e7e8ff;background:#162946;box-shadow:0 0 0 1px #fff2b388}
-.fallbackStationBtn.limit{border-color:#ffcf8a99;background:#2b1c0e}
+.fallbackStationBtn[aria-current="true"]{border-color:#e7e8ff;background:#162946;box-shadow:0 0 0 1px #c7d6ff88}
+.fallbackStationBtn.limit{border-color:#b4a9ff99;background:#1b2345}
 .fallbackStationBtn.preview{border-color:#4ade8099;background:#082f25}
 @media(max-width:768px){.fiveSecStrip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.fiveSecStrip{padding:5px 8px;gap:4px}.fiveSecItem strong{font-size:10px}.assumptionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -348,7 +348,7 @@ let session=null,mode='world',playback=true,selected=null,t=0,lastTick=0,frame=0
 let liveBundle=null,bakeryPaths=null,pinnedReceiverKey=null,currentProjectId=null,proposalByBranch=new Map(),apiBusy=false;
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const COLOR={intent:'#c9d7f4',data:'#74eff5',resource:'#a9acff',logic:'#a99bff',interface:'#88caff',artifact:'#d3a4ff',research:'#9effdc',other:'#92a9e6'};
-const statusColor=s=>({accepted:'#d8cfff',reopened:'#fbbf24',ready:'#70f7dd',tentative:'#70f7dd',building:'#bc91ff',planned:'#8ba5c9',rejected:'#ff8181',blocked:'#ff8787',stopped:'#fbbf24',unknown_external_effect:'#f59e0b'})[s]||'#7c9ab7';
+const statusColor=s=>({accepted:'#d8cfff',reopened:'#b69cff',ready:'#70f7dd',tentative:'#70f7dd',building:'#bc91ff',planned:'#8ba5c9',rejected:'#ff8181',blocked:'#ff8787',stopped:'#b69cff',unknown_external_effect:'#b59cff'})[s]||'#7c9ab7';
 
 /* R3B D5 — engine error codes are not user text. A mutation refused
    while STOPPED used to surface verbatim
@@ -2390,20 +2390,20 @@ function drawAmbientEngine(){
   for(let k=2;k>=0;k--){
     const rad=ringR*(.48+k*.18);
     const fog=ctx.createRadialGradient(0,0,rad*.1,0,0,rad*1.55);
-    fog.addColorStop(0,k%2?'rgba(150,80,20,.09)':'rgba(76,44,168,.06)');
-    fog.addColorStop(.62,k%2?'rgba(150,80,20,.03)':'rgba(68,38,136,.03)');
+    fog.addColorStop(0,k%2?'rgba(60,114,190,.08)':'rgba(76,44,168,.06)');
+    fog.addColorStop(.62,k%2?'rgba(60,114,190,.03)':'rgba(68,38,136,.03)');
     fog.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=fog;ctx.beginPath();ctx.arc(0,0,rad*1.55,0,Math.PI*2);ctx.fill();
   }
   for(let k=0;k<3;k++){
     ctx.save();ctx.rotate(spins*(k%2?-.52:.85)+k*.74);
     ctx.beginPath();ctx.ellipse(0,0,ringR*(.86+k*.15),ringR*(.28+k*.055),k*.11,0,Math.PI*2);
-    ctx.lineWidth=k===0?1.2:.7;ctx.strokeStyle=k===0?'rgba(255,190,120,.16)':'rgba(255,170,110,.09)';ctx.stroke();
+    ctx.lineWidth=k===0?1.2:.7;ctx.strokeStyle=k===0?'rgba(90,193,255,.17)':'rgba(133,150,255,.10)';ctx.stroke();
     ctx.restore();
   }
   const warning=session.graph.nodes.some(n=>['unknown_external_effect','reopened','stopped'].includes(n.state))||session.verificationStatus==='UNVERIFIED_IMPORT';
   const hasPreview=session.graph.constraint_resonance?.throughput_delta!==0;
-  const hue=warning?'255,186,100':hasPreview?'74,222,128':'255,186,110';
+  const hue=warning?'255,120,150':hasPreview?'74,222,128':'105,187,255';
   for(let k=0;k<28;k++){
     const a=k*Math.PI*2/28+spins*.08;
     const r1=ringR*1.32,r2=r1+(k%3===0?8:3.5);
@@ -2415,12 +2415,12 @@ function drawAmbientEngine(){
 
 /* Phase 2 — one atmospheric scene architecture, tinted per domain from
    live engine state (session.graph.domainType). The bakery reads as a
-   warm room at dawn, the garden as green dusk over soil, the neural
+   cool blue studio for bakery, the garden as green dusk, the neural
    optimizer as a cool violet bench, generic projects as neutral navy.
    No bespoke 3D is claimed: the floor, horizon glow, and light pools
    are 2D canvas dressing around the same live projected graph. */
 const SCENE_PALETTES={
-  bakery:{sky:['#212447','#3d2a10','#0c1830'],horizon:'255,166,77',floor:'#182641',floorLine:'rgba(255,170,90,.14)',pool:'255,178,92',star:'#edf6ff'},
+  bakery:{sky:['#212447','#162a52','#0c1830'],horizon:'89,159,240',floor:'#182641',floorLine:'rgba(85,164,238,.17)',pool:'95,170,245',star:'#edf6ff'},
   garden:{sky:['#08170e','#173522','#071009'],horizon:'110,220,130',floor:'#0d1c0f',floorLine:'rgba(120,220,140,.13)',pool:'140,230,150',star:'#d8ffd8'},
   neural_model:{sky:['#100a26','#2a2052','#0a0616'],horizon:'150,120,255',floor:'#120c22',floorLine:'rgba(150,120,255,.13)',pool:'170,140,255',star:'#e0d8ff'},
   generic:{sky:['#0a1226','#12294d','#040814'],horizon:'110,200,255',floor:'#0a1120',floorLine:'rgba(110,200,255,.10)',pool:'110,200,255',star:'#c4e9ff'}
@@ -2430,7 +2430,7 @@ function background(){
   const sky=ctx.createLinearGradient(0,0,0,H);
   sky.addColorStop(0,pal.sky[0]);sky.addColorStop(.55,pal.sky[1]);sky.addColorStop(1,pal.sky[2]);
   ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-  /* Horizon glow: the warm band the stations sit in. */
+  /* Horizon glow: a cool band the stations sit in. */
   ctx.fillStyle=grad(W*.50,H*.62,Math.max(W,H)*.55,`rgba(${pal.horizon},.20)`);ctx.fillRect(0,0,W,H);
   ctx.fillStyle=grad(W*.50,H*.62,Math.max(W,H)*.30,`rgba(${pal.horizon},.16)`);ctx.fillRect(0,0,W,H);
   /* Floor: the room's ground plane. Stations stand on it, not on a grid. */
@@ -2440,7 +2440,7 @@ function background(){
   ctx.fillStyle=grad(W*.50,H,Math.max(W,H)*.45,`rgba(${pal.horizon},.10)`);ctx.fillRect(0,floorY,W,H-floorY);
   /* Light pools under each station, from last frame's cached positions
      (empty on the very first frame — they fade in with the layout). The
-     limiting station's pool burns warmer and brighter. */
+     limiting station's pool shines brighter in the discovery accent. */
   const res=session.graph.constraint_resonance;
   for(const [id,p] of positions){
     if(!p)continue;
@@ -2448,7 +2448,7 @@ function background(){
     if(!n||n.category==='intent')continue;
     const isLim=res&&res.bottleneck_id===id;
     const pr=isLim?58:44;
-    ctx.fillStyle=grad(p.x,Math.min(H-8,p.y+nodeRadius(n)+26),pr,isLim?`rgba(255,190,110,.34)`:`rgba(${pal.pool},.13)`);
+    ctx.fillStyle=grad(p.x,Math.min(H-8,p.y+nodeRadius(n)+26),pr,isLim?`rgba(179,160,255,.31)`:`rgba(${pal.pool},.13)`);
     ctx.beginPath();ctx.ellipse(p.x,Math.min(H-8,p.y+nodeRadius(n)+26),pr,11,0,0,Math.PI*2);ctx.fill();
   }
   /* Central hearth glow under the goal. */
@@ -2497,7 +2497,7 @@ function drawEdges(pos){
     const isUncertain=['unknown_external_effect','reopened','stopped'].includes(dest?.state);
     const isConflict=e.kind==='conflicts_with'||dest?.state==='rejected';
     const bright=['ready','accepted','tentative','reopened'].includes(dest?.state);
-    const color=isConflict?'255,130,130':isUncertain?'251,191,36':isBottleneckEdge?'255,207,140':isUnlockedFlow?'74,222,128':bright?'110,246,232':'106,155,215';
+    const color=isConflict?'255,130,130':isUncertain?'184,163,255':isBottleneckEdge?'159,182,255':isUnlockedFlow?'74,222,128':bright?'110,246,232':'106,155,215';
 
     const c=bezier(a.x,a.y,b.x,b.y,.5);
     ctx.save();
@@ -2542,19 +2542,19 @@ function drawCadInternalMechanism(n,r,isBottleneck,isUpgraded,sepFactor){
   const id=n.id.toLowerCase();
   const s=r*0.55;
   const stroke=isBottleneck?'#b9a7ff':isUpgraded?'#55dcff':'#93c5fd';
-  const topCol=isBottleneck?'rgba(124,74,32,0.88)':isUpgraded?'rgba(20,108,92,0.88)':'rgba(32,64,108,0.85)';
-  const sideCol=isBottleneck?'rgba(72,40,16,0.92)':isUpgraded?'rgba(12,68,58,0.92)':'rgba(18,38,68,0.92)';
+  const topCol=isBottleneck?'rgba(41,67,112,0.90)':isUpgraded?'rgba(20,108,92,0.88)':'rgba(32,64,108,0.85)';
+  const sideCol=isBottleneck?'rgba(17,35,72,0.94)':isUpgraded?'rgba(12,68,58,0.92)':'rgba(18,38,68,0.92)';
   const gap=3.4*sepFactor;
 
   if(id==='oven'||id.includes('oven')){
     // Flagship Bakery: Steam-Injected Hearth Deck Oven with glowing baking chamber & loaves
     isoPlate(0,gap*1.3,s*1.08,s*0.50,4,topCol,sideCol,stroke);
     roundRect(-s*0.75,-s*0.38,s*1.5,s*0.68,4);
-    ctx.fillStyle=isBottleneck?'rgba(245,158,11,0.38)':'rgba(56,189,248,0.28)';
+    ctx.fillStyle=isBottleneck?'rgba(159,150,255,0.38)':'rgba(56,189,248,0.28)';
     ctx.strokeStyle=stroke;ctx.lineWidth=1.1;ctx.fill();ctx.stroke();
-    // 3 Golden sourdough batards on the hearth stone
+    // 3 cool studio-lit sourdough batards on the hearth stone
     for(let k=-1;k<=1;k++){
-      ctx.fillStyle='#fbbf24';
+      ctx.fillStyle='#b69cff';
       ctx.beginPath();ctx.ellipse(k*s*0.42,-s*0.02,s*0.18,s*0.10,0,0,Math.PI*2);ctx.fill();
     }
     // Top steam manifold / twin deck when upgraded
@@ -2584,7 +2584,7 @@ function drawCadInternalMechanism(n,r,isBottleneck,isUpgraded,sepFactor){
     const bars=isUpgraded?[0.95,0.86,0.78,0.70,0.62]:[0.95,0.72,0.28,0.14,0.08];
     for(let b=0;b<5;b++){
       const bx=-s*0.56+b*s*0.28,bh=bars[b]*s*0.95;
-      ctx.fillStyle=bars[b]<0.3?'#f59e0b':'#55dcff';
+      ctx.fillStyle=bars[b]<0.3?'#b59cff':'#55dcff';
       ctx.fillRect(bx,gap*0.4-bh,s*0.19,bh);
     }
   }else if(id==='data_subspace'){
@@ -2613,7 +2613,7 @@ function drawCadInternalMechanism(n,r,isBottleneck,isUpgraded,sepFactor){
     // Shaping bench / Volunteer crew / Parallel dispatch lanes
     isoPlate(0,gap*0.9,s*1.0,s*0.48,3.5,topCol,sideCol,stroke);
     for(let k=-1;k<=1;k++){
-      ctx.fillStyle=k===0?(isBottleneck?'#fde68a':'#55dcff'):'#93c5fd';
+      ctx.fillStyle=k===0?(isBottleneck?'#d4d0ff':'#55dcff'):'#93c5fd';
       ctx.beginPath();ctx.arc(k*s*0.48,-gap*0.45,2.8,0,Math.PI*2);ctx.fill();
     }
     isoPlate(0,-gap*1.1,s*0.78,s*0.36,2.5,'rgba(110,246,230,0.22)',sideCol,stroke);
@@ -2666,7 +2666,7 @@ function drawNode(n,p,i){
       const yy=(layer+1)*sepOffset;
       roundRect(-r*1.25,-r*.60+yy,r*2.5,r*1.15,7);
       ctx.fillStyle=`rgba(${layer%2?16:28},${layer%2?40:50},${layer%2?76:90},${.30+layer*.08})`;
-      ctx.strokeStyle=isBottleneck?`rgba(255,207,145,${.32+layer*.1})`:`rgba(110,246,230,${.20+layer*.08})`;
+      ctx.strokeStyle=isBottleneck?`rgba(175,168,255,${.32+layer*.1})`:`rgba(110,246,230,${.20+layer*.08})`;
       ctx.lineWidth=1;ctx.fill();ctx.stroke();
     }
   }
@@ -2699,7 +2699,7 @@ function drawNode(n,p,i){
     ctx.setLineDash([5,3]);
   }
   ctx.lineWidth=isSelected||isBottleneck?2.6:1.35;
-  ctx.strokeStyle=isSelected?'#e7e8ff':isBottleneck?'#c4b1ff':isRecalled?'#fbbf24':isUpgraded?'#55dcff':status;
+  ctx.strokeStyle=isSelected?'#e7e8ff':isBottleneck?'#c4b1ff':isRecalled?'#b69cff':isUpgraded?'#55dcff':status;
   ctx.shadowColor=isSelected?'#dbccff':isBottleneck?'#c4b1ff':status;
   ctx.shadowBlur=isSelected?15:6+(n.state==='building'||isBottleneck?pulse*11:0);
   ctx.stroke();
@@ -2763,7 +2763,7 @@ function drawNode(n,p,i){
     ctx.font='700 7.5px Inter,-apple-system,sans-serif';
     roundRect(r*.25,-r-8,30,13,6);
     ctx.fillStyle='#243257';ctx.fill();ctx.strokeStyle='#b9a7ff';ctx.lineWidth=.9;ctx.stroke();
-    ctx.fillStyle='#fde68a';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='#d4d0ff';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(bTxt,r*.25+15,-r-1.5);
   }else if((isBranch||n.state==='tentative')&&!isRoot){
     /* Preview nodes are marked with a PREVIEW pill, not just a green
@@ -2778,8 +2778,8 @@ function drawNode(n,p,i){
     const sTxt='NEXT';
     ctx.font='700 7.5px Inter,-apple-system,sans-serif';
     roundRect(r*.28,-r-7,28,13,6);
-    ctx.fillStyle='#2e2414';ctx.fill();ctx.strokeStyle='#b9a7ff77';ctx.lineWidth=.8;ctx.stroke();
-    ctx.fillStyle='#fde68a';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='#1b2445';ctx.fill();ctx.strokeStyle='#b9a7ff77';ctx.lineWidth=.8;ctx.stroke();
+    ctx.fillStyle='#d4d0ff';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(sTxt,r*.28+14,-r-.5);
   }
 
@@ -2804,9 +2804,9 @@ function drawNode(n,p,i){
        its label half off-screen. p.x/p.y are the node's canvas position. */
     const labelShift=Math.max(4-p.x+ww/2,Math.min((W-4)-p.x-ww/2,0));
     roundRect(-ww*.5+labelShift,r+4,ww,16,8);
-    ctx.fillStyle=isBottleneck?'rgba(62,35,12,.95)':isUpgraded?'rgba(10,46,40,.95)':isRecalled?'rgba(68,44,10,.95)':'rgba(7,19,38,.93)';ctx.fill();
-    ctx.strokeStyle=isBottleneck?'rgba(255,207,145,.8)':isUpgraded?'rgba(74,222,128,.75)':isRecalled?'rgba(251,191,36,.75)':'rgba(129,190,233,.34)';ctx.lineWidth=.85;ctx.stroke();
-    ctx.fillStyle=isBottleneck?'#e9e1ff':isUpgraded?'#b7ffd6':isRecalled?'#fde68a':'#eaf4ff';
+    ctx.fillStyle=isBottleneck?'rgba(23,37,78,.95)':isUpgraded?'rgba(10,46,40,.95)':isRecalled?'rgba(31,31,76,.95)':'rgba(7,19,38,.93)';ctx.fill();
+    ctx.strokeStyle=isBottleneck?'rgba(175,168,255,.8)':isUpgraded?'rgba(74,222,128,.75)':isRecalled?'rgba(188,164,255,.75)':'rgba(129,190,233,.34)';ctx.lineWidth=.85;ctx.stroke();
+    ctx.fillStyle=isBottleneck?'#e9e1ff':isUpgraded?'#b7ffd6':isRecalled?'#d4d0ff':'#eaf4ff';
     ctx.fillText(text,labelShift,r+12.2);
   }
 
@@ -2865,7 +2865,7 @@ function drawSimObject(n,p,i){
   ctx.fillText(text,0,19);
   if(isOn||isBottleneck){
     ctx.beginPath();ctx.ellipse(0,0,r*1.08,r*.44,0,0,Math.PI*2);
-    ctx.strokeStyle=isBottleneck?'#c4b1ff':'#ffdba0';ctx.lineWidth=1.8;ctx.stroke();
+    ctx.strokeStyle=isBottleneck?'#c4b1ff':'#bbdfff';ctx.lineWidth=1.8;ctx.stroke();
   }
   ctx.restore();
 }

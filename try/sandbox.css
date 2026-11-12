@@ -1,7 +1,7 @@
 /* Genie sandbox. Warm dusk, matching the Phase 2 living world. */
 :root{
   --bg:#070d1f; --hearth:#18254b; --ink:#f3f7ff; --muted:#bdd2eb;
-  --amber:#8e9cff; --teal:#55dcff; --line:rgba(183,208,252,.22);
+  --highlight:#8e9cff; --teal:#55dcff; --line:rgba(183,208,252,.22);
   --card:#101c33; --good:#76efb2; --bad:#ff738f;
 }
 *{box-sizing:border-box}
@@ -13,8 +13,8 @@ body{
 }
 main{max-width:860px;margin:0 auto;padding:12px 14px 40px}
 #sandboxBanner{
-  margin:0 0 14px; padding:12px; border:2px solid var(--amber); border-radius:10px;
-  background:#212447; font-size:15px;
+  margin:0 0 14px; padding:12px; border:2px solid var(--highlight); border-radius:10px;
+  background:#182748; font-size:15px;
 }
 .lead h1{margin:6px 0;font-size:26px;line-height:1.2}
 .lead p{margin:6px 0}
@@ -24,7 +24,7 @@ main{max-width:860px;margin:0 auto;padding:12px 14px 40px}
   min-height:44px;padding:10px 16px;border-radius:10px;cursor:pointer;
   border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:15px;font-weight:600;
 }
-#domainTabs button[aria-pressed="true"]{border-color:var(--amber);background:#212447}
+#domainTabs button[aria-pressed="true"]{border-color:var(--highlight);background:#182748}
 .strip{
   border:1px solid var(--line);border-radius:10px;padding:10px 12px;
   background:rgba(20,26,44,.85);margin:0 0 12px;
@@ -37,7 +37,7 @@ main{max-width:860px;margin:0 auto;padding:12px 14px 40px}
 }
 .stopBanner{
   margin:0 0 12px;padding:12px;border:2px solid var(--bad);border-radius:10px;
-  background:#2d1734;font-size:15px;
+  background:#271c3b;font-size:15px;
 }
 h2{font-size:19px;margin:20px 0 8px}
 #stationList{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
@@ -45,11 +45,11 @@ h2{font-size:19px;margin:20px 0 8px}
   min-height:44px;text-align:left;padding:12px;border-radius:10px;cursor:pointer;
   border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:15px;
 }
-.station:hover{border-color:var(--amber)}
-.station[aria-pressed="true"]{border-color:var(--amber);background:#212447}
+.station:hover{border-color:var(--highlight)}
+.station[aria-pressed="true"]{border-color:var(--highlight);background:#182748}
 .station strong{display:block;font-size:16px}
-.station .cap{color:var(--amber);font-weight:700}
-.station .limitTag{color:var(--amber);font-weight:700}
+.station .cap{color:var(--highlight);font-weight:700}
+.station .limitTag{color:var(--highlight);font-weight:700}
 .inspector{
   border:1px solid var(--line);border-radius:10px;padding:12px;
   background:rgba(20,26,44,.85);margin-top:12px;
@@ -70,7 +70,7 @@ h2{font-size:19px;margin:20px 0 8px}
 .option h3{margin:0 0 4px;font-size:16px}
 .option p{margin:4px 0}
 .option .kind{color:var(--teal);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
-.decisions{border-top:2px solid var(--amber);margin-top:20px;padding-top:6px}
+.decisions{border-top:2px solid var(--highlight);margin-top:20px;padding-top:6px}
 .decisionRow{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 button{
   min-height:44px;padding:10px 16px;border-radius:10px;cursor:pointer;
@@ -79,7 +79,7 @@ button{
 button:disabled{opacity:.45;cursor:not-allowed}
 #acceptBtn{border-color:var(--good)}
 #rejectBtn{border-color:var(--bad)}
-#stopBtn{border:2px solid var(--bad);background:#2d1734;min-width:200px}
+#stopBtn{border:2px solid var(--bad);background:#271c3b;min-width:200px}
 #logList{padding-left:20px}
 #logList li{margin:6px 0;font-size:14px}
 footer{margin-top:28px;border-top:1px solid var(--line);padding-top:12px;color:var(--muted);font-size:14px}
@@ -94,10 +94,10 @@ a{color:var(--teal)}
 }
 
 /* Studio visual refinement — clearer first action, no behavior change. */
-:root{--bg:#070d1f;--card:#101b31;--ink:#f4f8ff;--muted:#b4c5df;--teal:#5bddff;--amber:#94a5ff;--good:#76efb2;--bad:#ff738f;--line:rgba(165,192,243,.20)}
+:root{--bg:#070d1f;--card:#101b31;--ink:#f4f8ff;--muted:#b4c5df;--teal:#5bddff;--highlight:#94a5ff;--good:#76efb2;--bad:#ff738f;--line:rgba(165,192,243,.20)}
 body{background:radial-gradient(ellipse 100% 36% at 50% -10%,rgba(41,91,157,.29),transparent 80%),linear-gradient(180deg,#080e20,#0e1830 56%,#080e20)}
 main{max-width:900px;padding-top:14px}
-#sandboxBanner{border:1px solid rgba(148,165,255,.60);border-left:3px solid var(--amber);background:rgba(38,43,85,.52);border-radius:13px;padding:11px 13px;font-size:14px}
+#sandboxBanner{border:1px solid rgba(148,165,255,.60);border-left:3px solid var(--highlight);background:rgba(38,43,85,.52);border-radius:13px;padding:11px 13px;font-size:14px}
 .lead h1{font-size:clamp(26px,5vw,35px);letter-spacing:-.035em;line-height:1.12;margin:14px 0 10px}
 .lead p{margin:6px 0;max-width:720px}
 .scope{margin-top:8px!important}
@@ -108,5 +108,5 @@ main{max-width:900px;padding-top:14px}
 .station[aria-pressed="true"]{background:rgba(65,98,170,.20)}
 .inspector,.strip{background:rgba(16,27,49,.82)}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
-#stopBtn{border-color:var(--bad);background:#2a1b32}
+#stopBtn{border-color:var(--bad);background:#211f45}
 @media(max-width:480px){.lead h1{font-size:27px}#domainTabs{gap:7px}#domainTabs button{padding:10px 13px}}
