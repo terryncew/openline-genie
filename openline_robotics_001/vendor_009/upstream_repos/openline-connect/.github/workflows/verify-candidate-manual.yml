@@ -1,0 +1,29 @@
+name: Verify local OpenLine Connect RC candidate (manual only)
+on:
+  workflow_dispatch:
+jobs:
+  clean_install:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install exact dependency and official SDK
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'cryptography==50.0.2' 'mcp>=2,<3' 'setuptools>=68' wheel
+          python -m pip install .
+          python -m pip check
+          python -c 'from importlib.metadata import version; assert version("cryptography")=="50.0.2"; print("cryptography",version("cryptography"));print("mcp",version("mcp"))'
+      - name: Public-export security tests
+        run: python -m unittest discover -s tests -v
+      - name: Installed CLI local demo
+        run: |
+          cd /tmp
+          openline-connect demo
+      - name: Official MCP client-server stdio handshake and tool calls
+        run: python scripts/official_mcp_smoke.py

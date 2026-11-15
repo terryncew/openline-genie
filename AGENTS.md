@@ -9,20 +9,22 @@ OpenLine Genie is local-first software. It runs on the user's own computer, in t
 ## Layout
 
 - **Repo root** — OpenLine Genie v0.7.1 (the original product). `genie_server.py`, `genie_engine.py`, `core/`, `tests/`, `try/`. The v0.7.1 release (tag `v0.7.1`) is immutable; do not rewrite its history or move its tag. The product site (Try/Get/How/See) lives on the `gh-pages` branch; do not touch that branch for code changes.
-- **`applications/`** — Six community applications, release v1.0.0-rc1 (prerelease). This is where most application work happens. It is a self-contained tree: its own `genie_server.py` launcher, `genie_engine.py`, `core/`, `openline_009_living_project.py`, `tests/`, `examples/`, `INSTALL.md`, `README.md`, `RELEASE_NOTES.md`, `LICENSE`, and `SHA256SUMS.txt` (268 entries; verify with `sha256sum -c SHA256SUMS.txt` from inside `applications/`).
-- **`applications/openline_five_products.html`** — the six-tab launcher page served at `/products`. Tabs: `energy`, `advocate`, `commons`, `science`, `civic`, `neighborhood`.
+- **`applications/`** — Six community applications, releases v1.0.0-rc1 and v1.1.0-rc1 (prereleases). This is where most application work happens. It is a self-contained tree: its own `genie_server.py` launcher, `genie_engine.py`, `core/`, `openline_009_living_project.py`, `tests/`, `examples/`, `INSTALL.md`, `README.md`, `RELEASE_NOTES.md`, `LICENSE`, and `SHA256SUMS.txt` (271 entries; verify with `sha256sum -c SHA256SUMS.txt` from inside `applications/`).
+- **`openline_robotics_001/`** — Robotics Studio (v1.1.0-rc1), a seventh application. Self-contained package with its own loopback-only server (`robotics_studio_server.py`, port 8796), engine, physics simulator, and tests. Launched with root `run_robotics_studio.sh`. Simulation only; physical hardware is unverified.
+- **`applications/openline_five_products.html`** — the six-tab launcher page served at `/products`. Tabs: `energy`, `advocate`, `commons`, `science`, `civic`, `neighborhood`. It also links to the Robotics Studio (route `/robotics`, which only links to the studio server; it does not proxy API calls or share Genie state).
 - **`applications/openline_neighborhood.html`** — the Neighborhood (ClearCovenant) page, served at `/neighborhood` and `/clearcovenant`.
 
-## The six applications
+## The seven applications
 
 | Application | Plain description | Tab / route | Example |
 |---|---|---|---|
 | Energy Commons | Compare community energy options and costs. | `energy` | `applications/examples/sample_1_energy_commons.json` |
-| Advocate | Understand decisions, organize evidence, and prepare challenges. | `advocate` | `applications/examples/sample_2_advocate.json` |
+| Advocate | Understand decisions, organize evidence, and prepare challenges. Case Packets preserve institutional decisions, organize evidence, and transfer verifiable case records between people or AI assistants. | `advocate` | `applications/examples/sample_2_advocate.json` |
 | Capability Commons | Build and share reusable community projects. | `commons` | `applications/examples/sample_3_capability_commons.json` |
 | Science | Explore hypotheses and preserve reproducible research. | `science` | `applications/examples/sample_4_science.json` |
 | Civic | Compare public projects and examine the evidence behind decisions. | `civic` | `applications/examples/sample_5_civic.json` |
 | Neighborhood (ClearCovenant) | Understand HOA rules, resolve disputes, compare costs, and manage community records. | `neighborhood` / `/neighborhood` | `applications/SAMPLE_HOA_CONFLICT_SCENARIOS_12_CASES.md` |
+| Robotics Studio | Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls. Simulation only. | `/robotics` (links to `http://127.0.0.1:8796/robotics`) | `openline_robotics_001/examples/` |
 
 ## Entry points
 
@@ -34,7 +36,7 @@ OpenLine Genie is local-first software. It runs on the user's own computer, in t
   ```
   Then open `http://127.0.0.1:8795/products`. Flags: `--host 127.0.0.1` (loopback only; any other host is refused), `--port 8795`, `--state-dir ./genie-state` (where keys and the SQLite database live; without it, state does not persist across restarts), `--no-model` (forces deterministic mode), `--enable-paid-model` (OFF by default; only with an explicit opt-in and the local $5.00 spend cap).
 - **Verify the install:** `python3 launch_genie.py --verify-only` (inside `applications/`).
-- **Key HTTP routes:** `GET /products` (six-tab launcher), `GET /neighborhood`, `GET /api/status`, `GET /api/neighborhood/state`, `GET /api/neighborhood/dossier?workspace={homeowner|board}&format=json`, `POST /api/neighborhood/stage`, `POST /api/neighborhood/action`, `POST /api/build`.
+- **Key HTTP routes:** `GET /products` (six-tab launcher), `GET /neighborhood`, `GET /robotics` (launcher link to the studio), `GET /api/status`, `GET /api/neighborhood/state`, `GET /api/neighborhood/dossier?workspace={homeowner|board}&format=json`, `POST /api/neighborhood/stage`, `POST /api/neighborhood/action`, `GET /api/advocate/case_packets`, `GET /api/advocate/case_packet/export`, `POST /api/advocate/case_packet/stage`, `POST /api/advocate/case_packet/import`, `POST /api/build`. The Robotics Studio runs its own server on port 8796: `GET /robotics`, `POST /api/robotics/simulate`, `POST /api/robotics/export` (see `openline_robotics_001/README.md`).
 
 ## How to run the tests
 
@@ -45,7 +47,7 @@ python3 -m unittest discover -s tests -p "test_*.py"
 node --test tests/test_rc6_projection.mjs
 ```
 
-Measured 2026-11-15 (Python 3.12.3, Linux, no Chrome/Chromium installed): 184 Python tests ran, 174 passed, 5 errors, 1 failure, 4 skipped; Node 11 passed, 0 failed. The 5 errors are 2 tests that check external archive files not included in this package and 3 browser tests that cannot run without Chrome. The 1 failure is the Neighborhood browser journey test, which needs a Chromium binary. The 4 skips are browser tests that skip when Chromium is absent. Those are NOT VERIFIED here, never passed. Set `NO_PROXY=localhost,127.0.0.1,127.0.0.2,::1` when running the suite (one test module binds `127.0.0.2`, and the sandbox egress proxy otherwise intercepts it). The suite takes about 50 seconds.
+Measured 2026-11-15 (Python 3.12.3, Linux, no Chrome/Chromium installed) on the v1.1.0-rc1 tree: 186 Python tests ran, 175 passed, 1 failure, 5 errors, 5 skipped; Node 11 passed, 0 failed; Robotics 6 passed, 0 failed (`python3 -m unittest openline_robotics_001.tests.test_robotics_breakthrough_001` from the repo root, needs `onnxruntime`). The 5 errors are 2 tests that check external archive files not included in this package and 3 browser tests that cannot run without Chrome. The 1 failure is the Neighborhood browser journey test, which needs a Chromium binary. The 5 skips are browser tests that skip when Chromium is absent (including the Case Packet workbench browser test). Those are NOT VERIFIED here, never passed. Set `NO_PROXY=localhost,127.0.0.1,127.0.0.2,::1` when running the suite (one test module binds `127.0.0.2`, and the sandbox egress proxy otherwise intercepts it). The applications suite takes about 50 seconds; the robotics suite about 50 seconds.
 
 ## Safety boundaries (do not weaken these)
 
@@ -58,7 +60,7 @@ Measured 2026-11-15 (Python 3.12.3, Linux, no Chrome/Chromium installed): 184 Py
 
 ## Implemented versus proposed
 
-**Implemented:** all six applications with working primary workflows; human approval, rejection, STOP, Decision Recall, and accepted-state preservation; signed receipts for accepted/refused actions; export/import round-trips (portable JSON bundle + standalone HTML); the loopback-only server with Host/Origin checks; the deterministic local synthesizer ($0 default).
+**Implemented:** all seven applications with working primary workflows; Advocate Case Packets (export/import, Decision Recall, tamper rejection, offline-readable dossiers); Robotics Studio simulation for two robots with capability transfer, STOP, authorization refusal, and corrupted-import rejection; human approval, rejection, STOP, Decision Recall, and accepted-state preservation; signed receipts for accepted/refused actions; export/import round-trips (portable JSON bundle + standalone HTML); the loopback-only servers with Host/Origin checks; the deterministic local synthesizer ($0 default).
 
 **Proposed or not implemented:** paid-model dispatch (opt-in only, $5 cap, not tested here); multi-household separation in Neighborhood (explicitly NOT supported); a hosted consumer service (this is a local Python application, not a hosted service); browser end-to-end tests (need Chrome/Chromium, not verified here); macOS/Windows installs and iPhone Safari (not tested).
 

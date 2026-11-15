@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trial 3 (IL-11-0) — Mock Revocation Race Demonstrator</title><style>
+body{font-family:system-ui,sans-serif;background:#090d16;color:#f1f5f9;margin:0;padding:24px}main{max-width:900px;margin:auto}.notice{background:#1e1b4b;border:1px solid #818cf8;color:#c7d2fe;padding:12px;border-radius:8px;font-weight:700;font-size:13px}select{background:#1e293b;color:white;border:1px solid #475569;padding:9px 12px;border-radius:8px;font-size:14px}.verdict{padding:14px;border-radius:10px;margin:16px 0;font-weight:700}.no-commit{background:#064e3b;color:#6ee7b7;border:1px solid #10b981}.commit{background:#1e3a8a;color:#93c5fd;border:1px solid #3b82f6}ol{background:#111827;padding:18px 34px;border-radius:10px;line-height:1.7}
+</style></head><body><main>
+<div class="notice" id="boundary">MOCK FIXTURE TRACE ONLY — PROTOTYPE COVERAGE IS BOUNDED; NO LIVE ENFORCEMENT OR PRODUCTION CONTAINMENT CLAIMS</div>
+<h1>Local Authorization Test-Pack Demonstrator (IL-11-0 Prototype)</h1>
+<label>Select fixture trace: <select id="trace-select">
+ <option value="stop_first">STOP-first trace (seq 3 STOP before seq 4 final gate)</option>
+ <option value="commit_first">Commit-first trace (seq 3 commit before seq 4 STOP)</option>
+ <option value="stale_buggy_no_final_recheck">Stale-permission bug reproducer (preliminary check only)</option>
+</select></label>
+<div id="verdict" class="verdict"></div>
+<h2>Fixture Sequence Timeline</h2>
+<ol id="timeline"></ol>
+<script type="module">
+import {FIXTURE_TRACES, evaluateTrace} from './logic.mjs';
+function render() {
+ const key = document.getElementById('trace-select').value;
+ const trace = FIXTURE_TRACES[key];
+ const res = evaluateTrace(trace);
+ const v = document.getElementById('verdict');
+ v.className = `verdict ${res.protected_commit ? 'commit' : 'no-commit'}`;
+ v.textContent = `Trace: ${res.trace_id} | Protected Commit: ${res.protected_commit ? 'YES (seq ' + res.commit_seq + ' < stop_seq ' + res.stop_seq + ')' : 'NO (refused after STOP at seq ' + res.stop_seq + ')'} | Verdict: ${res.verdict}`;
+ const ol = document.getElementById('timeline');
+ ol.textContent = '';
+ for (const ev of trace.events) {
+  const li = document.createElement('li');
+  li.textContent = `[seq=${ev.seq}] ${ev.actor} -> ${ev.kind} ${ev.reason ? '(' + ev.reason + ')' : ''}`;
+  ol.appendChild(li);
+ }
+}
+document.getElementById('trace-select').addEventListener('change', render);
+render();
+</script></main></body></html>

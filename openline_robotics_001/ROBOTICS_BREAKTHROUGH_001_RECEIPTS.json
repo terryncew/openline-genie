@@ -1,0 +1,466 @@
+{
+  "unfamiliar_dogfood": {
+    "total_challenges": 6,
+    "controller_scoreboard": {
+      "B0_NOMINAL": {
+        "tasks_succeeded": 0,
+        "success_rate_pct": 0.0,
+        "total_constraint_violations": 3
+      },
+      "B1_HIGH_GAIN_PID_TWISTMUX": {
+        "tasks_succeeded": 0,
+        "success_rate_pct": 0.0,
+        "total_constraint_violations": 1112
+      },
+      "B2_DOMAIN_RANDOMIZED_ONNX": {
+        "tasks_succeeded": 0,
+        "success_rate_pct": 0.0,
+        "total_constraint_violations": 3
+      },
+      "C1_NAIVE_UNCOMPENSATED_DOB": {
+        "tasks_succeeded": 0,
+        "success_rate_pct": 0.0,
+        "total_constraint_violations": 1096
+      },
+      "C2_PR_CRDO_INVENTION": {
+        "tasks_succeeded": 6,
+        "success_rate_pct": 100.0,
+        "total_constraint_violations": 0
+      }
+    },
+    "challenges": [
+      {
+        "challenge_id": "UNFAMILIAR_01_DUCK_SLIPPERY_INCLINE_AND_DELAY",
+        "robot_id": "open_duck_mini_v2",
+        "description": "Low-traction surface (mu=0.58) + 6.5 deg slope + 38ms UART delay + 0.20kg pack",
+        "binding_constraint_diagnosed": "stiction_and_backlash",
+        "evaluation_calls_spent": 21,
+        "compute_wall_ms": 1083.71,
+        "used_cross_robot_transfer": false,
+        "controllers": {
+          "B0_NOMINAL": {
+            "task_success": false,
+            "viability_slack": -0.05,
+            "violations": 1,
+            "energy_joules": 8.854,
+            "max_torque_nm": 1.6431,
+            "primary_metric": 0.4894
+          },
+          "B1_HIGH_GAIN_PID_TWISTMUX": {
+            "task_success": false,
+            "viability_slack": -0.2488,
+            "violations": 141,
+            "energy_joules": 22.0403,
+            "max_torque_nm": 1.7088,
+            "primary_metric": 0.1912
+          },
+          "B2_DOMAIN_RANDOMIZED_ONNX": {
+            "task_success": false,
+            "viability_slack": -0.1107,
+            "violations": 1,
+            "energy_joules": 5.1192,
+            "max_torque_nm": 1.6431,
+            "primary_metric": 0.3293
+          },
+          "C1_NAIVE_UNCOMPENSATED_DOB": {
+            "task_success": false,
+            "viability_slack": -0.276,
+            "violations": 202,
+            "energy_joules": 25.7034,
+            "max_torque_nm": 1.7091,
+            "primary_metric": 0.164
+          },
+          "C2_PR_CRDO_INVENTION": {
+            "task_success": true,
+            "viability_slack": 0.2001,
+            "violations": 0,
+            "energy_joules": 13.5908,
+            "max_torque_nm": 1.7002,
+            "primary_metric": 0.6401
+          }
+        },
+        "certification_disposition": "ADOPT_CERTIFIED_DISCOVERY"
+      },
+      {
+        "challenge_id": "UNFAMILIAR_02_DUCK_ASYMMETRIC_STICTION_GUST_AND_CURB",
+        "robot_id": "open_duck_mini_v2",
+        "description": "High gear stiction (0.25 Nm) + 1.45N impulse gust + 2.1cm step riser + 42ms delay",
+        "binding_constraint_diagnosed": "terrain_or_obstacle",
+        "evaluation_calls_spent": 21,
+        "compute_wall_ms": 1073.63,
+        "used_cross_robot_transfer": false,
+        "controllers": {
+          "B0_NOMINAL": {
+            "task_success": false,
+            "viability_slack": -0.05,
+            "violations": 1,
+            "energy_joules": 8.8647,
+            "max_torque_nm": 1.5706,
+            "primary_metric": 0.5117
+          },
+          "B1_HIGH_GAIN_PID_TWISTMUX": {
+            "task_success": false,
+            "viability_slack": -0.2098,
+            "violations": 115,
+            "energy_joules": 20.4002,
+            "max_torque_nm": 1.6558,
+            "primary_metric": 0.2382
+          },
+          "B2_DOMAIN_RANDOMIZED_ONNX": {
+            "task_success": false,
+            "viability_slack": -0.097,
+            "violations": 1,
+            "energy_joules": 5.0687,
+            "max_torque_nm": 1.5706,
+            "primary_metric": 0.351
+          },
+          "C1_NAIVE_UNCOMPENSATED_DOB": {
+            "task_success": false,
+            "viability_slack": -0.2532,
+            "violations": 175,
+            "energy_joules": 25.5546,
+            "max_torque_nm": 1.6586,
+            "primary_metric": 0.1948
+          },
+          "C2_PR_CRDO_INVENTION": {
+            "task_success": true,
+            "viability_slack": 0.2494,
+            "violations": 0,
+            "energy_joules": 14.8383,
+            "max_torque_nm": 1.648,
+            "primary_metric": 0.6974
+          }
+        },
+        "certification_disposition": "ADOPT_CERTIFIED_DISCOVERY"
+      },
+      {
+        "challenge_id": "UNFAMILIAR_03_DUCK_BNO055_I2C_GLITCH_AND_VOLTAGE_SAG",
+        "robot_id": "open_duck_mini_v2",
+        "description": "16% BNO055 I2C clock-stretch packet spikes + +0.045 rad pitch bias + 6.3V battery sag",
+        "binding_constraint_diagnosed": "terrain_or_obstacle",
+        "evaluation_calls_spent": 21,
+        "compute_wall_ms": 1081.26,
+        "used_cross_robot_transfer": false,
+        "controllers": {
+          "B0_NOMINAL": {
+            "task_success": false,
+            "viability_slack": -0.05,
+            "violations": 1,
+            "energy_joules": 9.7326,
+            "max_torque_nm": 1.5835,
+            "primary_metric": 0.5364
+          },
+          "B1_HIGH_GAIN_PID_TWISTMUX": {
+            "task_success": false,
+            "viability_slack": -0.2665,
+            "violations": 153,
+            "energy_joules": 22.4709,
+            "max_torque_nm": 1.5814,
+            "primary_metric": 0.1815
+          },
+          "B2_DOMAIN_RANDOMIZED_ONNX": {
+            "task_success": false,
+            "viability_slack": -0.0699,
+            "violations": 1,
+            "energy_joules": 5.9567,
+            "max_torque_nm": 1.5835,
+            "primary_metric": 0.3781
+          },
+          "C1_NAIVE_UNCOMPENSATED_DOB": {
+            "task_success": false,
+            "viability_slack": -0.2693,
+            "violations": 168,
+            "energy_joules": 29.1699,
+            "max_torque_nm": 1.5835,
+            "primary_metric": 0.1787
+          },
+          "C2_PR_CRDO_INVENTION": {
+            "task_success": true,
+            "viability_slack": 0.2669,
+            "violations": 0,
+            "energy_joules": 21.3974,
+            "max_torque_nm": 1.5732,
+            "primary_metric": 0.7149
+          }
+        },
+        "certification_disposition": "ADOPT_CERTIFIED_DISCOVERY"
+      },
+      {
+        "challenge_id": "UNFAMILIAR_04_SO101_HEAVY_OFFCENTER_VALVE_PLACEMENT",
+        "robot_id": "lerobot_so101_arm",
+        "description": "Unseen off-center pick/place coordinates + 0.38kg heavy brass valve + 46ms UART delay",
+        "binding_constraint_diagnosed": "stiction_and_backlash",
+        "evaluation_calls_spent": 21,
+        "compute_wall_ms": 744.37,
+        "used_cross_robot_transfer": false,
+        "controllers": {
+          "B0_NOMINAL": {
+            "task_success": false,
+            "viability_slack": -0.0077,
+            "violations": 0,
+            "energy_joules": 3.342,
+            "max_torque_nm": 1.6086,
+            "primary_metric": 0.0357
+          },
+          "B1_HIGH_GAIN_PID_TWISTMUX": {
+            "task_success": false,
+            "viability_slack": -0.2432,
+            "violations": 244,
+            "energy_joules": 19.7847,
+            "max_torque_nm": 1.6086,
+            "primary_metric": 0.2712
+          },
+          "B2_DOMAIN_RANDOMIZED_ONNX": {
+            "task_success": false,
+            "viability_slack": -0.0077,
+            "violations": 0,
+            "energy_joules": 3.342,
+            "max_torque_nm": 1.6086,
+            "primary_metric": 0.0357
+          },
+          "C1_NAIVE_UNCOMPENSATED_DOB": {
+            "task_success": false,
+            "viability_slack": -0.2142,
+            "violations": 185,
+            "energy_joules": 25.6153,
+            "max_torque_nm": 1.6086,
+            "primary_metric": 0.2422
+          },
+          "C2_PR_CRDO_INVENTION": {
+            "task_success": true,
+            "viability_slack": 0.0125,
+            "violations": 0,
+            "energy_joules": 6.4994,
+            "max_torque_nm": 1.6079,
+            "primary_metric": 0.0017
+          }
+        },
+        "certification_disposition": "ADOPT_CERTIFIED_DISCOVERY"
+      },
+      {
+        "challenge_id": "UNFAMILIAR_05_SO101_INTRUDING_PIPE_OBSTACLE_AND_BACKLASH",
+        "robot_id": "lerobot_so101_arm",
+        "description": "Intruding pipe obstacle (r=0.048m) across nominal path + 0.022 rad gear backlash + 42ms delay",
+        "binding_constraint_diagnosed": "terrain_or_obstacle",
+        "evaluation_calls_spent": 21,
+        "compute_wall_ms": 744.66,
+        "used_cross_robot_transfer": false,
+        "controllers": {
+          "B0_NOMINAL": {
+            "task_success": false,
+            "viability_slack": -0.0042,
+            "violations": 0,
+            "energy_joules": 2.7352,
+            "max_torque_nm": 1.6589,
+            "primary_metric": 0.0322
+          },
+          "B1_HIGH_GAIN_PID_TWISTMUX": {
+            "task_success": false,
+            "viability_slack": -0.1899,
+            "violations": 233,
+            "energy_joules": 20.856,
+            "max_torque_nm": 1.6589,
+            "primary_metric": 0.2179
+          },
+          "B2_DOMAIN_RANDOMIZED_ONNX": {
+            "task_success": false,
+            "viability_slack": -0.0042,
+            "violations": 0,
+            "energy_joules": 2.7352,
+            "max_torque_nm": 1.6589,
+            "primary_metric": 0.0322
+          },
+          "C1_NAIVE_UNCOMPENSATED_DOB": {
+            "task_success": false,
+            "viability_slack": -0.475,
+            "violations": 185,
+            "energy_joules": 29.1909,
+            "max_torque_nm": 1.6589,
+            "primary_metric": 0.503
+          },
+          "C2_PR_CRDO_INVENTION": {
+            "task_success": true,
+            "viability_slack": 0.0065,
+            "violations": 0,
+            "energy_joules": 6.6291,
+            "max_torque_nm": 1.6564,
+            "primary_metric": 0.0007
+          }
+        },
+        "certification_disposition": "ADOPT_CERTIFIED_DISCOVERY"
+      },
+      {
+        "challenge_id": "UNFAMILIAR_06_CROSS_ROBOT_TRANSFER_UNDER_COMPOUND_STRESS",
+        "robot_id": "lerobot_so101_arm",
+        "description": "Cross-robot skill transfer from Open Duck Mini v2 (Challenge 02) to LeRobot SO-101 under compound stress",
+        "binding_constraint_diagnosed": "uart_delay_ms",
+        "evaluation_calls_spent": 8,
+        "compute_wall_ms": 438.85,
+        "used_cross_robot_transfer": true,
+        "controllers": {
+          "B0_NOMINAL": {
+            "task_success": false,
+            "viability_slack": -0.0082,
+            "violations": 0,
+            "energy_joules": 2.8741,
+            "max_torque_nm": 1.6338,
+            "primary_metric": 0.0362
+          },
+          "B1_HIGH_GAIN_PID_TWISTMUX": {
+            "task_success": false,
+            "viability_slack": -0.2308,
+            "violations": 226,
+            "energy_joules": 19.1394,
+            "max_torque_nm": 1.6338,
+            "primary_metric": 0.2588
+          },
+          "B2_DOMAIN_RANDOMIZED_ONNX": {
+            "task_success": false,
+            "viability_slack": -0.0082,
+            "violations": 0,
+            "energy_joules": 2.8741,
+            "max_torque_nm": 1.6338,
+            "primary_metric": 0.0362
+          },
+          "C1_NAIVE_UNCOMPENSATED_DOB": {
+            "task_success": false,
+            "viability_slack": -0.3196,
+            "violations": 181,
+            "energy_joules": 26.4903,
+            "max_torque_nm": 1.6338,
+            "primary_metric": 0.3476
+          },
+          "C2_PR_CRDO_INVENTION": {
+            "task_success": true,
+            "viability_slack": 0.0081,
+            "violations": 0,
+            "energy_joules": 6.9871,
+            "max_torque_nm": 1.6318,
+            "primary_metric": 0.0077
+          }
+        },
+        "certification_disposition": "ADOPT_CERTIFIED_DISCOVERY"
+      }
+    ],
+    "resilience_and_fault_tests": {
+      "sigkill_worker_interruption_and_recovery": {
+        "exit_code": -9,
+        "accepted_sha256_preserved_exact": true,
+        "uncommitted_draft_fenced": true,
+        "replacement_worker": "worker-b"
+      },
+      "emergency_stop_and_latch": {
+        "mid_trajectory_stopped": true,
+        "distance_frozen_at_m": 0.1923,
+        "engine_mutation_blocked_while_stopped": true,
+        "hardware_adapter_blocked_while_stopped": true
+      },
+      "decision_recall_on_calibration_change": {
+        "recall_standing_after_change": "REOPEN",
+        "accepted_sha256_preserved": true,
+        "hardware_dispatch_refused_while_reopened": true,
+        "recall_id": "recall-88a3a08311"
+      },
+      "corrupted_bundle_and_clean_install_transfer": {
+        "tampered_capsule_rejected_fail_closed": true,
+        "clean_install_restore_mode": "CLEAN_INSTALL_PROJECT_RESTORE",
+        "cross_robot_transfer_evals_spent": 8,
+        "cross_robot_transfer_accepted_version": 3
+      }
+    },
+    "total_suite_wall_ms": 10790.66
+  },
+  "independent_acceptance": {
+    "overall_acceptance_passed": true,
+    "verdict_simulation_and_software": "QUALIFIED_FOR_PUBLICATION_CANDIDATE (HOLD_PENDING_FOUNDER_SIGN_OFF)",
+    "verdict_physical_hardware": "HOLD_UNVERIFIED_ON_PHYSICAL_HARDWARE (ADAPTER_VERIFIED_DRY_RUN)",
+    "gates": {
+      "gate_1_working_source_and_clean_install": {
+        "passed": true,
+        "clean_install_projects": [
+          "proj-lerobot-so101-arm",
+          "proj-open-duck-mini-v2"
+        ],
+        "zero_oracle_leakage_enforced": true
+      },
+      "gate_2_actual_simulator_and_onnx_execution": {
+        "passed": true,
+        "duck_energy_joules": 9.6017,
+        "arm_energy_joules": 2.8244,
+        "duck_pitch_std_rad": 0.01172,
+        "arm_ee_z_std_m": 0.03772,
+        "onnx_runtime_provider": "CPUExecutionProvider"
+      },
+      "gate_3_reproducible_results": {
+        "passed": true,
+        "run_1_sha256": "e7813dbe0123f5757b1a879e83a325b31e6300a85895bd12c364a8a4157fe1b8",
+        "run_2_sha256": "e7813dbe0123f5757b1a879e83a325b31e6300a85895bd12c364a8a4157fe1b8"
+      },
+      "gate_4_independent_export_import_and_transfer": {
+        "passed": true,
+        "source_robot": "open_duck_mini_v2",
+        "target_robot": "lerobot_so101_arm",
+        "transfer_evaluations_spent": 8,
+        "de_novo_evaluations_baseline": 21,
+        "evaluation_reduction_ratio": 2.62,
+        "transferred_arm_verified": true,
+        "accepted_version": 3
+      },
+      "gate_5_authorization_watchdog_and_estop": {
+        "passed": true,
+        "stale_command_refused": true,
+        "unauthorized_command_refused": true,
+        "manufacturer_bypass_refused": true,
+        "watchdog_timeout_safe_hold": true,
+        "local_estop_latch_refused": true
+      },
+      "gate_6_honest_limitations_and_parity_disclosure": {
+        "passed": true,
+        "mild_regime_conventional_parity": {
+          "nominal_success": true,
+          "pr_crdo_success": true,
+          "verdict": "PARITY (Under <=10ms serial delay and flat terrain, nominal Placo/IK controller succeeds without PR-CRDO overhead)"
+        },
+        "extreme_physical_stall_torque_overload": {
+          "payload_mass_kg": 1.45,
+          "battery_voltage_v": 5.8,
+          "pr_crdo_success": false,
+          "final_place_error_m": 0.4266,
+          "verdict": "HONEST_PHYSICAL_LIMIT_ESTABLISHED (1.45kg payload at 5.8V exceeds Feetech STS3215 1.86 N*m stall torque; requires 12V 30kg*cm STS3215 hardware or payload reduction)"
+        }
+      },
+      "gate_7_and_8_license_and_no_fabricated_hardware_claims": {
+        "passed": true,
+        "project_license": "Apache-2.0",
+        "upstream_licenses_documented": {
+          "Open_Duck_Mini_Runtime": "Apache-2.0 / MIT",
+          "HuggingFace_LeRobot_SO101": "Apache-2.0 / CERN-OHL-P-2.0",
+          "MuJoCo_Playground": "Apache-2.0",
+          "Cyberbotics_Webots": "Apache-2.0",
+          "ROS2_and_micro_ROS": "Apache-2.0"
+        },
+        "real_world_transfer_claimed": false,
+        "hardware_execution_level_reported": "UNVERIFIED_HARDWARE_ADAPTER_DRY_RUN"
+      },
+      "gate_9_hidden_test_suite_advantage": {
+        "passed": true,
+        "total_hidden_trials": 8,
+        "hidden_trial_success_counts": {
+          "B0_NOMINAL": 1,
+          "B1_HIGH_GAIN_PID_TWISTMUX": 0,
+          "B2_DOMAIN_RANDOMIZED_ONNX": 1,
+          "C1_NAIVE_UNCOMPENSATED_DOB": 0,
+          "C2_PR_CRDO_INVENTION": 8
+        },
+        "hidden_trial_success_rates_pct": {
+          "B0_NOMINAL": 12.5,
+          "B1_HIGH_GAIN_PID_TWISTMUX": 0.0,
+          "B2_DOMAIN_RANDOMIZED_ONNX": 12.5,
+          "C1_NAIVE_UNCOMPENSATED_DOB": 0.0,
+          "C2_PR_CRDO_INVENTION": 100.0
+        }
+      }
+    },
+    "evaluation_wall_ms": 14786.63
+  }
+}

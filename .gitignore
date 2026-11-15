@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+genie_local_data/
+state-discovery/
+state_robotics_001/
+genie-state/
+*.sqlite*
+.spend.lock
+.genie_key_*

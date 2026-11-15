@@ -1,0 +1,6 @@
+OpenLine Connect — Developer Preview
+Copyright 2026 Terrynce White
+
+No external project source code is vendored in this distribution.
+Runtime dependencies are installed separately under their respective licenses.
+See docs/THIRD_PARTY_NOTICES.md for known direct dependencies.

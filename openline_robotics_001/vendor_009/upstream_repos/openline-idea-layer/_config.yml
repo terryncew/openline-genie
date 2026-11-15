@@ -1,0 +1,5 @@
+# GitHub Pages configuration for openline-idea-layer (proposed; not yet deployed).
+# Pages serves the static site from the repository root (branch: main).
+title: OpenLine Idea Layer
+description: A free, single-file tool to pick a small-business hypothesis, see its safety boundaries and cheapest demand test, and copy a build-ready brief for your coding agent. No account, no API key, no telemetry.
+theme: null

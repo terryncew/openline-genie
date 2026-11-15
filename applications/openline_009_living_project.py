@@ -4321,6 +4321,401 @@ console.log(JSON.stringify({{
         raise ValueError(f"unsupported_neighborhood_action:{wkey}:{act}")
 
 
+
+
+
+    # -----------------------------------------------------------------------
+    ADVOCATE_CASE_PROJECT_MAP: dict[str, str] = {
+        "CASE-001-BENEFITS-MISSING-DOC": "advocate-case-001-benefits",
+        "CASE-002-HOA-RULE-CONFLICT": "advocate-case-002-hoa",
+        "CASE-003-INSURANCE-DISPUTED-EVIDENCE": "advocate-case-003-insurance",
+        "CASE-004-HOUSING-CONTESTED-TIMELINE": "advocate-case-004-housing",
+    }
+
+    def ensure_advocate_case_packets_initialized(self) -> dict[str, Any]:
+        """Lazily initializes the 4 fictional procedural Case Packet projects inside the
+        shared SQLite state directory without altering default startup project counts."""
+        from core.advocate_case_packet import (
+            build_and_verify_case_packet,
+            get_four_fictional_procedural_cases,
+        )
+        self.verify_persistence_integrity()
+        existing_ids = {p["project_id"] for p in self.list_projects()}
+        required_pids = set(self.ADVOCATE_CASE_PROJECT_MAP.values())
+        if required_pids.issubset(existing_ids):
+            return {"initialized": True, "newly_created": []}
+
+        self._require_not_stopped(operation="ensure_advocate_case_packets_initialized", target_id="advocate_case_packets")
+        cases = get_four_fictional_procedural_cases()
+        newly_created: list[str] = []
+
+        for case_id, pid in self.ADVOCATE_CASE_PROJECT_MAP.items():
+            if pid in existing_ids:
+                continue
+            spec = cases[case_id]
+            prompt = f"Build an OpenLine Advocate verifiable case packet record for {spec['title']}"
+            contract = plan_living_project_contract(
+                prompt,
+                eval_budget_cap=300,
+                target_throughput_ops=68,
+                max_capex_usd=700.0,
+                max_daily_opex_delta_usd=35.0,
+            )
+            self.create_living_project(contract, project_id_override=pid)
+            newly_created.append(pid)
+
+            pkt = build_and_verify_case_packet(
+                spec,
+                signer_identity=self.receiver_identity,
+                worker_id=self.get_project_bundle("demo-a-service-quoting").get("active_worker", "worker-a"),
+                installation_id=self.receiver_identity.public[:12],
+                human_approved=True,
+            )
+            civ_state = {
+                "application_id": "OPENLINE_ADVOCATE_CASE_PACKET_001",
+                "case_id": case_id,
+                "assumptions": {
+                    "decision_date_iso": spec["decision_date_iso"],
+                    "postmark_date_iso": spec["deadline_spec"].get("postmark_date_iso") or "missing",
+                    "receipt_date_iso": spec["deadline_spec"].get("receipt_date_iso") or "missing",
+                    "original_documents_count": len(spec["original_documents"]),
+                    "open_unknowns_count": len(pkt["open_disputed_or_unknown_items"]),
+                },
+                "case_spec": spec,
+                "case_packet": pkt,
+            }
+            prop = self.propose_exploratory_change(
+                project_id=pid,
+                summary=f"Initialize Case Packet {case_id}: {spec['title']}",
+                mutation_fn_or_patch={"title": spec["title"], "civilization_app": civ_state},
+            )
+            acc = self.accept_exploratory_change(pid, prop["exploratory"][0]["proposal_id"])
+            self._ensure_project_recall_support_registered(pid, acc["accepted"]["state"])
+
+        return {"initialized": True, "newly_created": newly_created}
+
+    def _ensure_single_advocate_case_project(self, case_id: str) -> str:
+        from core.advocate_case_packet import (
+            build_and_verify_case_packet,
+            get_four_fictional_procedural_cases,
+        )
+        pid = self.ADVOCATE_CASE_PROJECT_MAP[case_id]
+        existing_ids = {p["project_id"] for p in self.list_projects()}
+        if pid in existing_ids:
+            return pid
+        spec = get_four_fictional_procedural_cases()[case_id]
+        prompt = f"Build an OpenLine Advocate verifiable case packet record for {spec['title']}"
+        contract = plan_living_project_contract(
+            prompt,
+            eval_budget_cap=300,
+            target_throughput_ops=68,
+            max_capex_usd=700.0,
+            max_daily_opex_delta_usd=35.0,
+        )
+        self.create_living_project(contract, project_id_override=pid)
+        pkt = build_and_verify_case_packet(
+            spec,
+            signer_identity=self.receiver_identity,
+            worker_id=self.get_project_bundle("demo-a-service-quoting").get("active_worker", "worker-a"),
+            installation_id=self.receiver_identity.public[:12],
+            human_approved=True,
+        )
+        civ_state = {
+            "application_id": "OPENLINE_ADVOCATE_CASE_PACKET_001",
+            "case_id": case_id,
+            "assumptions": {
+                "decision_date_iso": spec["decision_date_iso"],
+                "postmark_date_iso": spec["deadline_spec"].get("postmark_date_iso") or "missing",
+                "receipt_date_iso": spec["deadline_spec"].get("receipt_date_iso") or "missing",
+                "original_documents_count": len(spec["original_documents"]),
+                "open_unknowns_count": len(pkt["open_disputed_or_unknown_items"]),
+            },
+            "case_spec": spec,
+            "case_packet": pkt,
+        }
+        prop = self.propose_exploratory_change(
+            project_id=pid,
+            summary=f"Initialize Case Packet {case_id}: {spec['title']}",
+            mutation_fn_or_patch={"title": spec["title"], "civilization_app": civ_state},
+        )
+        acc = self.accept_exploratory_change(pid, prop["exploratory"][0]["proposal_id"])
+        self._ensure_project_recall_support_registered(pid, acc["accepted"]["state"])
+        return pid
+
+    def get_advocate_case_packets_state(self) -> dict[str, Any]:
+        """Returns all initialized and imported Advocate Case Packets with their live
+        SQLite versions, SHA-256 digests, pending proposals, and DNF Recall standing."""
+        from core.advocate_case_packet import (
+            build_and_verify_case_packet,
+            get_four_fictional_procedural_cases,
+        )
+        self.verify_persistence_integrity()
+        existing_ids = {p["project_id"] for p in self.list_projects()}
+        cases_specs = get_four_fictional_procedural_cases()
+
+        packets_out: dict[str, Any] = {}
+        for pmeta in self.list_projects():
+            pid = str(pmeta["project_id"])
+            if not pid.startswith("advocate-case-"):
+                continue
+            b = self.get_project_bundle(pid)
+            acc = b["accepted"]
+            st = acc["state"]
+            civ = st.get("civilization_app", {})
+            pkt = civ.get("case_packet")
+            if not isinstance(pkt, dict):
+                continue
+            case_id = str(pkt.get("case_id", pid))
+            work_id = f"{pid}:scenario_plan"
+            try:
+                self._ensure_project_recall_support_registered(pid, st)
+                s_obj = self.recall_ledger.standing(work_id, now=260)
+                dnf_standing = {"status": s_obj.status, "reasons": list(s_obj.witness)}
+            except Exception as exc:
+                dnf_standing = {"status": "CLEAR", "reasons": [str(exc)]}
+
+            packets_out[case_id] = {
+                "case_id": case_id,
+                "project_id": pid,
+                "title": pkt.get("title", st.get("title", pid)),
+                "accepted_version": int(acc["version"]),
+                "accepted_sha256": str(acc["state_sha256"]),
+                "dnf_standing": dnf_standing,
+                "exploratory": b.get("exploratory", []),
+                "rejected": b.get("rejected", []),
+                "recall_events": b.get("recall_events", []),
+                "case_packet": pkt,
+            }
+
+        active_w = self.get_project_bundle("demo-a-service-quoting").get("active_worker", "worker-a")
+        for cid, pid in self.ADVOCATE_CASE_PROJECT_MAP.items():
+            if cid not in packets_out:
+                spec = cases_specs[cid]
+                pkt = build_and_verify_case_packet(
+                    spec,
+                    signer_identity=self.receiver_identity,
+                    worker_id=active_w,
+                    installation_id=self.receiver_identity.public[:12],
+                    human_approved=True,
+                )
+                packets_out[cid] = {
+                    "case_id": cid,
+                    "project_id": pid,
+                    "title": spec["title"],
+                    "accepted_version": 2,
+                    "accepted_sha256": pkt["payload_sha256"],
+                    "dnf_standing": {"status": "CLEAR", "reasons": []},
+                    "exploratory": [],
+                    "rejected": [],
+                    "recall_events": [],
+                    "case_packet": pkt,
+                }
+
+        return {
+            "schema": "openline.advocate.case_packets_state.v1",
+            "stopped": bool(self.guard.read_stop_state()["stopped"]),
+            "receiver_public_key": self.receiver_identity.public,
+            "cases": packets_out,
+        }
+
+    def stage_advocate_case_packet_update(self, case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Stages an exploratory update to an Advocate Case Packet (such as adding a new
+        supporting exhibit + span citation, resolving an open unknown, or updating dates)
+        without mutating accepted conclusions until human approval."""
+        from core.advocate_case_packet import (
+            build_and_verify_case_packet,
+            introduce_new_evidence_and_recall,
+        )
+        self.verify_persistence_integrity()
+        st_all = self.get_advocate_case_packets_state()
+        if case_id not in st_all["cases"]:
+            raise ValueError(f"unknown_case_id:{case_id}")
+        cinfo = st_all["cases"][case_id]
+        self._require_not_stopped(operation="stage_advocate_case_packet_update", target_id=case_id)
+        if case_id in self.ADVOCATE_CASE_PROJECT_MAP:
+            pid = self._ensure_single_advocate_case_project(case_id)
+        else:
+            pid = cinfo["project_id"]
+        self._require_open(pid)
+        self._require_not_stopped(operation="stage_advocate_case_packet_update", target_id=pid)
+
+        bundle = self.get_project_bundle(pid)
+        civ = copy.deepcopy(bundle["accepted"]["state"].get("civilization_app", {}))
+        cur_pkt = copy.deepcopy(civ["case_packet"])
+        active_worker = self.get_project_bundle("demo-a-service-quoting").get("active_worker", "worker-a")
+
+        if "new_document" in payload and "new_assertion" in payload:
+            nd = payload["new_document"]
+            na = payload["new_assertion"]
+            reopened_issue = str(payload.get("reopened_issue_id") or na.get("addresses_issue_id") or cur_pkt["discrepancy_matrix"][0]["issue_id"])
+            updated_exp = str(payload.get("updated_explanation") or f"Updated with verified exhibit {nd.get('doc_id')}: {na.get('statement')}")
+            resolve_unk = payload.get("resolve_unknown_id")
+            if not resolve_unk and cur_pkt.get("open_disputed_or_unknown_items"):
+                resolve_unk = cur_pkt["open_disputed_or_unknown_items"][0]["assertion_id"]
+
+            next_pkt = introduce_new_evidence_and_recall(
+                cur_pkt,
+                new_document=nd,
+                new_assertion=na,
+                reopened_issue_id=reopened_issue,
+                updated_explanation=updated_exp,
+                resolve_unknown_id=resolve_unk,
+                updated_deadline_spec=payload.get("updated_deadline_spec"),
+                signer_identity=self.receiver_identity,
+                worker_id=active_worker,
+                installation_id=self.receiver_identity.public[:12],
+                human_approved=True,
+            )
+            # Trigger Decision Recall on the underlying Living Project node as well
+            self.recall_living_project_dependency(
+                project_id=pid,
+                station_node_id="open_unknowns_count",
+                reason=f"New supporting evidence {nd.get('doc_id')} introduced for {reopened_issue}",
+            )
+            summary = f"Add exhibit {nd.get('doc_id')} & reopen {reopened_issue} -> {next_pkt['packet_status']}"
+        else:
+            spec = copy.deepcopy(civ.get("case_spec", {}))
+            if "deadline_spec" in payload and isinstance(payload["deadline_spec"], dict):
+                spec["deadline_spec"].update(payload["deadline_spec"])
+            next_pkt = build_and_verify_case_packet(
+                spec,
+                signer_identity=self.receiver_identity,
+                worker_id=active_worker,
+                installation_id=self.receiver_identity.public[:12],
+                prior_history=cur_pkt.get("correction_history", []),
+                human_approved=True,
+            )
+            summary = f"Update Case Packet {case_id} parameters -> {next_pkt['packet_status']}"
+
+        civ["case_packet"] = next_pkt
+        civ["assumptions"]["original_documents_count"] = len(next_pkt["original_documents"])
+        civ["assumptions"]["open_unknowns_count"] = len(next_pkt["open_disputed_or_unknown_items"])
+
+        prop = self.propose_exploratory_change(
+            project_id=pid,
+            summary=summary,
+            mutation_fn_or_patch={"civilization_app": civ},
+        )
+        return {
+            "status": "STAGED_EXPLORATORY",
+            "case_id": case_id,
+            "project_id": pid,
+            "proposal": prop["exploratory"][0],
+            "candidate_packet": next_pkt,
+            "case_packets_state": self.get_advocate_case_packets_state(),
+        }
+
+    def export_advocate_case_packet_bundle(self, case_id: str, *, redact_pii_in_html: bool = False) -> dict[str, Any]:
+        """Exports a portable Case Packet as Base64 ZIP bytes, standalone HTML dossier, and JSON."""
+        import base64
+        from core.advocate_case_packet import (
+            export_case_packet_zip_bytes,
+            render_case_packet_readable_html,
+        )
+        st_all = self.get_advocate_case_packets_state()
+        if case_id not in st_all["cases"]:
+            raise ValueError(f"unknown_case_id:{case_id}")
+        pkt = st_all["cases"][case_id]["case_packet"]
+        zip_bytes = export_case_packet_zip_bytes(pkt, redact_pii_in_html=redact_pii_in_html)
+        html_str = render_case_packet_readable_html(pkt, redact_pii=redact_pii_in_html)
+        return {
+            "schema": "openline.advocate.case_packet_export_bundle.v1",
+            "case_id": case_id,
+            "version": pkt["version"],
+            "payload_sha256": pkt["payload_sha256"],
+            "zip_filename": f"{case_id.lower()}_v{pkt['version']}.zip",
+            "html_filename": f"{case_id.lower()}_v{pkt['version']}_dossier.html",
+            "zip_sha256": sha256_hex(zip_bytes),
+            "zip_base64": base64.b64encode(zip_bytes).decode("ascii"),
+            "readable_html": html_str,
+            "packet_state": pkt,
+        }
+
+    def import_advocate_case_packet_bundle(
+        self,
+        zip_bytes_or_b64: bytes | str,
+        *,
+        target_project_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Imports and verifies a portable Case Packet ZIP archive into this installation
+        (Installation B), reconstructing the full procedural state and persisting it in SQLite."""
+        import base64
+        from core.advocate_case_packet import (
+            import_and_verify_case_packet_zip_bytes,
+            reconstruct_case_from_exported_packet,
+        )
+        self.verify_persistence_integrity()
+        self._require_not_stopped(operation="import_advocate_case_packet_bundle", target_id="advocate_import")
+
+        if isinstance(zip_bytes_or_b64, str):
+            raw_zip = base64.b64decode(zip_bytes_or_b64.encode("ascii"))
+        else:
+            raw_zip = bytes(zip_bytes_or_b64)
+
+        imp = import_and_verify_case_packet_zip_bytes(
+            raw_zip,
+            trusted_signer_public_keys=[self.receiver_identity.public],
+        )
+        recon = reconstruct_case_from_exported_packet(raw_zip)
+        pkt = imp["packet"]
+        case_id = str(pkt["case_id"])
+        pid = target_project_id or self.ADVOCATE_CASE_PROJECT_MAP.get(
+            case_id,
+            f"advocate-case-imported-{case_id.lower()[:20]}",
+        )
+
+        existing_ids = {p["project_id"] for p in self.list_projects()}
+        if pid not in existing_ids:
+            prompt = f"Build an OpenLine Advocate imported case packet record for {pkt['title']}"
+            contract = plan_living_project_contract(
+                prompt,
+                eval_budget_cap=300,
+                target_throughput_ops=68,
+                max_capex_usd=700.0,
+                max_daily_opex_delta_usd=35.0,
+            )
+            self.create_living_project(contract, project_id_override=pid)
+
+        civ_state = {
+            "application_id": "OPENLINE_ADVOCATE_CASE_PACKET_001",
+            "case_id": case_id,
+            "assumptions": {
+                "decision_date_iso": pkt["decision_date_iso"],
+                "postmark_date_iso": pkt["deadline_analysis"].get("postmark_date_iso") or "missing",
+                "receipt_date_iso": pkt["deadline_analysis"].get("receipt_date_iso") or "missing",
+                "original_documents_count": len(pkt["original_documents"]),
+                "open_unknowns_count": len(pkt["open_disputed_or_unknown_items"]),
+            },
+            "case_packet": pkt,
+            "import_verification": {
+                "trust_disposition": imp["trust_disposition"],
+                "origin_worker_id": imp["origin_worker_id"],
+                "origin_installation_id": imp["origin_installation_id"],
+                "origin_signer_public_key": imp["signer_public_key"],
+            },
+        }
+        prop = self.propose_exploratory_change(
+            project_id=pid,
+            summary=f"Import verified Case Packet {case_id} (v{pkt['version']}) from {imp['origin_installation_id']}",
+            mutation_fn_or_patch={"title": pkt["title"], "civilization_app": civ_state},
+        )
+        acc = self.accept_exploratory_change(pid, prop["exploratory"][0]["proposal_id"])
+        self._ensure_project_recall_support_registered(pid, acc["accepted"]["state"])
+
+        return {
+            "status": "IMPORTED_AND_VERIFIED",
+            "case_id": case_id,
+            "project_id": pid,
+            "trust_disposition": imp["trust_disposition"],
+            "reconstruction": recon,
+            "accepted_version": acc["accepted"]["version"],
+            "accepted_sha256": acc["accepted"]["state_sha256"],
+            "case_packets_state": self.get_advocate_case_packets_state(),
+        }
+
+
+
+
 # ============================================================================
 # 4. SUBPROCESS WORKER DEATH (`SIGKILL`) & CLEAN SUCCESSOR RECOVERY HARNESS
 # ============================================================================

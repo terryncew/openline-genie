@@ -11,7 +11,7 @@ OpenLine Genie runs on your own computer in your web browser. It lets individual
 1. **Energy Commons — Plan affordable community energy**
    Compare rooftop solar, battery storage, thermal hot-water storage, and efficiency upgrades for a household, apartment building, or housing cooperative. Includes 10-year discounted cash-flow comparisons, maintenance and battery replacement costs, and sensitivity checks across interest rates, roof shading, and utility rate changes.
 2. **Advocate — Organize evidence and prepare challenges to institutional decisions**
-   Ingest a decision notice, track earliest conservative appeal deadlines, separate **verified facts** (backed by attached documents) from **unverified allegations** and **missing information**, check rule effective dates, and scrub personal identifiers (account numbers, phones, emails) before sharing.
+   Ingest a decision notice, track earliest conservative appeal deadlines, separate **verified facts** (backed by attached documents) from **unverified allegations** and **missing information**, check rule effective dates, and scrub personal identifiers (account numbers, phones, emails) before sharing. The Case Packet workbench preserves institutional decisions, organizes evidence, and transfers verifiable case records between people or AI assistants: original documents are kept byte-for-byte with checksums, claims carry exact source citations, rule authority is checked in four tiers, deadlines are never invented, and new evidence reopens affected conclusions through Decision Recall while the original record stays intact.
 3. **Capability Commons — Build and share reusable community projects**
    Start from three working templates—a **Clean Water Filtration Hub**, a **Cooperative Childcare & Community Kitchen**, and a **Building Weatherization & Shared Workshop**—or create your own project in plain words, apply verified capacity/budget planning tools, and export the entire project for another community group to continue.
 4. **Science — Run reproducible research and preserve what was learned**
@@ -46,6 +46,18 @@ python3 launch_genie.py --port 8795
 ```
 Then open **[http://127.0.0.1:8795/products](http://127.0.0.1:8795/products)** in your desktop or mobile browser.
 
+### Robotics Studio (separate server, simulation only)
+
+The Robotics Studio is a seventh, separate tool that lives at the repository root (`openline_robotics_001/`) and runs on its own loopback-only server on port 8796. It lets you design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls, for two robots: Open Duck Mini v2 (a small walking robot) and LeRobot SO-101 (a small robot arm).
+
+```bash
+# from the repository root
+.venv/bin/pip install onnxruntime
+./run_robotics_studio.sh
+```
+
+Then open `http://127.0.0.1:8796/robotics`, or follow the **Robotics Studio** entry on the launcher page (route `/robotics`). **Simulation only:** results are verified in simulation and never establish physical hardware safety; the hardware adapter is verified in dry-run only. Full details: `../openline_robotics_001/README.md`.
+
 ---
 
 ## What It Costs
@@ -58,7 +70,7 @@ Then open **[http://127.0.0.1:8795/products](http://127.0.0.1:8795/products)** i
 - **Human Sign-Off for Commitments**: Preparing a cooperative procurement packet, locking an appeal packet, or recording a public infrastructure selection requires explicit human confirmation.
 
 ## Plain-Language Limitations (What OpenLine Genie Cannot Do)
-- **Not Legal Representation**: OpenLine Advocate organizes evidence, dates, and rules for human review. It is **not legal advice**, does not create an attorney-client relationship, and never submits appeals to external agencies automatically.
+- **Not Legal Representation**: OpenLine Advocate organizes evidence, dates, and rules for human review. It is **not legal advice**, does not create an attorney-client relationship, and never submits appeals to external agencies automatically. A Case Packet signature proves the record has not been changed since it was signed and that a person approved it at that time; it does not prove that a claim is legally true or that an institution will accept it.
 - **Not a Licensed Engineering Stamp**: OpenLine Energy Commons and OpenLine Civic verify financial and physical conservation math, but site-specific roof structural capacity, electrical panel ratings, and environmental permits require licensed engineers and local inspectors.
 - **Neighborhood Is a Local Single-User Tool**: Neighborhood (ClearCovenant) runs on your own computer for one household or association. It does not separate multiple households on one server, and it is not legal advice and creates no attorney-client relationship. It covers California, Florida, Texas, South Carolina, and a general U.S. baseline; other states need the statute text or local counsel.
 - **Not a Substitute for Wet-Lab Hardware Testing**: OpenLine Science verifies computational reproducibility and model selection on recorded datasets, not physical material longevity in a hardware chamber.

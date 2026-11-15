@@ -370,6 +370,13 @@
     </button>
   </div>
 
+  <!-- Robotics Studio entry (separate loopback-only server, port 8796) -->
+  <div class="card" id="robotics-studio-entry" style="margin-top:12px">
+    <h2 style="margin:0 0 4px">Robotics Studio</h2>
+    <p style="margin:0 0 8px">Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls. Simulation only: results here never establish physical hardware safety.</p>
+    <p style="margin:0">Start it with <code>./run_robotics_studio.sh</code> from the repository root, then <a href="/robotics">open the Robotics Studio</a> (http://127.0.0.1:8796/robotics).</p>
+  </div>
+
   <!-- Active Application Summary Strip -->
   <div class="kpi-strip">
     <div class="kpi-card">
@@ -707,6 +714,88 @@
           <pre class="code-box" id="advocate-redacted-box">Click "Preview Privacy-Redacted Packet" to verify that account numbers, phone numbers, and emails are removed before sharing.</pre>
         </div>
       </div>
+
+    <div class="card" id="advocate-case-packet-workbench">
+      <div class="card-head">
+        <span class="card-title">Portable Verifiable Case Packet Workbench (4 Procedural Cases + Independent Handoff)</span>
+        <span class="pill ok" id="cp-status-pill">Case Packet: Loading…</span>
+      </div>
+      <div class="card-body">
+        <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:10px">
+          <strong>The institution controls its decision. You control your record.</strong> Select a procedural case below to inspect immutable original documents, exact span citations, 4-tier rule checks, side-by-side discrepancy findings, and portable `.zip` / `.html` handoff packages.
+        </p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="cp-case-selector">Select Procedural Case Packet</label>
+            <select id="cp-case-selector">
+              <option value="CASE-001-BENEFITS-MISSING-DOC">Case 1: Benefits Denial (Missing Recert Form &amp; Disaster Grant)</option>
+              <option value="CASE-002-HOA-RULE-CONFLICT">Case 2: HOA $250 Fine (Board Turf Policy vs. Recorded CC&amp;Rs)</option>
+              <option value="CASE-003-INSURANCE-DISPUTED-EVIDENCE">Case 3: Insurance Denial (Pre-Storm Roof Cert vs. Wear Claim)</option>
+              <option value="CASE-004-HOUSING-CONTESTED-TIMELINE">Case 4: Housing Notice (Contested Delivery &amp; 3-Day Cure Window)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cp-new-doc-id">New Supporting Document ID</label>
+            <input type="text" id="cp-new-doc-id" value="DOC-USER-SUPPLEMENT-01" />
+          </div>
+          <div class="field">
+            <label for="cp-new-doc-filename">Filename (Safe Portable Name)</label>
+            <input type="text" id="cp-new-doc-filename" value="supplemental_exhibit_01.txt" />
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:8px">
+          <label for="cp-new-doc-content">Verbatim Supporting Document Text (Stored as Immutable Original)</label>
+          <textarea id="cp-new-doc-content" rows="2">OFFICIAL TRANSMISSION RECEIPT #TX-9910: Confirmed delivery of signed recertification and supporting records on 2026-10-25.</textarea>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="cp-new-assertion-stmt">Factual Assertion Linked to Document</label>
+            <input type="text" id="cp-new-assertion-stmt" value="Transmission Receipt #TX-9910 confirms supporting records were delivered on 2026-10-25." />
+          </div>
+          <div class="field">
+            <label for="cp-new-assertion-quote">Exact Verbatim Quote Inside Document</label>
+            <input type="text" id="cp-new-assertion-quote" value="Confirmed delivery of signed recertification and supporting records on 2026-10-25." />
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button type="button" class="btn btn-primary" id="btn-cp-stage-evidence">Add Evidence &amp; Stage Case Update</button>
+          <button type="button" class="btn btn-success" id="btn-cp-export-packet">Export Portable Case Packet (.zip + .html)</button>
+        </div>
+
+        <div class="table-wrap" style="margin-bottom:12px">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Disputed Issue</th>
+                <th>Institution Claim &amp; Quote</th>
+                <th>Cited Rule vs. Governing Authority</th>
+                <th>Verified Supporting Evidence (Span &amp; Checksum)</th>
+                <th>Discrepancy Finding &amp; Open Unknowns</th>
+              </tr>
+            </thead>
+            <tbody id="cp-discrepancy-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Original Doc ID</th>
+                <th>Filename</th>
+                <th>Role</th>
+                <th>SHA-256 Checksum</th>
+                <th>Verbatim Excerpt</th>
+                <th>History Versions</th>
+              </tr>
+            </thead>
+            <tbody id="cp-originals-tbody"></tbody>
+          </table>
+        </div>
+        <pre class="code-box" id="cp-export-preview-box" style="margin-top:10px">Select a case or click "Export Portable Case Packet" to inspect the signed manifest and handoff verification summary.</pre>
+      </div>
+    </div>
+
     </div>
   </section>
 
@@ -1580,6 +1669,7 @@
       const propId = drawer.getAttribute("data-proposal-id");
       const res = await apiPost("/api/accept", { project_id: pid, proposal_id: propId });
       await refreshState();
+      if (String(pid || "").startsWith("advocate-case-")) { await refreshCasePackets(); }
       setBanner("Changes accepted and saved to your official record (Version v" + res.accepted.version + ").", "ok");
     } catch (err) {
       setBanner("Could not accept changes: " + friendlyErrorMessage(err.message), "error");
@@ -1593,6 +1683,7 @@
       const propId = drawer.getAttribute("data-proposal-id");
       await apiPost("/api/reject", { project_id: pid, proposal_id: propId, reason: "user_declined_changes" });
       await refreshState();
+      if (String(pid || "").startsWith("advocate-case-")) { await refreshCasePackets(); }
       setBanner("Changes rejected. Your previously saved version remains unchanged.", "ok");
     } catch (err) {
       setBanner(friendlyErrorMessage(err.message), "error");
@@ -2029,7 +2120,145 @@
     }
   });
 
-  refreshState();
+
+  let CASE_PACKETS_STATE = null;
+  let ACTIVE_CASE_ID = "CASE-001-BENEFITS-MISSING-DOC";
+
+  function renderCasePacketWorkbench() {
+    if (!CASE_PACKETS_STATE || !CASE_PACKETS_STATE.cases) return;
+    const cinfo = CASE_PACKETS_STATE.cases[ACTIVE_CASE_ID];
+    if (!cinfo || !cinfo.case_packet) return;
+    const pkt = cinfo.case_packet;
+
+    const statusPill = document.getElementById("cp-status-pill");
+    if (statusPill) {
+      const fStat = pkt.packet_status === "ACCEPTED_BY_HUMAN"
+        ? ("v" + pkt.version + " · Ready to Share")
+        : ("v" + pkt.version + " · Some supporting information is missing");
+      statusPill.textContent = fStat;
+      statusPill.className = "pill " + (pkt.packet_status === "ACCEPTED_BY_HUMAN" ? "ok" : "warn");
+    }
+
+    const dtbody = document.getElementById("cp-discrepancy-tbody");
+    if (dtbody) {
+      dtbody.innerHTML = (pkt.discrepancy_matrix || []).map(dm => {
+        const ic = dm.institution_claim || {};
+        const ir = dm.institution_cited_rule || {};
+        const ga = dm.governing_authority;
+        const evHtml = (dm.verified_evidence_contrasted || []).map(ef => {
+          const sp = ef.span || {};
+          return `<div><strong>${esc(ef.statement)}</strong><br/><small><code>${esc(ef.source_doc_id)}</code> (L${sp.line_start || 1}–${sp.line_end || 1}, C${sp.char_start || 0}–${sp.char_end || 0})</small><br/><em>“${esc(ef.verbatim_quote)}”</em></div>`;
+        }).join("<hr style='border:0;border-top:1px solid var(--border-color);margin:4px 0'/>") || "<em>Missing supporting document</em>";
+        const govTxt = ga ? `<br/><strong>Governing:</strong> ${esc(ga.citation)}` : "";
+        const openTxt = (dm.remaining_disputed_or_missing || []).length > 0
+          ? ("<br/><span class='pill warn'>Missing: " + esc(dm.remaining_disputed_or_missing.join("; ")) + "</span>")
+          : "";
+        return `<tr>
+          <td><strong>${esc(dm.issue_title)}</strong><br/><span class="pill">${esc(friendlyStanding(dm.standing))}</span></td>
+          <td>${esc(ic.statement)}<br/><small><em>“${esc(ic.verbatim_quote || "")}”</em></small></td>
+          <td><strong>Cited:</strong> ${esc(ir.citation)}<br/><span class="pill">${esc(ir.computed_tier)}</span>${govTxt}</td>
+          <td>${evHtml}</td>
+          <td><strong>${esc(dm.finding_status.replace(/_/g, " "))}</strong><br/><small>${esc(dm.discrepancy_explanation)}</small>${openTxt}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    const otbody = document.getElementById("cp-originals-tbody");
+    if (otbody) {
+      const histCount = (pkt.correction_history || []).length;
+      otbody.innerHTML = (pkt.original_documents || []).map(d => `<tr>
+        <td><code>${esc(d.doc_id)}</code></td>
+        <td><code>${esc(d.filename)}</code></td>
+        <td><span class="pill">${esc(d.role.replace(/_/g, " "))}</span></td>
+        <td><code>${esc((d.sha256 || "").slice(0, 16))}…</code></td>
+        <td><small>${esc((d.content || "").slice(0, 110))}…</small></td>
+        <td>${histCount} recorded steps</td>
+      </tr>`).join("");
+    }
+  }
+
+  async function refreshCasePackets() {
+    try {
+      CASE_PACKETS_STATE = await apiGet("/api/advocate/case_packets");
+      renderCasePacketWorkbench();
+    } catch (_e) {}
+  }
+
+  const cpSel = document.getElementById("cp-case-selector");
+  if (cpSel) {
+    cpSel.addEventListener("change", () => {
+      ACTIVE_CASE_ID = cpSel.value;
+      renderCasePacketWorkbench();
+    });
+  }
+
+  const btnCpStage = document.getElementById("btn-cp-stage-evidence");
+  if (btnCpStage) {
+    btnCpStage.addEventListener("click", async () => {
+      try {
+        const docId = document.getElementById("cp-new-doc-id").value.trim();
+        const fname = document.getElementById("cp-new-doc-filename").value.trim();
+        const content = document.getElementById("cp-new-doc-content").value.trim();
+        const stmt = document.getElementById("cp-new-assertion-stmt").value.trim();
+        const quote = document.getElementById("cp-new-assertion-quote").value.trim();
+        const res = await apiPost("/api/advocate/case_packet/stage", {
+          case_id: ACTIVE_CASE_ID,
+          payload: {
+            new_document: {
+              doc_id: docId,
+              filename: fname,
+              role: "CLAIMANT_SUPPORTING_EXHIBIT",
+              content: content
+            },
+            new_assertion: {
+              assertion_id: "FACT-USER-" + Date.now().toString().slice(-4),
+              epistemic_type: "VERIFIED_EVIDENCE_FACT",
+              statement: stmt,
+              source_doc_id: docId,
+              verbatim_quote: quote
+            }
+          }
+        });
+        CASE_PACKETS_STATE = res.case_packets_state;
+        renderCasePacketWorkbench();
+        const drawer = document.getElementById("shared-proposal-drawer");
+        drawer.classList.remove("hidden");
+        document.getElementById("staged-proposal-summary").textContent = res.proposal.summary;
+        document.getElementById("staged-proposal-id").textContent = res.proposal.proposal_id;
+        document.getElementById("staged-proposal-sha").textContent = (res.proposal.candidate_sha256 || "").slice(0, 16) + "…";
+        drawer.setAttribute("data-proposal-id", res.proposal.proposal_id);
+        drawer.setAttribute("data-project-id", res.project_id);
+        setBanner("Waiting for your review: New supporting document and span citation staged for " + ACTIVE_CASE_ID + ". Click 'Accept changes' above to save.", "ok");
+      } catch (err) {
+        setBanner(friendlyErrorMessage(err.message), "error");
+      }
+    });
+  }
+
+  const btnCpExport = document.getElementById("btn-cp-export-packet");
+  if (btnCpExport) {
+    btnCpExport.addEventListener("click", async () => {
+      try {
+        const exp = await apiGet("/api/advocate/case_packet/export?case_id=" + encodeURIComponent(ACTIVE_CASE_ID) + "&redact_pii=1");
+        document.getElementById("cp-export-preview-box").textContent = JSON.stringify({
+          schema: exp.schema,
+          case_id: exp.case_id,
+          version: exp.version,
+          payload_sha256: exp.payload_sha256,
+          zip_filename: exp.zip_filename,
+          zip_sha256: exp.zip_sha256,
+          html_filename: exp.html_filename,
+          original_documents_count: (exp.packet_state.original_documents || []).length,
+          signature_disclosure: exp.packet_state.signature_integrity_disclosure
+        }, null, 2);
+        setBanner("Exported portable Case Packet " + exp.zip_filename + " (SHA-256: " + exp.zip_sha256.slice(0, 14) + "…).", "ok");
+      } catch (err) {
+        setBanner(friendlyErrorMessage(err.message), "error");
+      }
+    });
+  }
+
+  refreshState().then(() => refreshCasePackets());
 })();
 </script>
 </body>
