@@ -7,7 +7,7 @@ OpenLine Genie runs on your own computer, in your web browser. Nothing is upload
 This repository holds two things:
 
 1. **OpenLine Genie v0.7.1** — the original product: build an idea in your browser, discover what breaks, explore what works, keep what you approve, with a receiver gate and a signed receipt, so swapping the model mid-task does not lose the work. Free and open source.
-2. **Seven applications (v1.1.0-rc1)** — six in the `applications/` directory (Energy Commons, Advocate, Capability Commons, Science, Civic, and Neighborhood) plus Robotics Studio at the repository root. Each one is a working local tool for a real job. See below.
+2. **Seven applications (v1.2.0-rc1)** — six in the `applications/` directory (Energy Commons, Advocate, Capability Commons, Science, Civic, and Neighborhood) plus Robotics Studio at the repository root. Each one is a working local tool for a real job. The applications server also hosts the Semantic Authority Bridge workbench (see below). See below.
 
 ## Try Genie v0.7.1
 
@@ -16,9 +16,11 @@ This repository holds two things:
 - **How it works:** https://terryncew.github.io/openline-genie/how/
 - **See a real session:** https://terryncew.github.io/openline-genie/see/
 
-## Seven applications (v1.1.0-rc1)
+## Seven applications (v1.2.0-rc1)
 
 All seven run on your own computer. No account, no cloud, no subscription, no paid AI key required. The six in `applications/` run from one local server; open `http://127.0.0.1:8795/products` after launching, and pick a tab. Robotics Studio runs as its own loopback-only server on port 8796 (see below).
+
+The **Semantic Authority Bridge** (v1.2.0-rc1) runs on the same applications server: when a definition behind a decision changes, it reopens only the decisions that depended on it and refuses consequential actions under a reopened decision until a human re-evaluates it. Workbench: `http://127.0.0.1:8795/semantic`. It reads Apache Ossie YAML definition files on your own computer — file-level compatibility only, no live NVIDIA service. Developer docs: `applications/SEMANTIC_AUTHORITY_BRIDGE.md`.
 
 | Application | What it does | Entry point | Example |
 |---|---|---|---|
@@ -44,7 +46,7 @@ python3 -m venv .venv
 
 Then open `http://127.0.0.1:8795/products`. Full instructions: `applications/INSTALL.md`.
 
-To check the install: `python3 launch_genie.py --verify-only` (inside `applications/`). To run the tests: `python3 -m unittest discover -s tests -p "test_*.py"` and `node --test tests/test_rc6_projection.mjs` (inside `applications/`), plus `python3 -m unittest openline_robotics_001.tests.test_robotics_breakthrough_001` (from the repository root, with `onnxruntime` installed). Measured 2026-11-15 on the v1.1.0-rc1 tree: 186 Python tests ran, 175 passed, 1 failure, 5 errors, 5 skipped; Node 11 passed, 0 failed; Robotics 6 passed, 0 failed. The 1 failure and 5 errors are browser tests that need Chrome (not installed in the test environment) and two tests that check external archive files not included in this package. They are recorded as NOT VERIFIED here, not passed.
+To check the install: `python3 launch_genie.py --verify-only` (inside `applications/`). To run the tests: `python3 -m unittest discover -s tests -p "test_*.py"` and `node --test tests/test_rc6_projection.mjs` (inside `applications/`), plus `python3 -m unittest openline_robotics_001.tests.test_robotics_breakthrough_001` (from the repository root, with `onnxruntime` installed). Measured 2026-11-15 on the v1.2.0-rc1 tree: 193 Python tests ran, 176 passed, 1 failure, 11 errors, 5 skipped; Node 11 passed, 0 failed; Robotics 6 passed, 0 failed. The 1 failure and 5 of the errors are browser tests that need Chrome (not installed in the test environment) and two tests that check external archive files not included in this package; the other 6 errors are live-server tests whose 20s client timeout is shorter than the ~42.5s first engine build on this 1.5-CPU box (reproduced on the pristine v1.1.0-rc1 tree). They are recorded as NOT VERIFIED here, not passed.
 
 ## Robotics Studio (simulation only)
 

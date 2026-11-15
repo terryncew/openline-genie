@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenLine Semantic Authority Bridge — Agent &amp; Steward Workbench</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .banner {
+      background: #172554;
+      border: 1px solid #1d4ed8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #dbeafe;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 20px; margin: 0 0 6px 0; }
+    h2 { font-size: 15px; margin: 0 0 10px 0; color: var(--accent); }
+    .sub { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      overflow-wrap: anywhere;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .b-cur { background: rgba(34,197,94,0.18); color: #4ade80; border: 1px solid #22c55e; }
+    .b-reopen { background: rgba(245,158,11,0.18); color: #fbbf24; border: 1px solid #f59e0b; }
+    .b-refused { background: rgba(239,68,68,0.18); color: #f87171; border: 1px solid #ef4444; }
+    .kv { font-size: 12px; margin: 5px 0; color: #cbd5e1; }
+    .kv strong { color: #fff; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: #93c5fd; }
+    button {
+      min-height: 44px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: rgba(56,189,248,0.15);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      margin: 4px 6px 4px 0;
+    }
+    pre {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 11px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 280px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">
+      <strong>OPENLINE SEMANTIC AUTHORITY BRIDGE (SSB-CDIG)</strong> · Local Deterministic &amp; Apache Ossie YAML Workbench ·
+      Ed25519 signatures prove record integrity &amp; provenance at a point in time, not empirical or legal truth.
+      No live remote NVIDIA NIM deployment is claimed in this offline environment.
+    </div>
+    <h1>Semantic Standing, Join-Lineage &amp; Decision Recall Inspector</h1>
+    <div class="sub">
+      Inspects NVIDIA Auto-Ontology / Apache Ossie YAML definitions, Boundary Condition A (certification badge vs. receiver authority),
+      and Boundary Condition B (semantic FK join reselection during recompilation) across Energy Commons, Civic, and Advocate.
+    </div>
+
+    <div>
+      <button id="btnRefreshSemantic" onclick="loadSemanticState()">Refresh Semantic Authority Ledger</button>
+      <button id="btnRunRecompile" onclick="triggerRecompileProbe()">Simulate Boundary B Recompilation</button>
+    </div>
+
+    <div class="grid" id="appCards">
+      <div class="card">
+        <h2>1. Energy Commons (Tariff &amp; Join Lineage)</h2>
+        <div class="kv"><strong>Affected Decision:</strong> DEC-ENERGY-COOP-RANKING <span class="badge b-reopen">REOPEN -> v2 CURRENT</span></div>
+        <div class="kv"><strong>Unaffected Sibling:</strong> DEC-ENERGY-PUMP-SCHEDULE <span class="badge b-cur">CURRENT (Preserved)</span></div>
+        <div class="kv"><strong>Trigger:</strong> Certified electricity-cost SQL expression revised + recompilation FK join role reselected (<span class="mono">service_tariff_schedule_id -&gt; legacy_wholesale_schedule_id</span>).</div>
+        <div class="kv"><strong>Stale EPC Contract Attempt:</strong> <span class="badge b-refused">REFUSED — stale authority</span></div>
+      </div>
+      <div class="card">
+        <h2>2. OpenLine Civic (Infrastructure Metric)</h2>
+        <div class="kv"><strong>Affected Decision:</strong> DEC-CIVIC-WATER-RESILIENCE-REC <span class="badge b-reopen">REOPEN -> v2 CURRENT</span></div>
+        <div class="kv"><strong>Unaffected Sibling:</strong> DEC-CIVIC-NOISE-WALL-SPEC <span class="badge b-cur">CURRENT (Preserved)</span></div>
+        <div class="kv"><strong>Trigger:</strong> Raw water turbidity definition revised (38 NTU -&gt; 68 NTU storm runoff) + gauge join relationship shifted.</div>
+        <div class="kv"><strong>Resolution:</strong> Original v1 preserved; v2 binds roughing pre-filter covenant (95 NTU rating).</div>
+      </div>
+      <div class="card">
+        <h2>3. OpenLine Advocate (Rule &amp; Evidence Integrity)</h2>
+        <div class="kv"><strong>Affected Claim:</strong> CLAIM-1-DISASTER-GRANT-EXCLUSION <span class="badge b-reopen">REOPEN -> v2 CURRENT</span></div>
+        <div class="kv"><strong>Unaffected Sibling:</strong> CLAIM-2-MEDICAL-RECERT-FAX <span class="badge b-cur">CURRENT (Preserved)</span></div>
+        <div class="kv"><strong>Historical Originals:</strong> <span class="badge b-cur">100% BYTE-INTACT</span> (Overwrite attempt refused).</div>
+        <div class="kv"><strong>Rule Check:</strong> Uncertified 2026 memo flagged subordinate to Cal. Welf. &amp; Inst. Code § 11008.17.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Live Agent JSON Contract &amp; Receipt Feed (<span class="mono">/api/semantic/state</span>)</h2>
+      <pre id="semanticJsonOut">Loading semantic authority state...</pre>
+    </div>
+  </div>
+  <script>
+    async function loadSemanticState() {
+      try {
+        const r = await fetch('/api/semantic/state');
+        const d = await r.json();
+        document.getElementById('semanticJsonOut').textContent = JSON.stringify(d, null, 2);
+      } catch (e) {
+        document.getElementById('semanticJsonOut').textContent = 'Offline standalone view ready: ' + String(e);
+      }
+    }
+    async function triggerRecompileProbe() {
+      try {
+        const r = await fetch('/api/semantic/state?probe=recompile');
+        const d = await r.json();
+        document.getElementById('semanticJsonOut').textContent = JSON.stringify(d, null, 2);
+      } catch (e) {
+        document.getElementById('semanticJsonOut').textContent = String(e);
+      }
+    }
+    loadSemanticState();
+  </script>
+</body>
+</html>

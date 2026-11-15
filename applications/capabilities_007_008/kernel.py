@@ -158,6 +158,13 @@ def structural_witness(cap: dict[str, Any], facts: dict[str, Any]) -> tuple[bool
     elif kind == "distilled-artifact-gate":
         if not isinstance(facts.get("artifact_text"), str) or not facts["artifact_text"]:
             return False, "invalid_artifact_text"
+    elif kind == "semantic-authority-bridge":
+        if not isinstance(facts.get("project_id"), str) or not facts["project_id"]:
+            return False, "invalid_project_id"
+        if not isinstance(facts.get("initial_ontology"), (dict, str)):
+            return False, "invalid_initial_ontology"
+        if not isinstance(facts.get("decisions"), list) or not facts["decisions"]:
+            return False, "invalid_decisions"
     else:
         return False, "unknown_capability"
     return True, "schema_witness"
@@ -201,6 +208,8 @@ def run_capability(cap: dict[str, Any], facts: dict[str, Any]) -> dict[str, Any]
         return mod.allocate_coupled_portfolio(facts)
     if cap["id"] == "distilled-artifact-gate":
         return mod.triage_and_stabilize(facts)
+    if cap["id"] == "semantic-authority-bridge":
+        return mod.run_semantic_authority_bridge(facts)
     raise ContractError("unknown_executor")
 
 

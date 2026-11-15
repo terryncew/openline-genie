@@ -23,6 +23,12 @@ OpenLine Genie runs on your own computer in your web browser. It lets individual
 
 ---
 
+## Semantic Authority Bridge (v1.2.0-rc1)
+
+When a definition behind a decision changes, the bridge reopens only the decisions that depended on it — and refuses consequential actions under a reopened decision until a human re-evaluates it. A changed electricity tariff reopens the energy ranking that used it, not the pump schedule next to it. It reads definitions from plain Apache Ossie YAML files (the documented interchange format for NVIDIA Auto-Ontology) on your own computer; there is no live NVIDIA service, no network call, and no account. Open the workbench at `http://127.0.0.1:8795/semantic` after launching, or run the example: `python3 examples/semantic_authority_bridge_example.py` (inside `applications/`). Full developer docs: `SEMANTIC_AUTHORITY_BRIDGE.md`. Honest limits: the certification signatures are self-attestations from fresh per-instance keys, not an outside authority's signature; and file-level Ossie compatibility is all that is claimed — no live NVIDIA integration.
+
+---
+
 ## Quick Start (Free Local Mode — $0 Cost, No API Keys Required)
 
 ### Requirements
@@ -75,3 +81,4 @@ Then open `http://127.0.0.1:8796/robotics`, or follow the **Robotics Studio** en
 - **Neighborhood Is a Local Single-User Tool**: Neighborhood (ClearCovenant) runs on your own computer for one household or association. It does not separate multiple households on one server, and it is not legal advice and creates no attorney-client relationship. It covers California, Florida, Texas, South Carolina, and a general U.S. baseline; other states need the statute text or local counsel.
 - **Not a Substitute for Wet-Lab Hardware Testing**: OpenLine Science verifies computational reproducibility and model selection on recorded datasets, not physical material longevity in a hardware chamber.
 - **Local Single-Computer Server**: By default, `genie_server.py` binds strictly to `127.0.0.1` (`localhost`) for your personal or local workstation use. Do not expose the local server directly to the public internet without an authenticated reverse proxy.
+- **Semantic Authority Bridge (v1.2.0-rc1)**: The bridge reads definition files on your computer only; it is not connected to NVIDIA or any live service, and its compatibility claim covers Apache Ossie YAML files only. Its certification signatures are made with fresh keys the bridge generates each time it starts, so they prove a record was not changed after signing — not that an outside authority endorsed it.

@@ -7,3 +7,8 @@ Each `.json` file in this folder is a self-contained, checksum-verified OpenLine
 3. `sample_3_capability_commons.json` — **Capability Commons**: Reusable community project library index coordinating clean water filtration, cooperative childcare/kitchens, and building weatherization retrofits.
 4. `sample_4_science.json` — **Science**: Reproducible 80-episode thermal-hydraulic research workspace comparing four competing models with AIC/MDL complexity penalties and preserved negative findings.
 5. `sample_5_civic.json` — **Civic**: Municipal water resilience comparison across four proposals with P10/P50/P90 storm-outage cost bands and resident parcel-map challenge records.
+
+## Semantic Authority Bridge (v1.2.0-rc1)
+
+- `ontologies/*.yaml` — Apache Ossie YAML ontology fixtures for the bridge: Energy Commons, Civic, Advocate, and Biotech Clinical Cold-Chain (the unfamiliar domain used by the Worker A→B inheritance check). Each one is a plain file you can open, edit, and re-import; no live service is involved.
+- `semantic_authority_bridge_example.py` — Runnable end-to-end example. Run it from inside `applications/` (`python3 examples/semantic_authority_bridge_example.py`): it binds two decisions to the Energy Commons fixture, shows a harmless edit reopening nothing, a formula change reopening only the affected decision, a stale-action refusal, and re-authorization after re-certification. Exit code 0 means every check passed. Full interface, model, and receipt-format docs: `SEMANTIC_AUTHORITY_BRIDGE.md`.
