@@ -242,3 +242,251 @@ Execute only on the founder's order; do not run as routine cleanup.
 Owner: Terrynce White. No standing maintenance assignment exists for this
 release. No scheduled follow-up, no social announcement, and no new research
 program attached to this release.
+
+# OpenLine Genie v1.2.0-rc1 — Release Record Addendum (Semantic Authority Bridge)
+
+- Date: 2026-11-15. Agent: integration / qualification / publication (subagent).
+- Source: candidate `OPENLINE_SEMANTIC_AUTHORITY_001_CANDIDATE_SOURCE.zip`,
+  SHA-256 `dc34c1653f714498c5238121f477a2d920ef045864c04fa6283f0e462ba1301e`
+  (verified match on recovery; see `evidence/recovery-reconciliation-001.md`
+  and `evidence/comparison.json`).
+- Public repo: `terryncew/openline-genie`.
+- Base: public main `ed62b3682c049c265317dded76d0e2a433bf62c6` (v1.1.0-rc1).
+- Branch: `integration/semantic-authority-001`, commit
+  `90eb766` ("Integrate OpenLine Semantic Authority Bridge (v1.2.0-rc1)").
+- Merge to main: `3ef38d50b76924b0e57012883e335074e59f6261`
+  ("Merge Semantic Authority Bridge (v1.2.0-rc1) into main").
+- Tag: `v1.2.0-rc1` (annotated, tag object
+  `b268eda0aa64f817eca17c21becc325151f1f06b`), pushed 2026-11-15.
+- Release: https://github.com/terryncew/openline-genie/releases/tag/v1.2.0-rc1
+  (prerelease, published 2026-11-15T10:07:48Z).
+- Asset: `OPENLINE_GENIE_V1_2_0_RC1_SOURCE.zip`, 12,322,844 bytes,
+  SHA-256 `7690d1c9de1dcfe621520d434ab09fae4c46949c996ff466679b6cc452da4666`
+  (built with `git archive` from the tag; checksum re-verified on the
+  downloaded asset).
+- Prior tags preserved, verified via `git ls-remote`: v0.7.1
+  `87aee3f3b726136fce1676ff6ec1d9e42f97dde6`, v1.0.0-rc1
+  `f16f2e824c41dede1a3ebef6980d83096e46d9df`, v1.1.0-rc1
+  `fdd89fdc` / `456425d413a3d1ebc9ba29ca414040435e0ed131`. Unchanged.
+
+## What was integrated (and what was not)
+
+Ported (12 files, byte-identical to the candidate except the two noted
+repairs and the regenerated receipts):
+`core/semantic_authority_bridge.py`,
+`capabilities_007_008/generated/semantic_authority_bridge_cap.py`,
+`capabilities_007_008/registry_g4_semantic.json`,
+`run_semantic_authority_001.py`, `tests/test_semantic_authority_001.py`,
+`openline_semantic_authority_workbench.html`,
+`examples/ontologies/*.yaml` (4), `SEMANTIC_AUTHORITY_001_RECEIPTS.json`
+(regenerated on this tree), `ADVOCATE_CASE_PACKET_001_RECEIPTS.json`
+(candidate evidence only).
+
+Adapted: `capabilities_007_008/kernel.py` (exactly the 2 bridge hunks,
+verified by diff against the candidate) and `applications/genie_server.py`
+(ONLY the 2 route hunks, manually placed near `/ratchet`). The candidate's
+server file was NOT ported: it is the pre-repair version (binds 0.0.0.0,
+no operator-identity discard, Host/Origin check POST-only). The shipped
+server keeps all three public repairs; the new `/api/*` route inherits the
+shared `_loopback_check` automatically.
+
+Not ported: the 40 base-drift files, `case_packets_demo/` (16 binaries),
+`tests/state-discovery/` (5 Ed25519 key/seed files + live SQLite DBs/WAL —
+secrets and runtime state; the patch's binary key hunks were never applied),
+and the patch as a whole (reference diff only, against Argon's older base
+with `/working_dir` paths). No changes to the root Genie server or to
+Robotics Studio (`vendor_009/` is a separate snapshot).
+
+## Repairs made at integration
+
+1. **GET write side effect removed.** The candidate's
+   `/api/semantic/state` ran the full suite and wrote
+   `SEMANTIC_AUTHORITY_001_RECEIPTS.json` from inside a GET on a cache
+   miss. The shipped route serves the precomputed receipts read-only and
+   returns HTTP 503 `not_computed` (with instructions to run the runner)
+   when the file is absent. Verified: repeated GETs neither rewrite the
+   receipts file nor create files; with the file absent the route returns
+   503 and writes nothing (`evidence/attack_verify_001.log`).
+2. **Dead `?probe=recompile` control wired to a real handler.** It now
+   runs the local, read-only Boundary B recompilation simulation against
+   the shipped Energy Commons fixture and reports which default FK join
+   edges changed (both tariff edges flip). No files written, no live
+   service. Verified live (`evidence/attack_verify_001.log`,
+   `evidence/published-smoke-001.log`).
+3. **Workbench "REFUSED (HTTP 409)" label corrected** to "REFUSED — stale
+   authority": stale refusal is the Python exception
+   `StaleSemanticAuthorityRefused`, not an HTTP status; the bridge has no
+   POST endpoint.
+4. **PyYAML added**: `PyYAML==6.0.2` in `applications/requirements.txt`
+   (verified clean install in a fresh venv).
+
+## Measured results (all fresh numbers on the combined tree, 2026-11-15)
+
+- **Applications suite** (system Python 3.12.3, no Chrome/Chromium):
+  193 tests ran, 176 passed, 1 failure, 11 errors, 5 skipped
+  (`evidence/full-suite-system-python-001.log`, 980.0s). All 7 new
+  semantic tests passed. The 1 failure is the Neighborhood browser
+  journey test (Chromium binary required — NOT VERIFIED). Of the 11
+  errors: 2 check external archive files not in the package; 3 are
+  browser tests needing Chrome/Chromium (`NoSuchDriverException` — NOT
+  VERIFIED); 6 are live-server tests erroring on `TimeoutError`. The 6
+  timeouts are a pre-existing environment limit, not a bridge regression:
+  the first live-engine request takes ~42.5s on this 1.5-CPU box while
+  the tests use a 20s client timeout (measured directly; second request
+  0.1s), and the same 3 of those tests were reproduced failing identically
+  on the pristine v1.1.0-rc1 tree
+  (`cd work/baseline/applications && python -m unittest
+  tests.test_five_products_qualification_repairs_001...test_06/07/08`
+  → 3 errors, 66.9s). Baseline comparison: v1.1.0-rc1 measured 186 ran /
+  175 passed / 1 failure / 5 errors / 5 skipped; v1.2.0-rc1 is 193 ran /
+  176 passed / 1 failure / 11 errors / 5 skipped = +7 semantic tests
+  passed, −6 tests moved to the pre-existing timeout errors, nothing else.
+- **Semantic tests standalone** (venv python): 7/7 OK in 197.9s.
+- **Bridge runner** (`python3 run_semantic_authority_001.py`, fresh run,
+  `evidence/runner-baseline-run-001.log`, 199.3s wall, $0.00):
+  verdict `QUALIFIED_CANDIDATE (LOCAL DETERMINISTIC & OSSIE YAML / MCP
+  ADAPTER VERIFIED; LIVE REMOTE NVIDIA NIM DEPLOYMENT HOLD)`; holdout
+  60/60 (100.0%), 0 false recalls, 0 missed consequential, 0 stale leaks;
+  comparators C0 40/60 (66.67%), C1 20/60 (33.33%), C2 45/60 (75.0%);
+  adversarial 10/10 blocked; dogfood Energy affected only
+  DEC-ENERGY-COOP-RANKING (pump stayed CURRENT, stale EPC refused),
+  Civic affected only DEC-CIVIC-WATER-RESILIENCE-REC (68.0 NTU, roughing
+  prefilter covenant), Advocate affected only
+  CLAIM-1-DISASTER-GRANT-EXCLUSION (overwrite refused); Worker A→B
+  inheritance EXECUTED on the unfamiliar Biotech ontology
+  (DEC-BIOLOGICS-LOT-RELEASE reopened, DEC-BIOLOGICS-VIAL-INVENTORY
+  stayed CURRENT). Regenerated receipts SHA-256:
+  `fc85f7565f139a5814512c35c74747d472c1778915392b2c52e71a418210392f`
+  (candidate's copy was `1d5d0257…`, preserved at
+  `evidence/candidate-receipts-as-shipped.json`).
+- **Independent conventional-dependency comparison**
+  (`evidence/conventional_comparison_001.py`, `.log`): bridge 10/10 vs a
+  competent explicit dependency-graph tracker with hash-based invalidation
+  (7/10) on the same 10 episodes. Bridge wins on SQL whitespace/casing/
+  comment invariance (E2, E9) and forged-certification detection (E6);
+  parity on synonym/description edits (E1, E7) and formula/unit/join/
+  revoke/removal changes (E3, E4, E5, E8, E10). The candidate's own C1
+  comparator is a weaker tracker (term version + raw SQL); this comparison
+  is the honest one and its margin is narrower.
+- **Reproducible example** (`applications/examples/semantic_authority_bridge_example.py`):
+  exit 0 on the integration tree and on the published tag code — harmless
+  edit reopens nothing, formula change reopens only the affected decision,
+  stale action refused, unaffected action executes, re-authorization after
+  re-certification executes, case history verifies.
+- **Independent worker handoff** (`evidence/handoff_verify_001.py`, `.log`):
+  Worker B in a clean process/dir (only `core/` + `capabilities_007_008/`
+  copies + the packet; no Worker A state or keys) verified the packet and
+  reproduced the REOPEN plus the stale-authority refusal from the packet
+  alone.
+- **Attack / live-server verification** (`evidence/attack_verify_001.py`,
+  `.log`): 0 failures — Neighborhood identity re-attack byte-identical
+  across claimed identities; foreign Host 403 on every `GET /api/*` route
+  including `/api/semantic/state` and `?probe=recompile`; foreign Origin
+  403; `/semantic` 200 + workbench marker; `/api/semantic/state` 200 +
+  holdout 100.0; probe returns the real Boundary B result; GETs write
+  nothing; `--host 0.0.0.0` refused; `ss` shows loopback-only listening.
+- **Node**: 11/11 passed. **Robotics**: 6/6 passed.
+  (`evidence/node-tests-001.log`, `evidence/robotics-tests-001.log`).
+- **Install verification**: `launch_genie.py --verify-only` exits 0
+  (`evidence/verify-only-001.log`).
+
+## Publication verification (Step 6, the published commit, not the workdir)
+
+- Fresh clone at tag v1.2.0-rc1: HEAD `3ef38d5`, receipts hash `fc85f756…`.
+- Downloaded release asset SHA-256 `7690d1c9…` matches the uploaded asset.
+- Manifests verified **on the downloaded asset**: root 81/81,
+  applications 285/285, openline_robotics_001 160/160.
+- Clean-environment install from the published tag (fresh venv,
+  `TMPDIR` under `~/workspace`): PyYAML 6.0.2 installs; example passes
+  7/7; verify-only exits 0; 7 semantic tests OK in 202.9s; Node 11/11.
+- Live smoke from the published code
+  (`evidence/published-smoke-001.log`): binds 127.0.0.1; `/products` 200;
+  `/semantic` 200 + marker; `/api/semantic/state` 200 + holdout 100.0;
+  probe 200 with both join edges flipping; foreign Host 403.
+- Secrets/private-info scan on the published commit: no Drive IDs, no
+  `/working_dir` paths, no private keys/tokens outside pre-existing
+  `RELEASE_RECORD.md` prose documenting their removal, and no
+  `state-discovery`/SQLite files committed. (Runtime state created by the
+  verification runs themselves — `genie_local_data/`, `spend_authority.sqlite`
+  — is gitignored and is not in the tag.)
+- GitHub Pages verified returning 200 with content (2026-11-15): root,
+  Try, How, See. The landing page still describes v0.7.1, as it did for
+  v1.1.0-rc1; the `gh-pages` branch was left untouched (updating it was
+  not required for this release and risked breaking the four verified
+  destinations).
+
+## Honest limits (carried into the release notes and docs)
+
+- **NVIDIA boundary (exact):** file-level Apache Ossie YAML (and native
+  Auto-Ontology YAML/JSON) interchange only, parsed and exported locally.
+  The 9 read-only MCP tools are local in-memory methods; there is no MCP
+  transport, no NIM endpoint, no Postgres, no network call. No live
+  NVIDIA integration, no endorsement, and no claim that NVIDIA's
+  converter will accept the bridge's files (that needs a live import
+  test, which was not run). The OpenLine Ultimate Loop Google Doc was not
+  publicly readable; no claim is made about the bridge's role in it.
+- **Ephemeral keys:** steward/receiver keys are fresh Ed25519 per bridge
+  instance (self-attestation, not an independent external receiver's key).
+  Attestations prove integrity/provenance at a point in time, not
+  empirical truth, legal validity, or external authority. Receipts are
+  not stable across runs.
+- **Holdout is self-constructed** (fixed script), not an external held-out
+  set. Accuracy is a regression signal, not an independent evaluation.
+- **Not verified:** browser end-to-end tests (no Chrome/Chromium),
+  macOS/Windows installs, iPhone Safari, uncoached human testing.
+- **Environment limit:** the 6 live-server `TimeoutError`s above
+  (first engine build ~42.5s vs 20s test timeout on this box).
+
+## Rollback points (kept together under `~/workspace/semantic-authority-bridge-001/`)
+
+- `downloads/OPENLINE_SEMANTIC_AUTHORITY_001_CANDIDATE_SOURCE.zip` —
+  pristine candidate (SHA-256 `dc34c165…`).
+- `work/baseline/` — clean clone of public main at `ed62b36` (read-only
+  reference; unmodified).
+- `work/candidate/` — extracted candidate.
+- `work/repo/` — working repo: branch `integration/semantic-authority-001`
+  (`90eb766`), main at `3ef38d5`, tag `v1.2.0-rc1`.
+- `work/verify-clone/` — fresh clone at tag v1.2.0-rc1 (verification only).
+- `work/verify-asset/` — extracted downloaded release asset (manifests
+  verified here).
+- `evidence/release/OPENLINE_GENIE_V1_2_0_RC1_SOURCE.zip` — the uploaded
+  asset (SHA-256 `7690d1c9…`).
+- Rollback: `git checkout v1.1.0-rc1` (or `git revert` of merge `3ef38d5`)
+  returns the tree to the prior release; the v1.1.0-rc1 tag, release, and
+  asset are untouched.
+
+## Held
+
+Nothing held. No genuine integration or security defect was found that
+could not be repaired in scope; the two foreseen defects were repaired
+(see above) and re-tested. No component is withheld from this release.
+
+## Parent verification (2026-11-15, Muse, on the published artifact)
+
+- Live refs verified: release v1.2.0-rc1 (prerelease), tag object
+  `b268eda0aa64f817eca17c21becc325151f1f06b` resolves to commit `3ef38d5`,
+  main `3ef38d5`, older tags v1.1.0-rc1 / v1.0.0-rc1 / v0.7.1 intact,
+  no new repository, Pages built, gh-pages `f2ab9317`.
+- Downloaded asset SHA-256 `7690d1c9de1dcfe621520d434ab09fae4c46949c996ff466679b6cc452da4666`
+  verified from the live re-download. Manifests on the downloaded asset:
+  root 81/81, applications 285/285, robotics 160/160.
+- Fresh venv install from the published asset OK (numpy 2.5.4,
+  cryptography 50.0.2, PyYAML 6.0.2); `launch_genie.py --verify-only`
+  exits 0. Semantic suite 7/7 OK; reproducible example exits 0 with all
+  7 checks passing.
+- Live smoke from the published code: both servers loopback-only,
+  `/products` 200, `/semantic` 200, `/api/semantic/state` 200
+  (adversarial 10/10 blocked), probe 200, foreign Host 403 on
+  `/api/semantic/state`, foreign Origin 403, `--host 0.0.0.0` refused,
+  Neighborhood identity re-attack byte-identical across three claimed
+  identities.
+- Timeout errors: the 6 live-server `TimeoutError`s from the full-suite
+  run did NOT reproduce in isolation on either tree. The same 6 tests
+  pass in ~13s on the pristine v1.1.0-rc1 tree and in ~13s on the
+  combined v1.2.0-rc1 tree. They appear only under full-suite load on
+  this shared 1.5-CPU box. No bridge-caused slowdown measured; the
+  errors are environment flakiness, not a regression.
+- Packaging note: the release asset was built with `git archive` without
+  a `--prefix`, so it extracts flat (no top-level directory). Create an
+  empty folder before extracting. Contents and manifests are correct;
+  this is a packaging wart, not an integrity failure.
