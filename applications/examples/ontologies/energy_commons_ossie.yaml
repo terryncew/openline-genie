@@ -1,0 +1,129 @@
+version: 1.0.0
+name: openline_energy_commons_ontology
+format: ossie
+datasets:
+- name: community_energy_warehouse
+  tables:
+  - name: meters
+    description: Community cooperative sub-meters and tariff bindings
+    columns:
+    - name: meter_id
+      data_type: TEXT
+      is_primary_key: true
+      description: Unique sub-meter ID
+    - name: service_tariff_schedule_id
+      data_type: TEXT
+      description: Active retail TOU tariff schedule
+    - name: legacy_wholesale_schedule_id
+      data_type: TEXT
+      description: Deprecated wholesale schedule
+    - name: monthly_elec_kwh
+      data_type: FLOAT
+      description: Monthly net electricity consumption
+  - name: tariffs
+    description: Utility tariff rate schedules and export credits
+    columns:
+    - name: schedule_id
+      data_type: TEXT
+      is_primary_key: true
+      description: Tariff schedule identifier
+    - name: peak_tariff_usd_kwh
+      data_type: FLOAT
+      description: Peak period retail rate ($/kWh)
+    - name: offpeak_tariff_usd_kwh
+      data_type: FLOAT
+      description: Off-peak period retail rate ($/kWh)
+    - name: nem_export_rate_usd_kwh
+      data_type: FLOAT
+      description: Net surplus export credit ($/kWh)
+  - name: water_pumps
+    description: Cooperative cistern and booster pump telemetry
+    columns:
+    - name: pump_id
+      data_type: TEXT
+      is_primary_key: true
+      description: Pump identifier
+    - name: dynamic_head_m
+      data_type: FLOAT
+      description: Total dynamic hydraulic head in meters
+  terms:
+  - id: TERM_NET_AVOIDED_ELECTRICITY_COST
+    name: Net Avoided Electricity Cost
+    description: Certified cooperative avoided retail electricity cost under active
+      TOU + net export tariff.
+    synonyms:
+    - avoided_grid_rate
+    - coop_electricity_savings_basis
+    mapped_columns:
+    - table: meters
+      column: monthly_elec_kwh
+    - table: tariffs
+      column: peak_tariff_usd_kwh
+    - table: tariffs
+      column: offpeak_tariff_usd_kwh
+    - table: tariffs
+      column: nem_export_rate_usd_kwh
+    unit: USD_PER_KWH
+    grain: billing_month
+    denominator: total_served_kwh
+    version: 1
+    certified: true
+    related_terms:
+    - TERM_PUMP_HYDRAULIC_HEAD
+  - id: TERM_PUMP_HYDRAULIC_HEAD
+    name: Cistern Booster Pump Hydraulic Head
+    description: Static + friction hydraulic head for cooperative cistern water pumping.
+    synonyms:
+    - booster_head_m
+    mapped_columns:
+    - table: water_pumps
+      column: dynamic_head_m
+    unit: METERS
+    grain: hourly_dispatch
+    denominator: pump_cycle
+    version: 1
+    certified: true
+    related_terms: []
+  sql_attributes:
+  - id: SQL_ATTR_AVOIDED_TOU_COST
+    term_id: TERM_NET_AVOIDED_ELECTRICITY_COST
+    name: avoided_tou_rate_usd_kwh
+    expression: SUM(meters.monthly_elec_kwh * (0.65 * tariffs.peak_tariff_usd_kwh
+      + 0.35 * tariffs.offpeak_tariff_usd_kwh)) + SUM(tariffs.nem_export_rate_usd_kwh
+      * 0.065)
+    purpose: Computes annual avoided TOU electricity cost under retail net metering
+      ($0.39 peak, $0.27 off-peak, $0.065 export)
+    unit: USD
+    grain: annual_coop
+    version: 1
+    certified: true
+  - id: SQL_ATTR_PUMP_HEAD
+    term_id: TERM_PUMP_HYDRAULIC_HEAD
+    name: avg_pump_head_m
+    expression: AVG(water_pumps.dynamic_head_m)
+    purpose: Computes mean dynamic pumping head
+    unit: METERS
+    grain: daily
+    version: 1
+    certified: true
+  relationships:
+  - id: REL_METER_TO_SERVICE_TARIFF
+    source_table: meters
+    source_column: service_tariff_schedule_id
+    target_table: tariffs
+    target_column: schedule_id
+    role: service_tariff_schedule
+    cardinality: many_to_one
+    is_default: true
+    active: true
+    certified: true
+  - id: REL_METER_TO_LEGACY_WHOLESALE_TARIFF
+    source_table: meters
+    source_column: legacy_wholesale_schedule_id
+    target_table: tariffs
+    target_column: schedule_id
+    role: all_legacy_wholesale_schedule
+    cardinality: many_to_one
+    is_default: false
+    active: true
+    certified: false

@@ -254,6 +254,95 @@ class GenieRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(raw)
             return
+        if parsed.path in ("/semantic", "/openline_semantic_authority_workbench.html"):
+            # Semantic Authority Bridge workbench (v1.2.0-rc1). Serves the
+            # static workbench page only; it performs no computation.
+            s_path = HERE / "openline_semantic_authority_workbench.html"
+            if not s_path.exists():
+                self._send_json(404, {"error": "openline_semantic_authority_workbench.html not found"})
+                return
+            raw = s_path.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
+        if parsed.path == "/api/semantic/state":
+            # Read-only: serves the precomputed receipts file shipped with
+            # the release. A GET must not run the full suite or write
+            # files; if the receipts have not been computed, the route
+            # says so instead of computing them. (The candidate's
+            # cache-miss path ran the suite and wrote the receipts JSON
+            # from inside a GET; that write side effect is removed here.)
+            # ?probe=recompile runs the local, read-only Boundary B
+            # recompilation simulation against the shipped Energy Commons
+            # ontology fixture and reports which default FK join edge was
+            # selected. No files are written and no live service is used.
+            try:
+                qs = parse_qs(parsed.query)
+                if qs.get("probe", [""])[0] == "recompile":
+                    from core.semantic_authority_bridge import (
+                        SemanticOntologyModel,
+                        parse_ontology_yaml_or_json,
+                        simulate_nvidia_semantic_recompilation,
+                    )
+
+                    fixture = HERE / "examples" / "ontologies" / "energy_commons_ossie.yaml"
+                    if not fixture.exists():
+                        self._send_json(404, {"error": "energy_commons_ossie.yaml fixture not found"})
+                        return
+                    before = SemanticOntologyModel(
+                        parse_ontology_yaml_or_json(fixture.read_text(encoding="utf-8"))
+                    )
+                    after = simulate_nvidia_semantic_recompilation(before)
+                    # Pair by relationship id: the recompiled model is built
+                    # from the exported dict, whose relationships are sorted
+                    # by id, so positional pairing would mismatch.
+                    before_by_id = {rel["id"]: rel for rel in before.relationships}
+                    changed = [
+                        {
+                            "relationship_id": rel["id"],
+                            "source_table": rel["source_table"],
+                            "target_table": rel["target_table"],
+                            "source_column": rel["source_column"],
+                            "is_default_before": before_by_id[rel["id"]]["is_default"],
+                            "is_default_after": rel["is_default"],
+                        }
+                        for rel in after.relationships
+                        if before_by_id[rel["id"]].get("is_default") != rel.get("is_default")
+                    ]
+                    self._send_json(
+                        200,
+                        {
+                            "probe": "recompile",
+                            "boundary": "B",
+                            "fixture": "examples/ontologies/energy_commons_ossie.yaml",
+                            "simulation": "local-only; no live NVIDIA service, no file writes",
+                            "default_join_edges_changed": changed,
+                        },
+                    )
+                    return
+                rcpt_file = HERE / "SEMANTIC_AUTHORITY_001_RECEIPTS.json"
+                if not rcpt_file.exists():
+                    self._send_json(
+                        503,
+                        {
+                            "status": "not_computed",
+                            "error": (
+                                "Semantic authority receipts have not been computed for "
+                                "this install. Run `python3 run_semantic_authority_001.py` "
+                                "inside applications/ to generate "
+                                "SEMANTIC_AUTHORITY_001_RECEIPTS.json."
+                            ),
+                        },
+                    )
+                    return
+                data = json.loads(rcpt_file.read_text(encoding="utf-8"))
+                self._send_json(200, data)
+            except Exception as exc:
+                self._send_json(400, {"error": str(exc)})
+            return
         if parsed.path == "/openline_genie.html":
             if not HTML_PATH.exists():
                 self._send_json(404, {"error": "openline_genie.html not found"})

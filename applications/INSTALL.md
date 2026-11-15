@@ -1,4 +1,4 @@
-# Install OpenLine Genie v1.0.0-rc1
+# Install OpenLine Genie v1.2.0-rc1
 
 Local-first visual project builder. No account. No cloud. No subscription.
 
@@ -17,9 +17,9 @@ Local-first visual project builder. No account. No cloud. No subscription.
 
 1. Get the release archive. Open the OpenLine Genie repository on
    GitHub (`terryncew/openline-genie`), go to **Releases**, and download
-   the source archive attached to the **v1.0.0-rc1** prerelease. Extract
-   it and work inside the extracted directory. The v1.0.0-rc1 release
-   must exist before this step works; if there is no v1.0.0-rc1 entry
+   the source archive attached to the **v1.2.0-rc1** prerelease. Extract
+   it and work inside the extracted directory. The v1.2.0-rc1 release
+   must exist before this step works; if there is no v1.2.0-rc1 entry
    under Releases, the release has not been published yet. If you cloned
    the repository instead of downloading the archive, the applications
    live in the `applications/` directory; work inside it.
@@ -31,8 +31,9 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-This installs `cryptography` (Ed25519 receipts) and `numpy` (local model
-math). The first install downloads those packages, so it needs network
+This installs `cryptography` (Ed25519 receipts), `numpy` (local model
+math), and `PyYAML` (reading Apache Ossie YAML definition files for the
+Semantic Authority Bridge; pinned to `PyYAML==6.0.2`). The first install downloads those packages, so it needs network
 access. Nothing else is required to run the server. Playwright is optional
 and only needed for browser tests; see `pyproject.toml` under
 `[project.optional-dependencies]`.
@@ -119,7 +120,7 @@ write accepted state.
 node --test tests/test_rc6_projection.mjs
 ```
 
-Measured on 2026-11-15 in this environment (Python 3.12.3, no Chrome/Chromium installed): 184 Python tests ran: 174 passed, 5 errors, 1 failure, 4 skipped. The 5 errors are 2 tests that check external archive files not included in this package (`downloads/` and `frozen_baseline/` are absent) and 3 browser tests that cannot run without Chrome (NOT VERIFIED, not passed). The 1 failure is the Neighborhood browser journey test (`tests/test_neighborhood_001.py::test_04`), which requires a Chromium binary that is not installed here (NOT VERIFIED, not passed). The 4 skipped tests are browser tests that skip when Chromium is absent. Node tests: 11 passed, 0 failed (`node --test tests/test_rc6_projection.mjs`). The full Python suite takes about 50 seconds. The 127.0.0.2 loopback tests bypass the sandbox proxy automatically (handled inside `tests/test_product_completion_001.py`).
+Measured on 2026-11-15 in this environment (system Python 3.12.3, no Chrome/Chromium installed): 193 Python tests ran: 176 passed, 1 failure, 11 errors, 5 skipped. All 7 new Semantic Authority Bridge tests passed. The 1 failure is the Neighborhood browser journey test (`tests/test_neighborhood_001.py::test_04`), which requires a Chromium binary that is not installed here (NOT VERIFIED, not passed). Of the 11 errors: 2 tests check external archive files not included in this package (`downloads/` and `frozen_baseline/` are absent) and 3 are browser tests that cannot run without Chrome (NOT VERIFIED, not passed). The other 6 are live-server tests that error on `TimeoutError` because the first engine build takes ~42.5s on this 1.5-CPU box while the tests use a 20s client timeout — the same 6 errors were reproduced on the pristine v1.1.0-rc1 tree, so they are a pre-existing environment limit, not a bridge regression. The 5 skipped tests are browser tests that skip when Chromium is absent. Node tests: 11 passed, 0 failed (`node --test tests/test_rc6_projection.mjs`). The full Python suite takes about 16 minutes on this box (the 7 bridge tests alone take ~3.5 minutes). The 127.0.0.2 loopback tests bypass the sandbox proxy automatically (handled inside `tests/test_product_completion_001.py`).
 
 ## Uninstall
 

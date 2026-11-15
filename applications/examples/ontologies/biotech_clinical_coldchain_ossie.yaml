@@ -1,0 +1,101 @@
+version: 1.0.0
+name: biotech_clinical_coldchain_ontology
+format: ossie
+datasets:
+- name: gmp_biologics_coldchain_db
+  tables:
+  - name: biologics_lots
+    description: GMP monoclonal antibody lot release records
+    columns:
+    - name: lot_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: vial_surface_probe_id
+      data_type: TEXT
+    - name: air_return_probe_id
+      data_type: TEXT
+    - name: vial_count
+      data_type: INTEGER
+  - name: thermal_probes
+    description: Calibrated thermal sensor readings
+    columns:
+    - name: probe_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: mean_kinetic_temp_c
+      data_type: FLOAT
+    - name: peak_excursion_minutes_above_8c
+      data_type: FLOAT
+  terms:
+  - id: TERM_MEAN_KINETIC_TEMP_RELEASE_GATE
+    name: GMP Lot Release Mean Kinetic Temperature Gate
+    description: Certified USP <1079> Mean Kinetic Temperature (MKT <= 8.0 C) lot-release
+      metric.
+    synonyms:
+    - usp_1079_mkt_c
+    - biologics_thermal_stability_gate
+    mapped_columns:
+    - table: thermal_probes
+      column: mean_kinetic_temp_c
+    - table: thermal_probes
+      column: peak_excursion_minutes_above_8c
+    unit: CELSIUS
+    grain: lot_shipment
+    denominator: biologics_lot
+    version: 1
+    certified: true
+    related_terms: []
+  - id: TERM_VIAL_INVENTORY_COUNT
+    name: Lot Vial Packaging Count
+    description: Physical count of sealed vials in the lot.
+    synonyms:
+    - vial_quantity
+    mapped_columns:
+    - table: biologics_lots
+      column: vial_count
+    unit: VIALS
+    grain: lot
+    denominator: batch
+    version: 1
+    certified: true
+    related_terms: []
+  sql_attributes:
+  - id: SQL_ATTR_LOT_MKT_CELSIUS
+    term_id: TERM_MEAN_KINETIC_TEMP_RELEASE_GATE
+    name: lot_mkt_c
+    expression: MAX(thermal_probes.mean_kinetic_temp_c) + 0.02 * MAX(thermal_probes.peak_excursion_minutes_above_8c)
+    purpose: Computes effective thermal excursion score for GMP lot release
+    unit: CELSIUS
+    grain: lot
+    version: 1
+    certified: true
+  - id: SQL_ATTR_VIAL_COUNT
+    term_id: TERM_VIAL_INVENTORY_COUNT
+    name: total_vials
+    expression: SUM(biologics_lots.vial_count)
+    purpose: Total vials in lot
+    unit: VIALS
+    grain: lot
+    version: 1
+    certified: true
+  relationships:
+  - id: REL_LOT_TO_VIAL_SURFACE_PROBE
+    source_table: biologics_lots
+    source_column: vial_surface_probe_id
+    target_table: thermal_probes
+    target_column: probe_id
+    role: vial_surface_probe
+    cardinality: many_to_one
+    is_default: true
+    active: true
+    certified: true
+  - id: REL_LOT_TO_AIR_RETURN_PROBE
+    source_table: biologics_lots
+    source_column: air_return_probe_id
+    target_table: thermal_probes
+    target_column: probe_id
+    role: air_return_probe
+    cardinality: many_to_one
+    is_default: false
+    active: true
+    certified: false
