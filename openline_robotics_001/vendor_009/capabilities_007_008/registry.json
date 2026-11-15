@@ -1,0 +1,110 @@
+{
+  "capabilities": [
+    {
+      "accepted_facts": [
+        "now",
+        "deadline",
+        "need_grid_kwh",
+        "charge_power_kw",
+        "tariffs"
+      ],
+      "accepted_facts_inside": [],
+      "claims_excluded": [
+        "open_ended_problem_recognition",
+        "autonomous_weight_editing",
+        "independent_external_acceptance"
+      ],
+      "description": "OpenLine Energy Autopilot plan_charge; owner-supplied tariff model",
+      "id": "energy-charge",
+      "provides": [
+        "charge_schedule",
+        "estimated_plan_cost",
+        "feasible_by_deadline"
+      ],
+      "relative_cost_units": 1,
+      "relative_source": "upstream/energy_planning.py",
+      "required_facts": [
+        "now",
+        "deadline",
+        "need_grid_kwh",
+        "charge_power_kw",
+        "tariffs"
+      ],
+      "scope": "LOCAL_READ_ONLY_SIMULATION",
+      "source_sha256": "fc5d9a30abc9d5e33ba131509dafa8a58e91278eaccb6a78f0643e587b34b8b4",
+      "status": "SCOPED_TESTED_LOCAL"
+    },
+    {
+      "accepted_facts": [
+        "assumptions"
+      ],
+      "accepted_facts_inside": [
+        "cistern_gallons_per_week",
+        "municipal_supp_gallons_per_week",
+        "gallons_per_lb_produce",
+        "drip_mulch_enabled",
+        "volunteer_hours_per_week",
+        "lbs_per_volunteer_hour",
+        "plot_beds_count",
+        "lbs_per_bed_per_week",
+        "legume_rotation_coverage_pct",
+        "wash_station_capacity_lbs",
+        "member_demand_lbs_per_week",
+        "produce_value_usd_per_lb",
+        "weekly_operating_cost_usd",
+        "uncertainty_pct"
+      ],
+      "claims_excluded": [
+        "open_ended_problem_recognition",
+        "autonomous_weight_editing",
+        "independent_external_acceptance"
+      ],
+      "description": "OpenLine Community Garden compute_garden, model assumptions only",
+      "id": "garden-capacity",
+      "provides": [
+        "weekly_harvest_capacity",
+        "bottleneck",
+        "scenario_value"
+      ],
+      "relative_cost_units": 1,
+      "relative_source": "upstream/community_garden.py",
+      "required_facts": [
+        "assumptions"
+      ],
+      "scope": "LOCAL_READ_ONLY_SIMULATION",
+      "source_sha256": "f3686d7ba62ce26f23fda8d75066c70266772e9b73d6c2aa20a6e2f94a43bd68",
+      "status": "SCOPED_TESTED_LOCAL"
+    },
+    {
+      "accepted_facts": [
+        "probes",
+        "prices",
+        "patterns",
+        "history"
+      ],
+      "accepted_facts_inside": [],
+      "claims_excluded": [
+        "open_ended_problem_recognition",
+        "autonomous_weight_editing",
+        "independent_external_acceptance"
+      ],
+      "description": "OpenLine 005-R conventional bounded diagnostic rule",
+      "id": "bounded-diagnosis",
+      "provides": [
+        "next_diagnostic_action"
+      ],
+      "relative_cost_units": 1,
+      "relative_source": "upstream/diagnostic_policy.py",
+      "required_facts": [
+        "probes",
+        "prices",
+        "patterns",
+        "history"
+      ],
+      "scope": "LOCAL_READ_ONLY_SIMULATION",
+      "source_sha256": "7b66b19d44581757e5caa075368e81b85d97030377d37f34678138614d57b08f",
+      "status": "SCOPED_TESTED_LOCAL"
+    }
+  ],
+  "schema": "openline.capability_registry.cp1"
+}

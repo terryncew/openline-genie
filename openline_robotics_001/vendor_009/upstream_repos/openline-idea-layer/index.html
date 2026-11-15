@@ -1,0 +1,253 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101828"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%2380e4c6'/%3E%3C/svg%3E"><title>OpenLine Idea Layer — Build something real</title><style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#0c1421;color:#f3f6fc}*{box-sizing:border-box}body{margin:0}main{max-width:920px;margin:auto;padding:30px 18px 70px}header{padding:20px 0 28px;border-bottom:1px solid #34425a}.eyebrow{color:#80e4c6;font-weight:750;letter-spacing:.13em;font-size:12px}h1{font-size:clamp(35px,7vw,64px);letter-spacing:-.045em;margin:12px 0}p{line-height:1.6;color:#c6d1df}.sub{font-size:18px;max-width:640px}section{margin:28px 0}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}label{display:block;color:#d3ddec;font-weight:650;font-size:14px}select,input{display:block;margin-top:7px;width:100%;background:#18263a;color:white;border:1px solid #516078;border-radius:10px;padding:13px;font:inherit}button{border:0;border-radius:10px;background:#80e4c6;color:#0a1720;padding:13px 18px;font-weight:750;font-size:15px;cursor:pointer}button.secondary{background:#26354b;color:#eaf0f7;border:1px solid #56667d}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #80e4c6;outline-offset:3px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}.panel{border:1px solid #40516a;background:#132034;border-radius:16px;padding:23px;margin:18px 0}.panel[data-invalid="true"]{border-color:#f08c8c;opacity:.78}.pill{display:inline-block;color:#8fead0;font-size:13px;font-weight:700}.panel h2{font-size:clamp(25px,5vw,35px);margin:10px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.detail{border-top:1px solid #35465d;padding-top:13px}.detail h3{margin:0 0 6px;font-size:14px;color:#80e4c6}.detail p{margin:0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1524;padding:20px;border-radius:12px;max-height:430px;overflow:auto;font-size:13px;line-height:1.6}.note{font-size:13px;color:#aebed1}.status-msg{font-size:13px;color:#8fead0;min-height:20px;font-weight:600}.error-banner{font-size:14px;color:#ffb4b4;font-weight:700;margin:8px 0 0}.error-banner:empty{display:none}.panel[data-invalid="true"] .status-msg{color:#ffb4b4}footer{font-size:13px;color:#aebed1;border-top:1px solid #34425a;padding-top:20px}a{color:#91e8cf}@media(max-width:620px){.controls,.grid{grid-template-columns:1fr}.panel{padding:18px}}@media(prefers-reduced-motion:no-preference){button{transition:filter .15s}button:hover:not(:disabled){filter:brightness(1.08)}}
+details{margin:16px 0}summary{cursor:pointer;color:#8fead0;font-weight:750;padding:12px 0}summary:focus-visible{outline:3px solid #80e4c6;outline-offset:2px}h2{line-height:1.2}a:focus-visible{outline:2px solid #80e4c6;outline-offset:3px} .panel h2{font-size:clamp(25px,5vw,35px)}
+</style><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9ccRnS9fHJyIygPgcbR97LOQfP6n/xxaZt5fAVKzux8='; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; object-src 'none'; base-uri 'none'; form-action 'none'"></head><body><main><header><div class="eyebrow">OPENLINE / IDEA LAYER</div><h1>Build something real.</h1><p class="sub">Find a small business worth testing, see how it could work, and hand your AI a build-ready brief. Free to explore. No account, API key or installation.</p></header><section aria-label="Idea settings"><h2>Start with one idea</h2><p>Pick what interests you, or tap <b>Surprise me</b> and get a complete starting point.</p><div class="controls"><label>What interests you?<select id="sector"></select></label><label>Who could be the customer?<select id="audience"><option>small businesses</option><option>individuals</option><option>community groups</option></select></label><label>How might it earn money?<select id="format"><option>service</option><option>toolkit</option><option>subscription</option></select></label><label>Max paid-software budget (USD)<input id="budget" type="number" min="0" max="1000000" step="1" value="0" inputmode="numeric"></label></div><p role="alert" aria-live="assertive" id="controls-status" class="error-banner"></p><div class="actions"><button id="generate">Try another scope angle</button><button class="secondary" id="surprise">Surprise me with another</button></div><p class="note">This is a curated, deterministic generator—not a live language model. Ideas are hypotheses, not validated business opportunities.</p></section><section class="panel" id="idea-card" aria-labelledby="title"><span class="pill" id="tag" aria-live="polite"></span><h2 id="title"></h2><p id="offer"></p><div class="actions"><button id="copy-top">Copy this idea for my AI</button><button class="secondary" id="download-top">Save agent brief</button></div><p role="status" aria-live="polite" id="top-status" class="status-msg"></p><div class="grid"><div class="detail"><h3>Problem</h3><p id="problem"></p></div><div class="detail"><h3>Revenue path</h3><p id="revenue"></p></div><div class="detail"><h3>Hard boundary</h3><p id="risk"></p></div><div class="detail"><h3>First real test</h3><p id="firstTest"></p></div><div class="detail"><h3>Budget</h3><p id="cost"></p></div><div class="detail"><h3>What would change our mind?</h3><p id="stopRule"></p></div><div class="detail"><h3>The first thing to build</h3><p id="mvp"></p></div><div class="detail"><h3>How to know it works</h3><p id="acceptanceTest"></p></div></div><p class="note" id="evidence"></p></section><section><h2>Give this idea to your AI agent</h2><p>The brief already contains the project, a concrete first deliverable, a test, guardrails, and an optional free-tool path. Copy it, paste it into your coding agent, and ask it to build the prototype—not to invent customers.</p><div class="actions"><button id="copy">Copy brief</button><button class="secondary" id="download">Save .md file</button></div><details open><summary>Preview the complete agent brief</summary><pre id="brief" tabindex="0"></pre></details><p role="status" aria-live="polite" id="status" class="status-msg"></p></section><section class="panel" aria-label="Open-source AI tool suggestions" id="ai-tools"><span class="pill">FREE AI TOOL ROUTE &amp; COST DISCLOSURES</span><h2>Use your existing agent—or build locally.</h2><p><a href="https://github.com/ollama/ollama" target="_blank" rel="noopener noreferrer">Ollama</a> (MIT) runs a model locally; <a href="https://github.com/Aider-AI/aider" target="_blank" rel="noopener noreferrer">Aider</a> (Apache-2.0) can help it edit code. Both tools are free and open source, but running a local 7B–14B coding model (such as Qwen2.5-Coder-7B, Apache-2.0) typically requires a computer with 8–16 GB RAM/VRAM, ~5–10 GB disk space, and electricity, and downloaded model weights have separate licenses. Using a hosted commercial AI assistant, cloud GPUs, custom domains, or paid hosting is optional and carries separate third-party fees.</p></section><footer>OpenLine Idea Layer • MIT License • Free static prototype • No accounts, telemetry, or API requests • No verified demand or promised income. <a href="https://github.com/terryncew/openline-living-projects">OpenLine Living Projects</a></footer></main><script>const sectors = [
+ ['Home energy','Homeowners struggle to compare energy upgrades','Local energy assessment and comparison reports','openline-energy','Estimates require verified local tariffs, roof data, and qualified installers','A homeowner agrees to review a sample report'],
+ ['EV charging','EV drivers need cheaper, simpler charging schedules','Privacy-first charging schedule setup service','openline-energy-autopilot','Schedules are simulations; never control real chargers without separate approval','Three drivers test a simulated schedule'],
+ ['Public records','Residents cannot easily track changes to public records','Local public-record revision digest','mandate-ledger','Do not infer motives from record changes; cite primary sources','A civic group requests a second digest'],
+ ['Accessibility','Small organizations struggle to make documents accessible','Accessible document remediation studio','openline-living-projects','Human review required; do not promise legal compliance','Two organizations pay for a pilot'],
+ ['Local services','Independent trades lose leads due to unclear estimates','Plain-language quote comparison toolkit','openline-living-projects','No invented prices or contractor endorsements','Five customers complete an estimate comparison'],
+ ['Education','Tutors repeat administrative preparation','Tutor lesson-plan starter packs','openline-living-projects','Protect minors’ data and verify instructional accuracy','Three tutors reuse a pack twice'],
+ ['Nonprofits','Small nonprofits cannot maintain volunteer handoffs','Volunteer handoff and continuity kits','openline-living-projects','Avoid collecting sensitive volunteer data','A nonprofit uses a kit for one handoff'],
+ ['Food businesses','Small food sellers need clearer allergen documentation','Menu and allergen disclosure worksheet service','openline-living-projects','Human verification mandatory; never assert food safety certification and always check jurisdiction-specific allergen-labeling rules (e.g., FDA FALCPA/FASTER Act major-9 or local health code)','One seller validates the worksheet with staff on a real menu and reuses it across a second menu update'],
+ ['Property upkeep','Renters and owners lose maintenance histories','Maintenance record organizer','openline-living-projects','No automated landlord notifications or legal advice','Five users recover a past repair record'],
+ ['AI oversight','Teams lack clear evidence for agent actions','Agent action receipt review service','openline-connect','Receipts do not prove the action was safe or authorized','A team independently audits a sample receipt'],
+ ['Security','Developers miss stale permission checks before effects','Local authorization test-pack service','openline-living-projects','Prototype coverage is bounded; never claim production containment','A developer reproduces one stale-permission failure'],
+ ['Creative work','Creators struggle to preserve project decisions','Creative project continuity packages','openline-living-projects','Respect licensing and confidential source materials','Two creators resume work from a handoff']
+];
+// One concrete starter deliverable per problem; a specification, not a validated market.
+const starterMVPs = [
+ ['An offline energy-options worksheet with fictional tariff data, editable assumptions, and exportable comparisons.', 'Changing a mock tariff updates the displayed comparison and every output is marked an estimate.'],
+ ['An offline simulated EV charging schedule with mock arrival, departure, battery capacity, and tariff fields.', 'Changing departure time changes the schedule; no charger commands are issued.'],
+ ['A two-snapshot public-record diff viewer using clearly fictional vote records and source references.', 'The viewer identifies changed rows without attributing motives or calling fictional records real.'],
+ ['An offline accessibility checklist and remediation tracker for a fictional document.', 'Issues can be reviewed, marked resolved, and exported without compliance guarantees.'],
+ ['A quote-comparison worksheet that normalizes line items from two fictional contractors.', 'The worksheet flags unmatched items rather than inventing prices or endorsing a contractor.'],
+ ['An offline tutor lesson-plan pack creator using fictional curriculum material and no student identifiers.', 'The user can edit and export a week-long plan without storing information about real minors.'],
+ ['A one-page volunteer handoff form that exports a Markdown continuity note with responsibilities and dates.', 'A replacement volunteer can reconstruct the next task from the exported note alone.'],
+ ['A menu/allergen worksheet with mandatory human-verification status and printable export.', 'Unchecked entries never appear verified and no safety certification is implied.'],
+ ['An offline property-maintenance timeline using fictional events and a printable export.', 'Adding or removing a mock repair updates the timeline; no landlord messages are sent.'],
+ ['A local sample AI receipt-review table with signed, unsigned and missing-evidence examples.', 'Missing evidence stays UNKNOWN; a signature is not treated as proof that an action was safe.'],
+ ['A mock revocation race demonstrator with STOP-first and commit-first fixture traces.', 'STOP-first mock traces show no protected commit; the demo makes no live enforcement claims.'],
+ ['A creative-project decision log with accepted checkpoints and a successor-ready export.', 'Another contributor can resume from the saved decisions without silently editing earlier accepted work.']
+];
+const targetBuyers = [
+ ['homeowners','shop and storefront owners','neighborhood energy clubs'],
+ ['EV owners','small-fleet operators','local EV clubs'],
+ ['residents tracking public records','local publishers','civic watchdog groups'],
+ ['individual document owners','small organization staff','accessibility nonprofits'],
+ ['homeowners comparing quotes','property managers','neighborhood service groups'],
+ ['independent tutors','small tutoring centers','after-school programs'],
+ ['volunteer coordinators','nonprofit operations teams','community organizations'],
+ ['independent food makers','small restaurant teams','community kitchens'],
+ ['renters and homeowners','small property managers','housing co-ops'],
+ ['individual AI users','small teams using AI agents','independent AI watchdogs'],
+ ['independent developers','small software studios','local coding groups'],
+ ['freelance creators','small creative studios','art collectives']
+];
+const freeAIStack = [
+ {label:'Ollama',url:'https://github.com/ollama/ollama',license:'MIT',use:'Optional local AI-model runner (MIT; requires ~8-16 GB RAM/VRAM and ~5-10 GB disk for 7B-14B coding models; model weights carry separate licenses)'},
+ {label:'Aider',url:'https://github.com/Aider-AI/aider',license:'Apache-2.0',use:'Optional terminal coding assistant (Apache-2.0; works with local Ollama models or optional paid cloud APIs)'},
+];
+const audiences=['individuals','small businesses','community groups'];
+const formats=['service','toolkit','subscription'];
+
+function parseStrictInt(val, min, max, errorMsg) {
+ if (typeof val === 'boolean' || val === null || val === undefined || typeof val === 'object') throw Error(errorMsg);
+ if (typeof val === 'string') {
+  const trimmed = val.trim();
+  if (!/^(0|[1-9]\d*)$/.test(trimmed)) throw Error(errorMsg);
+  val = Number(trimmed);
+ }
+ if (typeof val !== 'number' || !Number.isInteger(val) || Object.is(val, -0) || val < min || val > max) throw Error(errorMsg);
+ return val;
+}
+
+function generate(opts={}) {
+ if (opts === null || typeof opts !== 'object' || Array.isArray(opts)) throw Error('Invalid options');
+ const {sector=0,audience='small businesses',format='service',budget=0,seed=0} = opts;
+ const index=parseStrictInt(sector,0,sectors.length-1,'Unknown sector');
+ if(typeof audience!=='string'||!audiences.includes(audience)||typeof format!=='string'||!formats.includes(format)) throw Error('Unknown option');
+ const amount=parseStrictInt(budget,0,1000000,'Invalid budget');
+ const n=parseStrictInt(seed,0,9999,'Invalid variation');
+ const [category,problem,base,repo,guard,test]=sectors[index];
+ const [mvp,acceptanceTest]=starterMVPs[index];
+ const buyer=targetBuyers[index][audiences.indexOf(audience)];
+ const scope = ['one neighborhood','one narrowly defined workflow','one customer segment','one repeatable weekly task'][n%4];
+ const formatPlan={service:'Sell a manual, fixed-scope pilot before building automation.',toolkit:'Create a downloadable template and sell optional customization.',subscription:'Test recurring demand manually before building billing or accounts.'}[format];
+ const formatPackaging={
+  service:`Include a client-facing intake and printable summary tailored for ${buyer} within ${scope}.`,
+  toolkit:`Include a self-service editable template and deterministic JSON/Markdown export for ${buyer} within ${scope}.`,
+  subscription:`Include a recurring snapshot comparison view for ${buyer} within ${scope} with zero accounts or billing code.`
+ }[format];
+ const cash = amount===0?'Zero-dollar software/API target. Reuse hardware you own; time, electricity and optional hosting can still cost money.':`Stay within a user-set prototype cap of $${amount}; this is a ceiling, not an estimate.`;
+ const result={
+  id:`IL-${index+1}-${n}`,
+  title:base,
+  category,
+  audience,
+  format,
+  scope,
+  problem,
+  buyer,
+  mvp,
+  acceptanceTest,
+  formatPackaging,
+  offer:`${base} for ${buyer}, starting with ${scope}.`,
+  revenue:formatPlan,
+  budget:cash,
+  firstTest:test,
+  stopRule:'Stop or change direction if the first five qualified prospects do not confirm the problem; this is a proposed test, not market evidence.',
+  risk:guard,
+  repo,
+  assumptions:[
+   'People experience this problem often enough to act.',
+   'A buyer can be reached without paid advertising.',
+   'The first version can be delivered manually.'
+  ],
+  founderSteps:[
+   `Interview five potential users (${buyer}) without pitching a solution; note disconfirming evidence.`,
+   'Have a consenting user try the local fictional-data prototype without coaching.',
+   `Run the cheapest falsifier before building automation: ${test}.`
+  ],
+  evidence:'Hypothesis only. No customer demand, revenue, savings, or legal compliance has been verified.',
+  buildSteps:[
+   `Scaffold an offline, zero-dependency prototype (index.html + logic.mjs + test.mjs, or local Python) for: ${mvp}`,
+   `Tailor the workflow and export for ${buyer} in ${format} mode (${scope}): ${formatPackaging}`,
+   `Enforce the hard safety boundary in both logic and visible UI labels: ${guard}.`,
+   `Write and run an automated acceptance test suite (node --test test.mjs or python3 -m unittest) proving: ${acceptanceTest}`
+  ],
+  freeAIStack,
+  limitations:'OpenLine repositories vary in maturity; inspect current README, security limitations, license, and exact commit before reuse. No live actions or production safety claims.'
+ };
+ return result;
+}
+function brief(x){
+ if(!x||typeof x!=='object'||Array.isArray(x)) throw Error('Invalid idea object');
+ const reqStr=['id','title','audience','buyer','format','problem','offer','scope','mvp','formatPackaging','acceptanceTest','budget','risk','limitations','repo','revenue','evidence','firstTest','stopRule'];
+ for(const k of reqStr){if(typeof x[k]!=='string'||!x[k].trim()) throw Error(`Missing or invalid field: ${k}`);}
+ if(!/^IL-\d+-\d+$/.test(x.id)) throw Error('Invalid idea id');
+ if(!/^[a-z0-9-]+$/.test(x.repo)) throw Error('Invalid repository slug');
+ if(!Array.isArray(x.assumptions)||x.assumptions.length===0||!Array.isArray(x.buildSteps)||x.buildSteps.length===0) throw Error('Invalid brief steps');
+ return `# ${x.title} — AI Agent Build Assignment
+
+Generated by OpenLine Idea Layer (${x.id}). This is a hypothesis, not validated market research.
+
+## The customer and offer
+Audience category: ${x.audience}
+Possible buyer (unverified): ${x.buyer}
+Business format: ${x.format}
+Problem: ${x.problem}
+Offer: ${x.offer}
+Initial scope: ${x.scope}
+
+## Make this one useful thing first
+${x.mvp}
+Packaging for ${x.buyer} (${x.format}): ${x.formatPackaging}
+Acceptance test: ${x.acceptanceTest}
+
+## Budget and safety boundaries
+${x.budget}
+${x.risk}
+${x.limitations}
+Use free local tools. No paid APIs, accounts, deployment, outreach, payments, credentials or real-world actions without separate owner approval. Use fictional data only. Keep the prototype reversible and local-first.
+
+## Free, open-source AI starting paths & cost disclosures (optional)
+- OpenLine Idea Layer: MIT license; runs offline in any modern browser with zero AI model or API key required.
+- Ollama: https://github.com/ollama/ollama — MIT local model runner. Running a 7B–14B coding model locally (e.g., Qwen2.5-Coder-7B, Apache-2.0) typically requires a computer with 8–16 GB RAM/VRAM, ~5–10 GB disk storage, and electricity; model weights have separate licenses (Apache-2.0, MIT, or custom community terms) that must be checked before commercial use.
+- Aider: https://github.com/Aider-AI/aider — Apache-2.0 terminal coding assistant; can pair with local Ollama models ($0 API fee) or optional paid cloud APIs.
+- Optional paid services: Using a hosted commercial coding assistant (ChatGPT, Claude, Gemini, Cursor, Copilot), cloud GPU rental, custom domains, or paid hosting is optional and incurs third-party subscription or usage fees.
+- Relevant OpenLine experiment: https://github.com/terryncew/${x.repo}. Inspect its current README, license, commit and limitations; DO NOT assume integration or guaranteed production safety.
+
+## Demand experiment before building a company
+Business hypothesis: ${x.revenue}
+${x.evidence}
+Assumptions:
+${x.assumptions.map(a=>'- '+a).join('\n')}
+Founder validation steps (human-run, outside the coding agent):
+${(x.founderSteps||[]).map((a,i)=>`${i+1}. ${a}`).join('\n')}
+Cheapest falsifier: ${x.firstTest}
+Stop/rethink rule: ${x.stopRule}
+
+## Instructions for the coding agent
+Build the smallest offline, accessible, mobile-usable prototype for this exact deliverable: ${x.mvp}
+Use ordinary HTML/CSS/JavaScript (e.g., \`index.html\`, \`logic.mjs\`, \`test.mjs\`) or local Python; add zero dependencies unless they earn their cost. If you use an existing open-source repository, verify the exact source and security limitations first. Do not treat these instructions as permission to modify any real system or fabricate customer interviews.
+
+Steps:
+${x.buildSteps.map((a,i)=>`${i+1}. ${a}`).join('\n')}
+
+Return runnable source, setup directions, at least one executable test verifying: ${x.acceptanceTest}, and a plain-English explanation of assumptions, limitations and the next real-customer test. Mark PASS/PARTIAL/HOLD with evidence. Do not publish without owner approval.
+`}
+
+const $=id=>document.getElementById(id);
+sectors.forEach(([name],i)=>{const opt=document.createElement('option');opt.value=i;opt.textContent=name;$('sector').append(opt)});
+let variation=0,latest=null;
+const actionIds=['copy','copy-top','download','download-top'];
+function setActionsDisabled(disabled){for(const id of actionIds){const el=$(id);if(el)el.disabled=disabled;}}
+function showError(msg){
+ latest=null;
+ setActionsDisabled(true);
+ const card=$('idea-card');if(card)card.setAttribute('data-invalid','true');
+ if($('brief'))$('brief').textContent=`Fix the invalid setting above (${msg}) to preview, copy, or save the agent brief.`;
+ if($('controls-status'))$('controls-status').textContent=msg;
+ $('status').textContent=msg;
+ $('top-status').textContent=msg;
+}
+function render(){
+ try{
+  const budgetEl=$('budget');
+  if(budgetEl.validity&&budgetEl.validity.badInput) throw Error('Invalid budget: enter a whole dollar amount from 0 to 1,000,000.');
+  latest=generate({sector:$('sector').value,audience:$('audience').value,format:$('format').value,budget:budgetEl.value,seed:variation});
+  const x=latest;
+  setActionsDisabled(false);
+  const card=$('idea-card');if(card)card.removeAttribute('data-invalid');
+  for(const [id,v] of Object.entries({tag:`${x.category} • ${x.id} • Scope ${(variation%4)+1}/4`,title:x.title,offer:x.offer,problem:x.problem,revenue:x.revenue,risk:x.risk,firstTest:x.firstTest,cost:x.budget,stopRule:x.stopRule,mvp:`${x.mvp} ${x.formatPackaging}`,acceptanceTest:x.acceptanceTest,evidence:x.evidence,brief:brief(x)}))$(id).textContent=v;
+  if($('controls-status'))$('controls-status').textContent='';
+  $('status').textContent='';
+  $('top-status').textContent='';
+ }catch(e){
+  showError(e.message||'Invalid input');
+ }
+}
+$('generate').addEventListener('click',()=>{variation=(variation+1)%10000;render()});
+$('surprise').addEventListener('click',()=>{const bytes=new Uint32Array(4);crypto.getRandomValues(bytes);$('sector').value=String(bytes[0]%sectors.length);$('audience').value=['small businesses','individuals','community groups'][bytes[1]%3];$('format').value=['service','toolkit','subscription'][bytes[2]%3];const rawB=$('budget').value.trim();if(!rawB||$('budget').validity?.badInput||!$('budget').validity?.valid||!/^(0|[1-9]\d*)$/.test(rawB)||Number(rawB)>1000000)$('budget').value='0';variation=bytes[3]%10000;render()});
+const copyBrief=async()=>{
+ if(!latest){const msg='Fix the invalid setting above before copying the brief.';if($('controls-status'))$('controls-status').textContent=msg;$('status').textContent=msg;$('top-status').textContent=msg;return;}
+ const text=brief(latest);
+ try{
+  await navigator.clipboard.writeText(text);
+  $('status').textContent='Brief copied.';
+  $('top-status').textContent='Brief copied. Paste it into your agent.';
+ }catch{
+  const t=document.createElement('textarea');
+  t.value=text;
+  t.setAttribute('readonly','');
+  t.style.position='fixed';
+  t.style.opacity='0';
+  document.body.append(t);
+  t.select();
+  let ok=false;
+  try{ok=document.execCommand('copy');}catch{ok=false;}
+  t.remove();
+  $('status').textContent=ok?'Brief copied.':'Clipboard unavailable. Select the brief below to copy manually.';
+  $('top-status').textContent=ok?'Brief copied. Paste it into your agent.':$('status').textContent;
+ }
+};
+for (const id of ['copy','copy-top']) $(id).addEventListener('click',copyBrief);
+const saveBrief=()=>{
+ if(!latest){const msg='Fix the invalid setting above before saving the brief.';if($('controls-status'))$('controls-status').textContent=msg;$('status').textContent=msg;$('top-status').textContent=msg;return;}
+ const url=URL.createObjectURL(new Blob([brief(latest)],{type:'text/markdown;charset=utf-8'}));
+ const a=document.createElement('a');
+ a.href=url;
+ a.download=`openline-idea-${latest.id}.md`;
+ document.body.append(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),10000);
+ $('status').textContent='Markdown brief prepared for saving.';
+ $('top-status').textContent='Brief ready to save.';
+};
+for(const id of ['download','download-top']) $(id).addEventListener('click',saveBrief);
+for(const id of ['sector','audience','format']) $(id).addEventListener('change',render);
+for(const ev of ['change','input']) $('budget').addEventListener(ev,render);
+render();
+</script></body></html>

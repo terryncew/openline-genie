@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "openline-connect"
+version = "0.1.0rc2"
+description = "Receiver-owned controls, safe retries and independently verifiable outcomes for local AI-agent operations"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = ["cryptography>=42,<51"]
+keywords = ["ai-agent", "MCP", "authorization", "default-deny", "recovery", "signed-receipts"]
+authors = [{name = "Terrynce White"}]
+classifiers = ["Programming Language :: Python :: 3", "Development Status :: 3 - Alpha", "Operating System :: OS Independent"]
+[project.optional-dependencies]
+mcp = ["mcp>=2,<3"]
+fastapi = ["fastapi>=0.115", "uvicorn>=0.30"]
+x402 = ["x402>=2,<3"]
+all = ["mcp>=2,<3", "fastapi>=0.115", "uvicorn>=0.30", "x402>=2,<3"]
+[project.scripts]
+openline-connect = "openline_connect.cli:main"
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.setuptools.package-data]
+openline_connect = ["py.typed"]
