@@ -85,3 +85,160 @@ Exact recovery procedure to restore the pre-publication repository state. Execut
 ## NEXT OWNER
 
 Owner: Terrynce White. No standing maintenance assignment exists for this release. Muse operated this release on the founder's order and holds no ongoing maintenance role. Any future change, repair, or new version requires the founder's explicit order naming the exact change. There is no scheduled follow-up, no social announcement, and no new research program attached to this release.
+
+
+# OPENLINE Final Integration & Publication 002 — Release Record Addendum (v1.1.0-rc1)
+
+Prepared 2026-11-15 by the integration coordinator, revised by the parent
+agent for the manifest correction below. This text is the v1.1.0-rc1 release
+record for RELEASE_RECORD.md. It was NOT appended to RELEASE_RECORD.md in the
+coordinator run: a read of that file was flagged by a safety check, so the
+file was left untouched. The parent agent appended this section without
+reading the existing record. Nothing in this addendum is copied from the
+flagged read; all facts below come from this run's own commands and logs,
+plus the parent's own verification of the live release.
+
+## PUBLISHED
+
+- Release: https://github.com/terryncew/openline-genie/releases/tag/v1.1.0-rc1 (prerelease, not draft)
+- Commit: `456425d413a3d1ebc9ba29ca414040435e0ed131` (merge of `integration/advocate-robotics-002` into main)
+- Tag: `v1.1.0-rc1` (tag object `fdd89fdcffab123154495d4ba13bf3b5c8985775`)
+- Asset: `OPENLINE_GENIE_V1_1_0_RC1_SOURCE.zip`, 12,268,616 bytes,
+  SHA-256 `96d08c15a353259e412f1bd41a8104badcaff218f9cffcf260dd90973bfc8d10`
+  (original publication, verified from the live GitHub download; the
+  original asset was byte-identical to the tagged commit, verified by
+  recursive diff)
+- Manifest correction (parent verification, 2026-11-15): the original
+  asset's root SHA256SUMS.txt listed a stale hash for README.md. The
+  manifest was corrected in commit `076d316` and the asset was rebuilt
+  from main and re-uploaded to the same release. The replacement asset's
+  SHA-256 is recorded in the GitHub release notes. The rebuilt asset
+  differs from the tagged commit only in SHA256SUMS.txt (one corrected
+  line) and RELEASE_RECORD.md (this addendum).
+- Advocate Case Packets: inside the existing Advocate application.
+  Portable verifiable case records: original documents byte-for-byte with
+  SHA-256 checksums, exact source citations, four-tier rule authority,
+  deadlines never invented, Decision Recall on new evidence, offline-readable
+  HTML dossiers, signed .zip export/import, tamper rejection.
+- Robotics Studio: seventh application, simulation only. Open Duck Mini v2
+  and LeRobot SO-101. Own loopback-only server on port 8796
+  (`./run_robotics_studio.sh`), linked from the applications launcher.
+- All six v1.0.0-rc1 applications preserved with workflows, receipts, and
+  limitations unchanged. Tags/releases v1.0.0-rc1 and v0.7.1 untouched.
+  GitHub Pages status built; root, Try, How, See all return HTTP 200.
+- No new repository created. No force-push used during publication.
+
+## HELD
+
+None. Both candidates published. Physical-hardware behavior for Robotics
+remains unverified (simulation only, stated in the docs); that is a stated
+limitation of the simulation product, not a hold on it.
+
+## REPAIRED
+
+Advocate port (3):
+1. Frozen timestamps replaced with real UTC in packet history entries and
+   document ingestion (candidate stamped `2026-11-14T22:55/22:56/00:00Z`).
+2. Browser test skip guard: the workbench browser test now skips as
+   NOT VERIFIED without Chromium instead of crashing at import.
+3. Workbench default pill text corrected ("Case Packet: Loading…" instead
+   of "Case Packet: Verified" before data loads).
+
+Robotics port (4):
+1. Studio server refused non-loopback `--host` (Genie-style refusal;
+   `--host 0.0.0.0` exits 1). `ss` confirms 127.0.0.1-only binding.
+2. Browser draft export was mislabeled and unimportable (toy hash as
+   `bundle_sha256`, portable project JSON omitted). Added a Get
+   Server-Verified Export button posting to `/api/robotics/export`;
+   the endpoint was verified by curl. The button's JS itself was not
+   executed in a browser (no browser available) — NOT VERIFIED at UI level.
+3. Chart.js CDN guard: `typeof Chart === 'undefined'` skips the telemetry
+   chart offline instead of breaking the Run flow.
+4. Workbench disclosure added: the browser page runs a simplified JS
+   re-implementation, not `physics_sim.py`/ONNX; the Python engine is
+   authoritative; hardware panel shows a canned packet.
+
+Integration (coordinator):
+1. Merged the two port branches; resolved `applications/genie_server.py`
+   (Case Packet endpoints + `/robotics` launcher entry both kept) and
+   regenerated `applications/SHA256SUMS.txt` from the combined tree
+   (271 entries, all verify).
+2. Removed `__pycache__` files from both port commits (rewrote the
+   unpublished commits from the patch files) and added a root `.gitignore`.
+3. Caught a docs commit that briefly contained test-run runtime state
+   (SQLite databases and generated Ed25519 test keys); reset it before
+   pushing — nothing unpublished was pushed. Extended `.gitignore` to
+   runtime state directories, `*.sqlite*`, `.spend.lock`, `.genie_key_*`.
+4. Docs: root README seven-application index, AGENTS.md (layout, routes,
+   measured counts, implemented list), applications/RELEASE_NOTES.md
+   v1.1.0-rc1 section.
+
+Manifest correction (parent, 2026-11-15):
+1. Parent verification of the published asset found the root SHA256SUMS.txt
+   listed a stale hash for README.md (`f9bd01ff…`, from before the final
+   docs commit); the README shipped in the asset hashes to `085bd543…`.
+   One line corrected in commit `076d316`; the root manifest now verifies
+   81/81 and both sub-manifests verify (271 and 160 entries).
+2. The published asset was rebuilt from main including the corrected
+   manifest and this record, and re-uploaded to the v1.1.0-rc1 release.
+   The replacement asset's SHA-256 is recorded in the GitHub release notes.
+
+## LIMITATIONS
+
+- Browser tests need Chrome/Chromium (NOT VERIFIED here): the Case Packet
+  workbench browser test, `muse_independent_checks.py` (24 checks),
+  mobile/desktop overflow checks, the Neighborhood browser journey test.
+- Applications suite: 186 ran, 175 passed, 1 failure, 5 errors, 5 skipped.
+  The 1 failure and 5 errors are environmental (2 external-archive
+  FileNotFound, 3 chromedriver-missing, 1 Chromium-required failure) — the
+  same test IDs as the v1.0.0-rc1 baseline, zero regressions.
+- Node: 11 passed, 0 failed. Robotics suite: 6 passed, 0 failed.
+- Case Packet module: 2 ran, 1 passed, 1 skipped (Chromium).
+- macOS/Windows installs, iPhone Safari, uncoached human testing: not tested.
+- Robotics results are simulation only. Physical-hardware behavior is
+  unverified; do not connect this software to a physical robot on the
+  strength of these results. The new export button's JS was not executed
+  in a browser; the browser workbench is a simplified visualization.
+- `launch_genie.py --verify-only` lists five applications, not Neighborhood
+  (pre-existing v1.0.0-rc1 residual); Neighborhood is confirmed by live
+  route/state checks instead.
+- A frozen evidence record (`applications/NEIGHBORHOOD_001_ACCEPTANCE_RECEIPTS.json`)
+  still contains a superseded `VERIFIED_0_LEAKS` claim as evidence only;
+  it is not repeated for the current code.
+- The first `pip install` into the fresh verification venv partially failed
+  (cryptography installed without hazmat contents, selenium missing) — a
+  transient environment issue, fixed by force-reinstall; not a release defect.
+- The two receipts JSONs downloaded from Drive do not match Drive's recorded
+  md5s (the Drive CLI re-serializes JSON on download). Receipts were treated
+  as supporting evidence only; every claim was re-verified by running the code.
+
+## ROLLBACK
+
+Execute only on the founder's order; do not run as routine cleanup.
+
+- Pre-publication main: `956d83b795a9b830dd6e7c167e43450ecc60c55c`.
+  Pre-publication tags: only `v1.0.0-rc1` and `v0.7.1`.
+- Delete the release and its tag:
+  `gh release delete v1.1.0-rc1 --repo terryncew/openline-genie --yes --cleanup-tag`
+- Restore main to the pre-publication commit:
+  `git fetch origin && git push --force-with-lease origin 956d83b795a9b830dd6e7c167e43450ecc60c55c:main`
+  (A force-push is required only for this rollback; it was not used during
+  publication.)
+- Verify: `gh api repos/terryncew/openline-genie/tags --jq '.[].name'` shows
+  only `v1.0.0-rc1` and `v0.7.1`; main shows `956d83b795a9b830dd6e7c167e43450ecc60c55c`;
+  the four Pages destinations still return HTTP 200.
+- Source preservation independent of GitHub: the integration branch
+  (`integration/advocate-robotics-002`, merge `456425d`) is preserved at
+  `~/workspace/final-integration-publication-002/work/repo/`; the pristine
+  candidate archives are preserved at
+  `~/workspace/final-integration-publication-002/downloads/` (Advocate
+  SHA-256 `41a7b4691ba551596f7a227f5a71553de276095e5677dc005f88373e6e0a457f`;
+  Robotics SHA-256 `a725f98885eb26d0df2fcc0db58c71932a0a63d6993a25c5221493e0147e3dff`);
+  all evidence is preserved under
+  `~/workspace/final-integration-publication-002/evidence/` with a SHA256SUMS manifest.
+
+## NEXT OWNER
+
+Owner: Terrynce White. No standing maintenance assignment exists for this
+release. No scheduled follow-up, no social announcement, and no new research
+program attached to this release.
