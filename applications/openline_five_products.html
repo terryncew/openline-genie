@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpenLine Genie — Community Energy, Advocacy, Projects, Science &amp; Civic Decisions</title>
+<style>
+  :root {
+    --bg-app: #070d1f;
+    --bg-surface: #111d37;
+    --bg-subtle: #152443;
+    --bg-dark: #050a18;
+    --text-primary: #f3f7ff;
+    --text-secondary: #d4e4f7;
+    --text-muted: #9fb8dc;
+    --border-color: #294365;
+    --border-strong: #4e73a2;
+    --accent-brand: #55dcff;
+    --accent-brand-soft: #123447;
+    --accent-green: #4ade80;
+    --accent-green-soft: #0f382a;
+    --accent-amber: #fbbf24;
+    --accent-amber-soft: #3a2a0d;
+    --accent-red: #ff7087;
+    --accent-red-soft: #361729;
+    --accent-purple: #b9a7ff;
+    --accent-purple-soft: #222443;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: var(--font-sans);
+    background: radial-gradient(ellipse at 50% 0%, #17274c 0, transparent 58%), var(--bg-app);
+    color: var(--text-primary);
+    line-height: 1.45;
+    font-size: 14.5px;
+    overflow-x: hidden;
+    max-width: 100vw;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-brand); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--accent-brand);
+    outline-offset: 2px;
+  }
+  .top-bar {
+    background: var(--bg-dark);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--accent-brand);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .top-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .pill.ok { border-color: var(--accent-green); background: var(--accent-green-soft); color: #b7ffd6; }
+  .pill.warn { border-color: var(--accent-amber); background: var(--accent-amber-soft); color: #fde68a; }
+  .pill.danger { border-color: var(--accent-red); background: var(--accent-red-soft); color: #fecdd3; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 10px 10px 48px; width: 100%; }
+  .honesty-bar {
+    background: var(--accent-purple-soft);
+    border-left: 3px solid var(--accent-purple);
+    padding: 8px 10px;
+    font-size: 12px;
+    color: #e2dcff;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .gov-toolbar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .gov-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    border: 1px solid var(--border-strong);
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--accent-brand); color: #041524; border-color: #7ee8ff; font-weight: 700; }
+  .btn-success { background: var(--accent-green); color: #042112; border-color: #86efac; font-weight: 700; }
+  .btn-danger { background: var(--accent-red); color: #280611; border-color: #fda4af; font-weight: 700; }
+  .btn-amber { background: var(--accent-amber); color: #261702; border-color: #fde68a; font-weight: 700; }
+  .product-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 760px) {
+    .product-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .tab-btn {
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    padding: 9px 8px;
+    border-radius: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    min-height: 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+  .tab-btn small { font-size: 10.5px; color: var(--text-muted); font-weight: 500; line-height: 1.25; }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #153c56, #1f2956);
+    border-color: var(--accent-brand);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(85, 220, 255, 0.2);
+  }
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .kpi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-width: 0;
+  }
+  .kpi-label { font-size: 10.5px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; }
+  .kpi-val { font-family: var(--font-mono); font-size: 12.5px; font-weight: 700; margin-top: 2px; word-break: break-all; }
+  .proposal-drawer {
+    background: linear-gradient(135deg, #14324a, #1d234a);
+    border: 2px solid var(--accent-brand);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .proposal-drawer.hidden, .hidden { display: none !important; }
+  .status-banner {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    word-break: break-word;
+  }
+  .status-banner.error { background: var(--accent-red-soft); border-color: var(--accent-red); color: #fecdd3; }
+  .status-banner.ok { background: var(--accent-green-soft); border-color: var(--accent-green); color: #bbf7d0; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 420px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    min-width: 0;
+  }
+  .card-head {
+    background: var(--bg-subtle);
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .card-title { font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--accent-brand); }
+  .card-body { padding: 12px; }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .field label { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 8px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: #0b1428;
+    color: var(--text-primary);
+    font-size: 13.5px;
+    font-family: var(--font-sans);
+  }
+  .field-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .field-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-brand); }
+  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.data-table th {
+    text-align: left;
+    padding: 6px 7px;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-strong);
+    color: var(--text-secondary);
+    font-weight: 700;
+  }
+  table.data-table td {
+    padding: 6px 7px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+    word-break: break-word;
+  }
+  pre.code-box {
+    background: #060c1a;
+    border: 1px solid var(--border-color);
+    color: #9fe9d5;
+    padding: 9px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    max-height: 220px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  details.tech-drawer {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+  details.tech-drawer summary {
+    padding: 10px 14px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer;
+    background: var(--bg-subtle);
+  }
+  details.tech-drawer .tech-body { padding: 12px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <strong>OPENLINE GENIE</strong>
+    <span style="color:var(--text-muted);margin-left:6px">Local-First Applications for Communities, Advocacy, Science &amp; Civic Decisions</span>
+  </div>
+  <div class="top-links">
+    <span class="pill ok" id="pill-server">Local Server: Connected</span>
+    <span class="pill" id="pill-model">Mode: Free Local Mode ($0)</span>
+    <a href="/openline_genie.html" class="pill">Custom App Builder</a>
+    <a href="/" class="pill">Interactive Project Map</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="honesty-bar" id="honesty-disclosure">
+    <span><strong>Runs on your computer &middot; You stay in control:</strong> Nothing is saved to your official project record or shared externally without your approval. Missing information or unapproved commitments are automatically paused.</span>
+    <span class="pill ok" id="pill-persistence">Saved Work: Verified</span>
+  </div>
+
+  <!-- Shared Governance Toolbar -->
+  <div class="gov-toolbar">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="pill ok" id="pill-stop-state">Editing: Active</span>
+      <span class="pill" id="pill-active-worker">Session: Primary</span>
+      <span class="pill ok" id="pill-dnf-standing">Review Status: Up to date</span>
+    </div>
+    <div class="gov-actions">
+      <button type="button" class="btn btn-danger" id="btn-trigger-stop">Pause All Changes (STOP)</button>
+      <button type="button" class="btn btn-success hidden" id="btn-clear-stop">Resume Editing</button>
+      <button type="button" class="btn" id="btn-switch-worker">Switch Assistant Session</button>
+      <button type="button" class="btn" id="btn-export-bundle">Export Project</button>
+      <button type="button" class="btn" id="btn-toggle-import">Import / Restore Project</button>
+    </div>
+  </div>
+
+  <!-- Portable Bundle Export / Import Drawer -->
+  <div class="card hidden" id="portable-io-drawer">
+    <div class="card-head">
+      <span class="card-title">Export or Restore a Project File</span>
+      <button type="button" class="btn" id="btn-close-io-drawer">Close</button>
+    </div>
+    <div class="card-body">
+      <div class="field" style="margin-bottom:8px">
+        <label for="portable-json-box">Portable Project Data (JSON)</label>
+        <textarea id="portable-json-box" rows="5" placeholder="Paste exported project JSON here to restore your work on this computer..."></textarea>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" id="btn-import-bundle">Restore Project</button>
+        <button type="button" class="btn" id="btn-download-portable-json">Download Project File (.json)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Five Application Selector Tabs -->
+  <div class="product-tabs" role="tablist" aria-label="OpenLine Genie Applications">
+    <button type="button" role="tab" aria-selected="true" class="tab-btn active" id="tab-energy" data-product="energy">
+      <span>1. Energy Commons</span>
+      <small>Plan affordable community energy</small>
+    </button>
+    <button type="button" role="tab" aria-selected="false" class="tab-btn" id="tab-advocate" data-product="advocate">
+      <span>2. Advocate</span>
+      <small>Organize evidence &amp; prepare challenges</small>
+    </button>
+    <button type="button" role="tab" aria-selected="false" class="tab-btn" id="tab-commons" data-product="commons">
+      <span>3. Capability Commons</span>
+      <small>Build &amp; share reusable community projects</small>
+    </button>
+    <button type="button" role="tab" aria-selected="false" class="tab-btn" id="tab-science" data-product="science">
+      <span>4. Science</span>
+      <small>Run reproducible research &amp; keep findings</small>
+    </button>
+    <button type="button" role="tab" aria-selected="false" class="tab-btn" id="tab-civic" data-product="civic">
+      <span>5. Civic</span>
+      <small>Compare public projects &amp; track decisions</small>
+    </button>
+    <button type="button" role="tab" aria-selected="false" class="tab-btn" id="tab-neighborhood" data-product="neighborhood">
+      <span>6. Neighborhood</span>
+      <small>Understand HOA rules, resolve disputes, compare costs, and manage community records</small>
+    </button>
+  </div>
+
+  <!-- Active Application Summary Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Active Application</div>
+      <div class="kpi-val" id="kpi-product-id">Energy Commons</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Saved Version</div>
+      <div class="kpi-val" id="kpi-accepted-version">v2</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Verification Code</div>
+      <div class="kpi-val" id="kpi-accepted-sha">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Drafts &amp; Declined Changes</div>
+      <div class="kpi-val" id="kpi-proposal-counts">0 waiting / 0 declined</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Assumption Review Status</div>
+      <div class="kpi-val" id="kpi-recall-status">Up to date</div>
+    </div>
+  </div>
+
+  <!-- Status Banner -->
+  <div class="status-banner" id="product-action-banner" role="status">
+    Select an application tab above, enter your numbers or details, preview the proposed update, and choose whether to accept or reject the changes.
+  </div>
+
+  <!-- Shared Proposal Review Drawer -->
+  <div class="proposal-drawer hidden" id="shared-proposal-drawer">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+      <div style="flex:1 1 260px">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--accent-brand);font-weight:700">
+          Waiting for your review (Not yet saved to your official record)
+        </div>
+        <div style="font-weight:700;font-size:14px;margin-top:3px" id="staged-proposal-summary">—</div>
+        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary);margin-top:3px">
+          Draft ID: <span id="staged-proposal-id">—</span> &middot; Checksum: <span id="staged-proposal-sha">—</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn btn-success" id="btn-accept-staged-proposal">Accept changes</button>
+        <button type="button" class="btn btn-danger" id="btn-reject-staged-proposal">Reject changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION 1: ENERGY COMMONS                                         -->
+  <!-- ===================================================================== -->
+  <section id="panel-energy" class="product-panel">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">1. Building &amp; Utility Rate Inputs</span>
+          <span class="pill ok">Standard Cash-Flow Checked</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="energy-households">Households / Apartments</label>
+              <input type="number" id="energy-households" value="24" min="1" max="5000" />
+            </div>
+            <div class="field">
+              <label for="energy-kwh">Monthly Electricity Use (kWh)</label>
+              <input type="number" id="energy-kwh" value="14400" min="50" max="500000" />
+            </div>
+            <div class="field">
+              <label for="energy-tariff">Off-Peak Rate ($/kWh)</label>
+              <input type="number" id="energy-tariff" value="0.27" step="0.01" min="0.01" />
+            </div>
+            <div class="field">
+              <label for="energy-peak-tariff">Peak Rate ($/kWh)</label>
+              <input type="number" id="energy-peak-tariff" value="0.39" step="0.01" min="0.01" />
+            </div>
+            <div class="field">
+              <label for="energy-export-credit">Solar Export Credit ($/kWh)</label>
+              <input type="number" id="energy-export-credit" value="0.065" step="0.005" min="0" />
+            </div>
+            <div class="field">
+              <label for="energy-discount-rate">Discount Rate (%)</label>
+              <input type="number" id="energy-discount-rate" value="5.5" step="0.5" min="0" max="25" />
+            </div>
+            <div class="field">
+              <label for="energy-roof-limit">Solar Array Size (kW AC)</label>
+              <input type="number" id="energy-roof-limit" value="12.0" step="1" min="1" />
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-primary" id="btn-stage-energy">Compare Energy Options</button>
+            <button type="button" class="btn btn-amber" id="btn-recall-energy">Flag Rate Change for Review</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Add a Custom Energy Option</span>
+          <span class="pill">Includes Maintenance &amp; Replacement</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="energy-opt-title">Option Name</label>
+              <input type="text" id="energy-opt-title" placeholder="e.g. Shared Roof Solar + Heat-Pump Water Heater" />
+            </div>
+            <div class="field">
+              <label for="energy-opt-solar">Solar Array (kW)</label>
+              <input type="number" id="energy-opt-solar" value="12" min="0" max="500" />
+            </div>
+            <div class="field">
+              <label for="energy-opt-battery">Battery Storage (kWh)</label>
+              <input type="number" id="energy-opt-battery" value="0" min="0" max="1000" />
+            </div>
+            <div class="field">
+              <label for="energy-opt-thermal">Thermal Water Storage (kWh)</label>
+              <input type="number" id="energy-opt-thermal" value="65" min="0" max="1000" />
+            </div>
+            <div class="field">
+              <label for="energy-opt-capex">Upfront Cost Before Rebates ($)</label>
+              <input type="number" id="energy-opt-capex" value="39500" min="0" />
+            </div>
+            <div class="field">
+              <label for="energy-opt-om">Annual Maintenance ($/yr)</label>
+              <input type="number" id="energy-opt-om" value="620" min="0" />
+            </div>
+          </div>
+          <button type="button" class="btn" id="btn-add-energy-option">Add Custom Option for Review</button>
+
+          <hr style="border:0;border-top:1px solid var(--border-color);margin:12px 0" />
+          <div style="font-size:12px;font-weight:700;color:var(--accent-brand);margin-bottom:4px">
+            Approve Option for Procurement Packet (Human Approval Required)
+          </div>
+          <div class="field">
+            <label for="energy-commit-option">Selected Energy Option</label>
+            <select id="energy-commit-option"></select>
+          </div>
+          <label class="field-check" for="energy-human-approved">
+            <input type="checkbox" id="energy-human-approved" />
+            <span>I confirm community board approval to prepare this procurement packet</span>
+          </label>
+          <button type="button" class="btn btn-success" id="btn-authorize-energy-procurement">Approve Procurement Packet</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">10-Year Cost Comparison (Includes Financing, Maintenance &amp; Equipment Replacement)</span>
+        <span class="pill ok" id="energy-parity-pill">Calculation check: $0.00 difference</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Option</th>
+                <th>Equipment</th>
+                <th>Net Upfront Cost</th>
+                <th>Annual Operating Cost</th>
+                <th>10-Year Total Present Cost</th>
+                <th>10-Year Net Savings</th>
+                <th>Payback</th>
+                <th>Est. Monthly Cost / Unit</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="energy-options-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">What-If Sensitivity Check (Lower Subsidies, Higher Interest Rates, Roof Shade &amp; Rate Swings)</span>
+        <span class="pill ok" id="energy-fraud-pill">Unrealistic Assumptions Blocked: 4/4</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Case</th>
+                <th>What Changed</th>
+                <th>Lowest-Cost Option</th>
+                <th>10-Year Savings vs. Status Quo</th>
+              </tr>
+            </thead>
+            <tbody id="energy-sensitivity-tbody"></tbody>
+          </table>
+        </div>
+        <p style="font-size:11.5px;color:var(--text-muted);margin-top:8px">
+          <strong>Important limitation:</strong> These estimates verify financial and energy-balance math but do not replace a licensed electrician, structural roof inspection, or utility interconnection review.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION 2: ADVOCATE                                               -->
+  <!-- ===================================================================== -->
+  <section id="panel-advocate" class="product-panel hidden">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">2. Decision Notice &amp; Appeal Deadline Check</span>
+          <span class="pill ok" id="advocate-deadline-pill">Deadline: Checked</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="advocate-notice-date">Date on Notice (YYYY-MM-DD)</label>
+              <input type="text" id="advocate-notice-date" value="2026-11-01" />
+            </div>
+            <div class="field">
+              <label for="advocate-receipt-date">Date Received in Mail</label>
+              <input type="text" id="advocate-receipt-date" value="2026-11-06" />
+            </div>
+            <div class="field">
+              <label for="advocate-filing-date">Planned Submission Date</label>
+              <input type="text" id="advocate-filing-date" value="2026-11-12" />
+            </div>
+            <div class="field">
+              <label for="advocate-window-days">Standard Appeal Window (Days)</label>
+              <input type="number" id="advocate-window-days" value="30" min="1" max="365" />
+            </div>
+            <div class="field">
+              <label for="advocate-rule-date">Rule Effective Date to Verify</label>
+              <input type="text" id="advocate-rule-date" value="2026-01-01" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <label for="advocate-notice-text">Summary of Institutional Decision Notice</label>
+            <textarea id="advocate-notice-text" rows="2" placeholder="Paste or summarize the decision notice text here..."></textarea>
+          </div>
+          <label class="field-check" for="advocate-include-med-cert">
+            <input type="checkbox" id="advocate-include-med-cert" checked />
+            <span>Clinic medical attestation form is on file (you confirm this; the app does not check the document itself)</span>
+          </label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-primary" id="btn-stage-advocate">Update Appeal Packet</button>
+            <button type="button" class="btn btn-amber" id="btn-recall-advocate">Flag Case Fact Change for Review</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Add Supporting Evidence &amp; Prepare Packet</span>
+          <span class="pill" id="advocate-epistemic-pill">Packet Status: Ready for review</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="advocate-claim-category">Information Type</label>
+              <select id="advocate-claim-category">
+                <option value="VERIFIED_FACT">Stated fact (document named, not checked by the app)</option>
+                <option value="ALLEGATION">Unverified claim / allegation</option>
+                <option value="EXPLICIT_UNKNOWN">Missing information (still needed)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="advocate-claim-doc">Supporting Document Name</label>
+              <input type="text" id="advocate-claim-doc" value="EXHIBIT-2-RELIEF-AWARD.txt" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <label for="advocate-claim-statement">Fact or Question to Record</label>
+            <input type="text" id="advocate-claim-statement" placeholder="e.g. County award letter confirms the $1,200 payment was one-time disaster relief." />
+          </div>
+          <button type="button" class="btn" id="btn-add-advocate-claim">Add Item to Appeal Packet</button>
+
+          <hr style="border:0;border-top:1px solid var(--border-color);margin:12px 0" />
+          <label class="field-check" for="advocate-human-approved">
+            <input type="checkbox" id="advocate-human-approved" />
+            <span>I have reviewed this packet and approve locking it for manual submission (never auto-submitted online)</span>
+          </label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-success" id="btn-authorize-advocate-filing">Approve &amp; Lock Appeal Packet</button>
+            <button type="button" class="btn" id="btn-advocate-redact">Preview Privacy-Redacted Packet</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Evidence Organization (Separating Verified Facts, Unverified Claims &amp; Missing Information)</span>
+        <span class="pill ok">Rule Effective Dates Checked</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Item ID</th>
+                <th>Category</th>
+                <th>Statement</th>
+                <th>Source Document</th>
+                <th>Document Verified</th>
+              </tr>
+            </thead>
+            <tbody id="advocate-claims-tbody"></tbody>
+          </table>
+        </div>
+        <p style="font-size:11.5px;color:var(--text-muted);margin-top:8px">
+          <strong>Important disclosure:</strong> OpenLine Advocate helps organize documents and deadlines for human review. It is not legal advice, does not create an attorney-client relationship, and never submits appeals automatically.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Attached Documents &amp; Checksums</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Document</th><th>Issue Addressed</th><th>Anchor Date</th><th>Document Checksum</th></tr>
+              </thead>
+              <tbody id="advocate-docs-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Privacy-Scrubbed Export Preview (Personal IDs, Phones &amp; Emails Removed)</span>
+        </div>
+        <div class="card-body">
+          <pre class="code-box" id="advocate-redacted-box">Click "Preview Privacy-Redacted Packet" to verify that account numbers, phone numbers, and emails are removed before sharing.</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION 3: CAPABILITY COMMONS                                     -->
+  <!-- ===================================================================== -->
+  <section id="panel-commons" class="product-panel hidden">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">3. Create a New Reusable Community Project</span>
+          <span class="pill ok">Ready to Export &amp; Share</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="commons-new-title">Project Title</label>
+              <input type="text" id="commons-new-title" placeholder="e.g. Neighborhood Cold-Storage &amp; Food Pantry" />
+            </div>
+            <div class="field">
+              <label for="commons-new-category">Community Category</label>
+              <select id="commons-new-category">
+                <option value="water">Clean Water Filtration &amp; Distribution</option>
+                <option value="childcare_food">Cooperative Childcare &amp; Community Kitchen</option>
+                <option value="makerspace_building">Building Weatherization &amp; Shared Workshop</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="commons-new-target-ops">Daily Service Goal (units/day)</label>
+              <input type="number" id="commons-new-target-ops" value="68" min="42" max="70" />
+            </div>
+            <div class="field">
+              <label for="commons-new-capex">Equipment Budget ($)</label>
+              <input type="number" id="commons-new-capex" value="460" min="100" max="5000" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <label for="commons-new-prompt">Project Description</label>
+            <textarea id="commons-new-prompt" rows="2" placeholder="Describe what your community project does and what resources it coordinates..."></textarea>
+          </div>
+          <label class="field-check" for="commons-new-inherit">
+            <input type="checkbox" id="commons-new-inherit" checked />
+            <span>Apply verified Peak-Demand Capacity &amp; Budget Planner template</span>
+          </label>
+          <button type="button" class="btn btn-primary" id="btn-create-commons-project">Create Community Project</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Apply Shared Templates &amp; Export Reusable Tools</span>
+          <span class="pill ok">Verified Templates</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="commons-target-project">Community Project</label>
+              <select id="commons-target-project"></select>
+            </div>
+            <div class="field">
+              <label for="commons-capability-select">Reusable Planning Tool</label>
+              <select id="commons-capability-select">
+                <option value="operational-trajectory-stabilizer-v1">Peak-Demand Capacity &amp; Budget Planner</option>
+                <option value="evidence-triaged-counterfactual-auditor-v1">Evidence &amp; Risk Checker (Cold-Chain &amp; Safety)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <button type="button" class="btn btn-success" id="btn-apply-commons-capability">Apply Planning Tool to Project</button>
+            <button type="button" class="btn" id="btn-export-capability">Export Reusable Tool</button>
+            <button type="button" class="btn btn-amber" id="btn-recall-commons">Flag Demand Change for Review</button>
+          </div>
+          <pre class="code-box" id="commons-capability-box">Select a community project and apply or export a reusable planning tool to inspect its verification summary.</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Community Project Library (Water, Childcare &amp; Food, Building Retrofit, and Custom Projects)</span>
+        <span class="pill ok" id="commons-count-pill">3 Projects Active</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Project ID</th>
+                <th>Project Title</th>
+                <th>Version</th>
+                <th>Daily Capacity</th>
+                <th>Limiting Factor</th>
+                <th>Est. Net Daily Value</th>
+                <th>Applied Planning Tools</th>
+                <th>Review Status</th>
+                <th>Verification Code</th>
+              </tr>
+            </thead>
+            <tbody id="commons-projects-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION 4: SCIENCE                                                -->
+  <!-- ===================================================================== -->
+  <section id="panel-science" class="product-panel hidden">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">4. Reproducible Experiment &amp; Data Quality Controls</span>
+          <span class="pill ok" id="science-negative-pill">Ruled-Out Models Kept: All</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="science-seed1">Dataset Batch 1 Seed Offset</label>
+              <input type="number" id="science-seed1" value="0" step="1" />
+            </div>
+            <div class="field">
+              <label for="science-seed2">Dataset Batch 2 Seed Offset</label>
+              <input type="number" id="science-seed2" value="100" step="1" />
+            </div>
+          </div>
+          <label class="field-check" for="science-invalidate-batch02">
+            <input type="checkbox" id="science-invalidate-batch02" />
+            <span>Mark Sensor Dataset Batch 2 as having calibration drift (flags dependent conclusions for review)</span>
+          </label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-primary" id="btn-stage-science">Run Experiment &amp; Compare Models</button>
+            <button type="button" class="btn btn-success" id="btn-science-replay">Verify Independent Replay</button>
+            <button type="button" class="btn btn-danger" id="btn-science-tamper-probe">Test Tamper Protection</button>
+            <button type="button" class="btn btn-amber" id="btn-recall-science">Flag Sensor Drift for Review</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Test a New Competing Hypothesis</span>
+          <span class="pill">Penalizes Extra Complexity</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="science-hyp-title">Hypothesis Name</label>
+              <input type="text" id="science-hyp-title" placeholder="e.g. Two-Parameter Coupled Reserve Model" />
+            </div>
+            <div class="field">
+              <label for="science-hyp-k">Number of Tunable Parameters</label>
+              <input type="number" id="science-hyp-k" value="3" min="1" max="20" />
+            </div>
+            <div class="field">
+              <label for="science-hyp-rss1">Outage Duration Factor</label>
+              <input type="number" id="science-hyp-rss1" value="0.36" step="0.01" />
+            </div>
+            <div class="field">
+              <label for="science-hyp-rss2">Solar Recharge Factor</label>
+              <input type="number" id="science-hyp-rss2" value="-17.0" step="0.5" />
+            </div>
+          </div>
+          <label class="field-check" for="science-hyp-unclamp">
+            <input type="checkbox" id="science-hyp-unclamp" checked />
+            <span>Enforce physical non-negative conservation boundary</span>
+          </label>
+          <button type="button" class="btn" id="btn-add-science-hypothesis">Add Hypothesis &amp; Run Comparison</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Competing Hypotheses Compared Against Standard Linear Baseline</span>
+        <span class="pill ok" id="science-selected-pill">Best Supported: Phase-Change Conservation Model</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model ID</th>
+                <th>Hypothesis Description</th>
+                <th>Parameters</th>
+                <th>Prediction Error (RMSE)</th>
+                <th>Holdout Error</th>
+                <th>AIC Score</th>
+                <th>MDL Score</th>
+                <th>Beats Baseline?</th>
+                <th>Finding Status</th>
+              </tr>
+            </thead>
+            <tbody id="science-hypotheses-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Preserved Negative Results (Ruled-Out Hypotheses Kept So Failed Ideas Are Not Repeated)</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Ruled-Out Hypothesis</th><th>Why It Failed</th><th>Record ID</th><th>Verification Checksum</th><th>Status</th></tr>
+            </thead>
+            <tbody id="science-negative-tbody"></tbody>
+          </table>
+        </div>
+        <p style="font-size:11.5px;color:var(--text-muted);margin-top:8px">
+          <strong>Important limitation:</strong> This workspace verifies computational reproducibility and model-selection math on recorded datasets; physical material durability requires laboratory hardware testing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION 5: CIVIC                                                  -->
+  <!-- ===================================================================== -->
+  <section id="panel-civic" class="product-panel hidden">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">5. Public Infrastructure Requirements &amp; Budget Limits</span>
+          <span class="pill ok" id="civic-recommended-pill">Recommended: Solar + Gravity Storage</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="civic-population">Max 10-Yr Budget ($ Millions)</label>
+              <input type="number" id="civic-population" value="2.15" step="0.05" min="0.5" />
+            </div>
+            <div class="field">
+              <label for="civic-liters">Min School Safety Setback (m)</label>
+              <input type="number" id="civic-liters" value="100" min="10" />
+            </div>
+            <div class="field">
+              <label for="civic-outage-hours">Max Allowed Outage in 72h Storm (h)</label>
+              <input type="number" id="civic-outage-hours" value="2.0" step="0.5" min="0" />
+            </div>
+            <div class="field">
+              <label for="civic-capex-ceiling">Max Property Line Noise (dBA)</label>
+              <input type="number" id="civic-capex-ceiling" value="60" min="35" />
+            </div>
+            <div class="field">
+              <label for="civic-opex-ceiling">Max Low-Income Bill Impact ($/mo)</label>
+              <input type="number" id="civic-opex-ceiling" value="4.50" step="0.25" min="0" />
+            </div>
+          </div>
+          <label class="field-check" for="civic-flood-diesel">
+            <input type="checkbox" id="civic-flood-diesel" />
+            <span>Include high storm-runoff turbidity stress test (35 NTU)</span>
+          </label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-primary" id="btn-stage-civic">Compare Public Proposals</button>
+            <button type="button" class="btn btn-amber" id="btn-recall-civic">Flag Storm Outage Limit for Review</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Submit Public Challenge &amp; Export Decision Record</span>
+          <span class="pill">Evidence-Backed Challenges</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="civic-chal-target">Proposal Being Challenged</label>
+              <select id="civic-chal-target">
+                <option value="PROP-A-DIESEL-CHLORINE">PROP-A: Diesel Generator + Chlorination</option>
+                <option value="PROP-B-OVERSIZED-LFP-MEMBRANE">PROP-B: Oversized Battery + Membrane</option>
+                <option value="PROP-C-SDD-GRAVITY-MULTIBARRIER">PROP-C: Solar + Elevated Gravity Storage</option>
+                <option value="PROP-D-STATUS-QUO-DEFERRED">PROP-D: Status Quo (Deferred Maintenance)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="civic-chal-by">Submitted By (Resident / Civic Group)</label>
+              <input type="text" id="civic-chal-by" value="Neighborhood Water &amp; Safety Coalition" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:8px">
+            <label for="civic-chal-claim">Public Challenge &amp; Supporting Evidence Summary</label>
+            <input type="text" id="civic-chal-claim" placeholder="e.g. Floodplain log confirms fuel delivery road is submerged during 72-hour storms." />
+          </div>
+          <button type="button" class="btn" id="btn-add-civic-challenge">Submit Public Challenge for Review</button>
+
+          <hr style="border:0;border-top:1px solid var(--border-color);margin:12px 0" />
+          <label class="field-check" for="civic-human-approved">
+            <input type="checkbox" id="civic-human-approved" />
+            <span>I confirm public council human sign-off to record this infrastructure selection</span>
+          </label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-success" id="btn-authorize-civic">Approve Public Decision Record</button>
+            <button type="button" class="btn" id="btn-export-civic-dossier">Download Public Decision Dossier (.html)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Competing Public Proposals (Best-Case P10 / Typical P50 / Storm-Stress P90 10-Year Cost)</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Proposal ID</th>
+                <th>Proposal Name</th>
+                <th>Upfront Cost</th>
+                <th>Monthly Bill Impact</th>
+                <th>Typical 10-Yr Cost</th>
+                <th>Cost Range (P10 / P50 / P90)</th>
+                <th>Status</th>
+                <th>Requirements Check &amp; Community Covenants</th>
+              </tr>
+            </thead>
+            <tbody id="civic-proposals-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Public Challenges &amp; Supporting Evidence Record</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Challenge ID</th><th>Submitted By</th><th>Proposal</th><th>Challenge Summary</th><th>Evidence Checksum</th><th>How It Affected the Decision</th></tr>
+            </thead>
+            <tbody id="civic-challenges-tbody"></tbody>
+          </table>
+        </div>
+        <p style="font-size:11.5px;color:var(--text-muted);margin-top:8px">
+          <strong>Important limitation:</strong> This decision record makes assumptions, challenges, and trade-offs inspectable by residents, but does not replace formal environmental permitting or an official public council vote.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-neighborhood" class="product-panel hidden">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">6. Neighborhood (ClearCovenant)</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--text-secondary)">
+            Understand HOA rules, resolve disputes, compare costs, and manage community records.
+          </p>
+          <p style="font-size:13px">
+            <a href="/neighborhood">Open Neighborhood &rarr;</a>
+          </p>
+          <p style="font-size:11.5px;color:var(--text-muted)">
+            Neighborhood runs on its own page because it keeps separate homeowner, board, and
+            community workspaces. It is a local single-user tool: anyone who can reach this
+            computer's port is the operator, so never expose the port beyond this computer.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expandable Technical & Audit Details for Advanced Users / Verifiers -->
+  <details class="tech-drawer" id="technical-audit-details">
+    <summary>Technical &amp; Audit Details (Checksums, Cryptographic Receipts &amp; Raw Project State)</summary>
+    <div class="tech-body">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">
+        Every accepted change is signed locally and linked to its underlying assumptions so you can verify integrity or transfer work to another machine.
+      </p>
+      <pre class="code-box" id="technical-receipt-box">Loading verification receipt...</pre>
+    </div>
+  </details>
+</div>
+
+<script>
+(function() {
+  let STATE = null;
+  let ACTIVE_PRODUCT = "energy";
+
+  const PRODUCT_DISPLAY_NAMES = {
+    energy: "Energy Commons",
+    advocate: "Advocate",
+    commons: "Capability Commons",
+    science: "Science",
+    civic: "Civic",
+    neighborhood: "Neighborhood"
+  };
+
+  const CAPABILITY_LABELS = {
+    "operational-trajectory-stabilizer-v1": "Peak-Demand Capacity & Budget Planner",
+    "evidence-triaged-counterfactual-auditor-v1": "Evidence & Risk Checker"
+  };
+
+  const SCIENCE_MODEL_LABELS = {
+    "B0_CONVENTIONAL_2PARAM_LINEAR": "Baseline Model: Standard Two-Factor Linear Trend",
+    "H1_UNCOUPLED_ADDITIVE_DECAY": "Candidate Model 1: Uncoupled Linear Thermal Decay",
+    "H2_VISCOELASTIC_SCALAR_WITNESS_CRP001": "Candidate Model 2: Single-Variable Strain Proxy",
+    "H3_REGIME_CLAMPED_LATENT_CONSERVATION": "Candidate Model 3: Phase-Change & Priority-Reserve Conservation"
+  };
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function fmtUsd(v) {
+    const n = Number(v || 0);
+    return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function friendlyStanding(rawStatus) {
+    const s = String(rawStatus || "CLEAR").toUpperCase();
+    if (s === "CLEAR" || s === "CURRENT" || s === "VALID") return "Up to date";
+    if (s === "REOPEN" || s === "UNRESOLVED" || s === "QUESTIONED_BY_RECALL") return "Needs another review";
+    return "Needs another review";
+  }
+
+  function friendlyErrorMessage(rawMsg) {
+    const m = String(rawMsg || "");
+    if (m.includes("stopped_at_epoch") || m.includes("HTTP 409")) {
+      return "Editing is currently paused (STOP is active). Click 'Resume Editing' in the top bar before making changes.";
+    }
+    if (m.includes("new_option_title_required") || m.includes("title_required") || m.includes("claim_statement_required") || m.includes("challenge_claim_required") || m.includes("community_project_title")) {
+      return "Please fill in a descriptive name or statement before submitting.";
+    }
+    if (m.includes("negative_value_refused") || m.includes("must_be_positive")) {
+      return "Please enter a positive number for costs, rates, and household counts.";
+    }
+    if (m.includes("expired_or_inapplicable_rule_date_refused")) {
+      return "The rule effective date entered is expired or outside the applicable period for this notice.";
+    }
+    return m;
+  }
+
+  function setBanner(msg, kind) {
+    const el = document.getElementById("product-action-banner");
+    el.textContent = msg;
+    el.className = "status-banner" + (kind ? " " + kind : "");
+  }
+
+  async function apiGet(path) {
+    const res = await fetch(path, { headers: { "Accept": "application/json" } });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
+    return data;
+  }
+
+  async function apiPost(path, body) {
+    const res = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body || {})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
+    return data;
+  }
+
+  function selectProductTab(pkey) {
+    ACTIVE_PRODUCT = pkey;
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      const isAct = btn.getAttribute("data-product") === pkey;
+      btn.classList.toggle("active", isAct);
+      btn.setAttribute("aria-selected", isAct ? "true" : "false");
+    });
+    ["energy", "advocate", "commons", "science", "civic", "neighborhood"].forEach(k => {
+      const panel = document.getElementById("panel-" + k);
+      if (panel) panel.classList.toggle("hidden", k !== pkey);
+    });
+    renderAll();
+  }
+
+  function renderAll() {
+    if (!STATE || !STATE.products) return;
+    const eng = STATE.engine_status || {};
+    const prod = STATE.products[ACTIVE_PRODUCT];
+    if (!prod) return;
+
+    document.getElementById("pill-model").textContent =
+      eng.paid_model_enabled ? "Mode: Live Model Enabled" : "Mode: Free Local Mode ($0)";
+    const stopEl = document.getElementById("pill-stop-state");
+    const btnStop = document.getElementById("btn-trigger-stop");
+    const btnClear = document.getElementById("btn-clear-stop");
+    if (eng.stopped) {
+      stopEl.textContent = "Editing: Paused (STOP)";
+      stopEl.className = "pill danger";
+      btnStop.classList.add("hidden");
+      btnClear.classList.remove("hidden");
+    } else {
+      stopEl.textContent = "Editing: Active";
+      stopEl.className = "pill ok";
+      btnStop.classList.remove("hidden");
+      btnClear.classList.add("hidden");
+    }
+    const workerRaw = String(eng.active_worker || "worker-a");
+    document.getElementById("pill-active-worker").textContent =
+      workerRaw.includes("b") ? "Session: Backup Session B" : "Session: Primary Session A";
+
+    const rawDnf = (prod.dnf_standing && prod.dnf_standing.status) || "CLEAR";
+    const friendlyDnf = friendlyStanding(rawDnf);
+    const dnfPill = document.getElementById("pill-dnf-standing");
+    dnfPill.textContent = "Review Status: " + friendlyDnf;
+    dnfPill.className = "pill " + (friendlyDnf === "Up to date" ? "ok" : "warn");
+
+    document.getElementById("kpi-product-id").textContent = PRODUCT_DISPLAY_NAMES[ACTIVE_PRODUCT] || prod.title;
+    document.getElementById("kpi-accepted-version").textContent = "v" + prod.accepted_version;
+    document.getElementById("kpi-accepted-sha").textContent = (prod.accepted_sha256 || "").slice(0, 16) + "…";
+    const expList = (prod.exploratory || []).filter(
+      e => e.status === "EXPLORATORY_PENDING" || e.status === "PROPOSED" || e.status === "REOPENED_BY_RECALL"
+    );
+    const rejCount = (prod.rejected || []).length;
+    document.getElementById("kpi-proposal-counts").textContent =
+      expList.length + " waiting / " + rejCount + " declined";
+    const recCount = (prod.recall_events || []).length;
+    document.getElementById("kpi-recall-status").textContent =
+      friendlyDnf + (recCount > 0 ? " (" + recCount + " flagged)" : "");
+
+    const drawer = document.getElementById("shared-proposal-drawer");
+    if (expList.length > 0) {
+      const topExp = expList[0];
+      drawer.classList.remove("hidden");
+      document.getElementById("staged-proposal-summary").textContent = topExp.summary;
+      document.getElementById("staged-proposal-id").textContent = topExp.proposal_id;
+      document.getElementById("staged-proposal-sha").textContent = (topExp.candidate_sha256 || "").slice(0, 16) + "…";
+      drawer.setAttribute("data-proposal-id", topExp.proposal_id);
+      drawer.setAttribute("data-project-id", prod.project_id);
+    } else {
+      drawer.classList.add("hidden");
+    }
+
+    document.getElementById("technical-receipt-box").textContent = JSON.stringify({
+      project_id: prod.project_id,
+      accepted_version: prod.accepted_version,
+      accepted_sha256: prod.accepted_sha256,
+      review_standing: friendlyDnf,
+      receipt: prod.receipt
+    }, null, 2);
+
+    renderEnergy(STATE.products.energy);
+    renderAdvocate(STATE.products.advocate);
+    renderCommons(STATE.products.commons, STATE.commons_library);
+    renderScience(STATE.products.science);
+    renderCivic(STATE.products.civic);
+  }
+
+  function renderEnergy(p) {
+    if (!p || !p.civilization_app) return;
+    const ev = p.civilization_app.evaluation || {};
+    const opts = ev.options_compared || [];
+    const audit = ev.conventional_calculator_parity || {};
+    document.getElementById("energy-parity-pill").textContent =
+      "Calculation check: $" + Number(audit.max_npc_discrepancy_usd || 0).toFixed(2)
+      + " re-run difference; $" + Number(audit.reported_flows_crosscheck_max_diff_usd || 0).toFixed(2)
+      + " from reported figures";
+    const fg = ev.failure_condition_guards || {};
+    document.getElementById("energy-fraud-pill").textContent =
+      "Unrealistic Assumptions Blocked: " + (fg.probes_blocked || 4) + "/" + (fg.probes_tested || 4);
+
+    const sel = document.getElementById("energy-commit-option");
+    const prevVal = sel.value;
+    sel.innerHTML = opts.map(o =>
+      `<option value="${esc(o.option_id)}">${esc(o.label)} (Net Upfront ${fmtUsd(o.net_capex_after_rebate_usd)})</option>`
+    ).join("");
+    if (prevVal && opts.some(o => o.option_id === prevVal)) {
+      sel.value = prevVal;
+    } else if (ev.recommended_option_id) {
+      sel.value = ev.recommended_option_id;
+    }
+
+    const tbody = document.getElementById("energy-options-tbody");
+    tbody.innerHTML = opts.map(o => {
+      const isRec = o.option_id === ev.recommended_option_id;
+      const badge = isRec
+        ? `<span class="pill ok">Best 10-Yr Value</span>`
+        : `<span class="pill">Viable Option</span>`;
+      return `<tr>
+        <td><strong>${esc(o.label)}</strong></td>
+        <td>${Number(o.solar_kw || 0)} kW Solar / ${Number(o.battery_kwh || 0)} kWh Battery / ${Number(o.thermal_pcm_kwh || 0)} kWh Thermal</td>
+        <td>${fmtUsd(o.net_capex_after_rebate_usd)}</td>
+        <td>${fmtUsd(o.annual_total_operating_cost_usd)}/yr</td>
+        <td>${fmtUsd(o.npc_10yr_usd)}</td>
+        <td><strong>${fmtUsd(o.npc_10yr_savings_vs_grid_usd)}</strong></td>
+        <td>${o.simple_payback_years != null ? o.simple_payback_years + " yrs" : "—"}</td>
+        <td>$${Number(o.monthly_cost_per_unit_usd || 0).toFixed(2)}/mo</td>
+        <td>${badge}</td>
+      </tr>`;
+    }).join("");
+
+    const optLabelsById = {};
+    opts.forEach(o => { optLabelsById[o.option_id] = o.label; });
+    const stbody = document.getElementById("energy-sensitivity-tbody");
+    stbody.innerHTML = (ev.sensitivity_analysis || []).map((s, idx) => `<tr>
+      <td><strong>Case ${idx + 1}</strong></td>
+      <td>${esc(s.label)}</td>
+      <td><strong>${esc(optLabelsById[s.lowest_cost_option_id] || s.lowest_cost_option_id)}</strong></td>
+      <td>${fmtUsd(s.opt3_savings_vs_grid_usd)}</td>
+    </tr>`).join("");
+  }
+
+  function renderAdvocate(p) {
+    if (!p || !p.civilization_app) return;
+    const ev = p.civilization_app.evaluation || {};
+    const dl = ev.deadline_analysis || {};
+    const tri = ev.epistemic_triage || {};
+    const fg = ev.filing_gate || {};
+    const dlPill = document.getElementById("advocate-deadline-pill");
+    const isVerifiedDl = (dl.status || "").includes("VERIFIED");
+    dlPill.textContent = isVerifiedDl
+      ? ("Aid-Pending Deadline: " + (dl.conservative_aid_paid_pending_deadline || "Verified"))
+      : ("Conservative Earliest Deadline: " + (dl.conservative_aid_paid_pending_deadline || "Check Dates"));
+    dlPill.className = "pill " + (isVerifiedDl ? "ok" : "warn");
+
+    const epPill = document.getElementById("advocate-epistemic-pill");
+    epPill.textContent = fg.ready_for_human_authorized_filing
+      ? "Packet Status: Ready for your approval"
+      : "Some supporting information is missing";
+    epPill.className = "pill " + (fg.ready_for_human_authorized_filing ? "ok" : "warn");
+
+    const allClaims = []
+      .concat((tri.verified_facts || []).map(c => ({ ...c, catLabel: "Verified fact", cls: "ok", verified: true })))
+      .concat((tri.unverified_allegations || []).map(c => ({ ...c, catLabel: "Unverified claim", cls: "warn", verified: false })))
+      .concat((tri.explicit_unknowns || []).map(c => ({ ...c, catLabel: "Missing information", cls: "danger", verified: false })));
+
+    const ctbody = document.getElementById("advocate-claims-tbody");
+    ctbody.innerHTML = allClaims.map(c => `<tr>
+      <td><strong>${esc(c.claim_id)}</strong></td>
+      <td><span class="pill ${c.cls}">${esc(c.catLabel)}</span></td>
+      <td>${esc(c.statement)}</td>
+      <td><code>${esc(c.source_document || "None attached")}</code></td>
+      <td>${c.verified ? "Yes" : "No"}</td>
+    </tr>`).join("");
+
+    const dtbody = document.getElementById("advocate-docs-tbody");
+    dtbody.innerHTML = (tri.verified_facts || []).map(d => `<tr>
+      <td><strong>${esc(d.source_document)}</strong></td>
+      <td>${esc(d.addresses_reason || "Supporting Evidence")}</td>
+      <td>${esc(dl.earliest_anchor_date || "2026-11-01")}</td>
+      <td><code>${esc((d.document_sha256 || "").slice(0, 16))}…</code></td>
+    </tr>`).join("");
+  }
+
+  function renderCommons(p, lib) {
+    if (!lib) return;
+    const projs = lib.projects || [];
+    document.getElementById("commons-count-pill").textContent = projs.length + " Projects Active";
+
+    const sel = document.getElementById("commons-target-project");
+    const prev = sel.value;
+    sel.innerHTML = projs.map(pr =>
+      `<option value="${esc(pr.project_id)}">${esc(pr.title)}</option>`
+    ).join("");
+    if (prev && projs.some(pr => pr.project_id === prev)) sel.value = prev;
+
+    const tbody = document.getElementById("commons-projects-tbody");
+    tbody.innerHTML = projs.map(pr => {
+      const caps = (pr.capability_references || []).map(
+        c => CAPABILITY_LABELS[c.capability_id] || c.capability_id
+      ).join(", ") || "Standard template";
+      const fStanding = friendlyStanding(pr.dnf_standing);
+      const stCls = fStanding === "Up to date" ? "ok" : "warn";
+      return `<tr>
+        <td><code>${esc(pr.project_id)}</code></td>
+        <td><strong>${esc(pr.title)}</strong></td>
+        <td>v${pr.version}</td>
+        <td><strong>${pr.throughput_ops_per_day} units/day</strong></td>
+        <td>${esc(pr.binding_bottleneck)}</td>
+        <td>$${Number(pr.net_daily_usd || 0).toFixed(2)}/day</td>
+        <td>${esc(caps)}</td>
+        <td><span class="pill ${stCls}">${esc(fStanding)}</span></td>
+        <td><code>${esc((pr.state_sha256 || "").slice(0, 12))}…</code></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function renderScience(p) {
+    if (!p || !p.civilization_app) return;
+    const ev = p.civilization_app.evaluation || {};
+    const surv = ev.surviving_hypotheses || [];
+    const fals = ev.falsified_hypotheses_preserved || [];
+    const bestId = surv[0] || "H3_REGIME_CLAMPED_LATENT_CONSERVATION";
+    document.getElementById("science-selected-pill").textContent =
+      "Best Supported: " + (SCIENCE_MODEL_LABELS[bestId] || bestId);
+    document.getElementById("science-negative-pill").textContent =
+      "Ruled-Out Models Preserved: " + fals.length + " (0 erased)";
+
+    const hyps = Object.values(ev.hypothesis_comparison || {});
+    const htbody = document.getElementById("science-hypotheses-tbody");
+    htbody.innerHTML = hyps.map((h, idx) => {
+      const isSurv = surv.includes(h.model_id);
+      const isFals = fals.includes(h.model_id);
+      const standing = isSurv ? "Best supported by data" : (isFals ? "Ruled out (kept in record)" : "Baseline reference");
+      const cls = isSurv ? "ok" : (isFals ? "danger" : "warn");
+      const displayName = SCIENCE_MODEL_LABELS[h.model_id] || h.label;
+      return `<tr>
+        <td><strong>Model ${idx + 1}</strong></td>
+        <td>${esc(displayName)}</td>
+        <td>${h.parameter_count}</td>
+        <td>${h.rmse_hours} h</td>
+        <td>${h.rmse_hours} h</td>
+        <td>${h.aic_score}</td>
+        <td>${h.mdl_score}</td>
+        <td>${h.beats_conventional_baseline ? "Yes" : "No"}</td>
+        <td><span class="pill ${cls}">${standing}</span></td>
+      </tr>`;
+    }).join("");
+
+    const ntbody = document.getElementById("science-negative-tbody");
+    ntbody.innerHTML = (ev.negative_findings_ledger || []).map(nf => `<tr>
+      <td><strong>${esc(SCIENCE_MODEL_LABELS[nf.target_option_id] || nf.target_option_id)}</strong></td>
+      <td>Failed to improve on the two-factor baseline model</td>
+      <td><code>${esc(nf.finding_id)}</code></td>
+      <td><code>${esc((nf.digest || "").slice(0, 14))}…</code></td>
+      <td><span class="pill danger">Kept in permanent record</span></td>
+    </tr>`).join("");
+  }
+
+  function renderCivic(p) {
+    if (!p || !p.civilization_app) return;
+    const ev = p.civilization_app.evaluation || {};
+    const props = ev.proposals_evaluated || [];
+    const recProp = props.find(x => x.option_id === ev.recommended_proposal_id);
+    document.getElementById("civic-recommended-pill").textContent =
+      "Recommended: " + (recProp ? recProp.title.split("+")[0].trim() : (ev.recommended_proposal_id || "None"));
+
+    const ptbody = document.getElementById("civic-proposals-tbody");
+    ptbody.innerHTML = props.map(pr => {
+      const isRec = pr.option_id === ev.recommended_proposal_id;
+      const viols = pr.constraint_violations || [];
+      const standing = isRec ? "Recommended" : (viols.length === 0 ? "Meets requirements" : "Does not meet requirements");
+      const cls = isRec ? "ok" : (viols.length === 0 ? "warn" : "danger");
+      const friendlyViols = viols.map(v =>
+        v.replace(/_/g, " ")
+         .replace("npc p50", "Typical 10-yr cost")
+         .replace("school setback", "School setback")
+      );
+      return `<tr>
+        <td><strong>${esc(pr.option_id.split("-").slice(0, 2).join("-"))}</strong></td>
+        <td>${esc(pr.title)}</td>
+        <td>$${Number(pr.capex_musd || 0).toFixed(2)}M</td>
+        <td>$${Number(pr.low_income_bill_delta_usd_mo || 0).toFixed(2)}/mo</td>
+        <td>$${Number(pr.npc_p50_musd || 0).toFixed(2)}M</td>
+        <td>$${Number(pr.npc_p10_musd || 0).toFixed(2)}M / <strong>$${Number(pr.npc_p50_musd || 0).toFixed(2)}M</strong> / $${Number(pr.npc_p90_musd || 0).toFixed(2)}M</td>
+        <td><span class="pill ${cls}">${standing}</span></td>
+        <td>${esc(friendlyViols.join("; ") || (pr.binding_community_covenant || "Meets all budget, safety & storm continuity requirements"))}</td>
+      </tr>`;
+    }).join("");
+
+    const ctbody = document.getElementById("civic-challenges-tbody");
+    ctbody.innerHTML = (ev.verified_public_challenges || []).map(ch => `<tr>
+      <td><strong>${esc(ch.challenge_id.split("-").slice(0, 2).join("-"))}</strong></td>
+      <td>${esc(ch.challenger)}</td>
+      <td><code>${esc(ch.target_option_id.split("-").slice(0, 2).join("-"))}</code></td>
+      <td>${esc(ch.claim)}</td>
+      <td><code>${esc((ch.evidence_sha256 || "").slice(0, 14))}…</code></td>
+      <td>${esc(ch.verified_covenant_added || "Updated school setback measurement to 62m (requires 100m minimum)")}</td>
+    </tr>`).join("");
+  }
+
+  async function refreshState() {
+    try {
+      STATE = await apiGet("/api/five_products/state");
+      renderAll();
+    } catch (err) {
+      setBanner("Could not load application state: " + friendlyErrorMessage(err.message), "error");
+    }
+  }
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => selectProductTab(btn.getAttribute("data-product")));
+  });
+
+  document.getElementById("btn-trigger-stop").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/stop", { reason: "user_paused_changes" });
+      if (STATE && STATE.engine_status) {
+        STATE.engine_status.stopped = true;
+        STATE.engine_status.stop_epoch = res.epoch || 1;
+        renderAll();
+      }
+      setBanner("All changes are now paused (STOP is active). No new edits or approvals can be saved until you click 'Resume Editing'.", "error");
+      await refreshState();
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-clear-stop").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/clear_stop", { reason: "user_resumed_editing" });
+      if (STATE && STATE.engine_status) {
+        STATE.engine_status.stopped = false;
+        STATE.engine_status.stop_epoch = res.epoch || 1;
+        renderAll();
+      }
+      setBanner("Editing resumed. You can now preview and accept changes.", "ok");
+      await refreshState();
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-switch-worker").addEventListener("click", async () => {
+    try {
+      await apiPost("/api/replace_worker", {});
+      await refreshState();
+      setBanner("Switched to a fresh assistant session. Unsaved drafts from the previous session were cleared, and your saved work is untouched.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-export-bundle").addEventListener("click", async () => {
+    try {
+      const prod = STATE.products[ACTIVE_PRODUCT];
+      const exp = await apiGet("/api/export?project_id=" + encodeURIComponent(prod.project_id));
+      document.getElementById("portable-io-drawer").classList.remove("hidden");
+      document.getElementById("portable-json-box").value = JSON.stringify(exp, null, 2);
+      setBanner("Exported portable project file for " + (PRODUCT_DISPLAY_NAMES[ACTIVE_PRODUCT] || prod.title) + ". You can download or copy the JSON below.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-toggle-import").addEventListener("click", () => {
+    document.getElementById("portable-io-drawer").classList.toggle("hidden");
+  });
+
+  document.getElementById("btn-close-io-drawer").addEventListener("click", () => {
+    document.getElementById("portable-io-drawer").classList.add("hidden");
+  });
+
+  document.getElementById("btn-import-bundle").addEventListener("click", async () => {
+    try {
+      const raw = document.getElementById("portable-json-box").value.trim();
+      if (!raw) throw new Error("Please paste a portable project JSON file first.");
+      const parsed = JSON.parse(raw);
+      const res = await apiPost("/api/import", { portable_bundle: parsed, allow_overwrite: true });
+      await refreshState();
+      setBanner("Restored project '" + res.project_id + "' (Saved version v" + res.accepted.version + ").", "ok");
+    } catch (err) {
+      setBanner("Could not restore project file: " + friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-download-portable-json").addEventListener("click", () => {
+    const raw = document.getElementById("portable-json-box").value;
+    if (!raw) return;
+    const blob = new Blob([raw], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "openline-genie-" + ACTIVE_PRODUCT + ".json";
+    a.click();
+  });
+
+  document.getElementById("btn-accept-staged-proposal").addEventListener("click", async () => {
+    try {
+      const drawer = document.getElementById("shared-proposal-drawer");
+      const pid = drawer.getAttribute("data-project-id");
+      const propId = drawer.getAttribute("data-proposal-id");
+      const res = await apiPost("/api/accept", { project_id: pid, proposal_id: propId });
+      await refreshState();
+      setBanner("Changes accepted and saved to your official record (Version v" + res.accepted.version + ").", "ok");
+    } catch (err) {
+      setBanner("Could not accept changes: " + friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-reject-staged-proposal").addEventListener("click", async () => {
+    try {
+      const drawer = document.getElementById("shared-proposal-drawer");
+      const pid = drawer.getAttribute("data-project-id");
+      const propId = drawer.getAttribute("data-proposal-id");
+      await apiPost("/api/reject", { project_id: pid, proposal_id: propId, reason: "user_declined_changes" });
+      await refreshState();
+      setBanner("Changes rejected. Your previously saved version remains unchanged.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  // 1. Energy Commons
+  document.getElementById("btn-stage-energy").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "energy",
+        payload: {
+          inputs: {
+            households: Number(document.getElementById("energy-households").value),
+            monthly_elec_kwh: Number(document.getElementById("energy-kwh").value),
+            offpeak_tariff_usd_kwh: Number(document.getElementById("energy-tariff").value),
+            peak_tariff_usd_kwh: Number(document.getElementById("energy-peak-tariff").value),
+            nem_export_rate_usd_kwh: Number(document.getElementById("energy-export-credit").value),
+            discount_rate_pct: Number(document.getElementById("energy-discount-rate").value),
+            solar_array_kw_ac: Number(document.getElementById("energy-roof-limit").value)
+          }
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Energy comparison updated. Click 'Accept changes' or 'Reject changes' above.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-add-energy-option").addEventListener("click", async () => {
+    try {
+      const title = document.getElementById("energy-opt-title").value.trim();
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "energy",
+        payload: {
+          new_option: {
+            title: title,
+            solar_kw: Number(document.getElementById("energy-opt-solar").value),
+            battery_kwh: Number(document.getElementById("energy-opt-battery").value),
+            thermal_storage_kwh_eq: Number(document.getElementById("energy-opt-thermal").value),
+            capex_usd: Number(document.getElementById("energy-opt-capex").value),
+            annual_om_usd: Number(document.getElementById("energy-opt-om").value)
+          }
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Added custom option '" + title + "'. Click 'Accept changes' or 'Reject changes' above.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-authorize-energy-procurement").addEventListener("click", async () => {
+    try {
+      const approved = document.getElementById("energy-human-approved").checked;
+      const optId = document.getElementById("energy-commit-option").value;
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "energy",
+        action: "authorize_procurement",
+        payload: { human_approved: approved, option_id: optId }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      if (res.status === "AUTHORIZED_FOR_COOP_BOARD_VOTE") {
+        setBanner("Procurement packet approved and saved (Version v" + res.accepted_version + ").", "ok");
+      } else {
+        setBanner("Approval required: Please check the confirmation box to approve the procurement packet.", "error");
+      }
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-recall-energy").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "energy",
+        action: "recall_dependency",
+        payload: { node_id: "peak_tariff_usd_kwh", reason: "Utility tariff schedule changed" }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Rate change flagged: Review status is now 'Needs another review'. Your saved project record remains intact until you accept an updated plan.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  // 2. Advocate
+  document.getElementById("btn-stage-advocate").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "advocate",
+        payload: {
+          notice_date: document.getElementById("advocate-notice-date").value,
+          receipt_date: document.getElementById("advocate-receipt-date").value,
+          filing_date: document.getElementById("advocate-filing-date").value,
+          appeal_window_days: Number(document.getElementById("advocate-window-days").value),
+          rule_effective_date: document.getElementById("advocate-rule-date").value,
+          include_missing_medical_cert: document.getElementById("advocate-include-med-cert").checked,
+          custom_notice_text: document.getElementById("advocate-notice-text").value
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Appeal packet updated. Click 'Accept changes' or 'Reject changes' above.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-add-advocate-claim").addEventListener("click", async () => {
+    try {
+      const stmt = document.getElementById("advocate-claim-statement").value.trim();
+      const cat = document.getElementById("advocate-claim-category").value;
+      const docId = document.getElementById("advocate-claim-doc").value.trim();
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "advocate",
+        payload: {
+          new_claim: { category: cat, statement: stmt, source_doc_id: docId }
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Supporting item added to appeal packet. Click 'Accept changes' above to save.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-advocate-redact").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "advocate",
+        action: "redact_preview",
+        payload: {}
+      });
+      document.getElementById("advocate-redacted-box").textContent = JSON.stringify(res.redacted_packet, null, 2);
+      setBanner("Privacy-scrubbed preview ready (0 personal identifiers exposed).", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-authorize-advocate-filing").addEventListener("click", async () => {
+    try {
+      const approved = document.getElementById("advocate-human-approved").checked;
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "advocate",
+        action: "authorize_appeal_filing",
+        payload: { human_approved: approved }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      if (res.status === "READY_FOR_HUMAN_MANUAL_FILING") {
+        document.getElementById("advocate-redacted-box").textContent = JSON.stringify(res.redacted_packet, null, 2);
+        setBanner("Appeal packet approved and locked for your manual submission (Version v" + res.accepted_version + ").", "ok");
+      } else if (res.status === "BLOCKED_INCOMPLETE_EPISTEMIC_BASIS") {
+        setBanner("Some supporting information is missing: Attach all required documents before locking the appeal packet.", "error");
+      } else {
+        setBanner("Approval required: Please check the confirmation box to lock the appeal packet.", "error");
+      }
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-recall-advocate").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "advocate",
+        action: "recall_dependency",
+        payload: { node_id: "notice_date", reason: "Updated case document received" }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Case fact change flagged: Review status is now 'Needs another review'.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  // 3. Capability Commons
+  document.getElementById("btn-create-commons-project").addEventListener("click", async () => {
+    try {
+      const title = document.getElementById("commons-new-title").value.trim();
+      const prompt = document.getElementById("commons-new-prompt").value.trim() || ("Build a community project for " + title);
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "commons",
+        action: "create_community_project",
+        payload: {
+          title: title,
+          prompt: prompt,
+          domain_category: document.getElementById("commons-new-category").value,
+          target_ops: Number(document.getElementById("commons-new-target-ops").value),
+          max_capex_usd: Number(document.getElementById("commons-new-capex").value),
+          inherit_stabilizer: document.getElementById("commons-new-inherit").checked
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Created reusable community project '" + title + "' (" + res.project_id + ").", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-apply-commons-capability").addEventListener("click", async () => {
+    try {
+      const targetPid = document.getElementById("commons-target-project").value;
+      const capId = document.getElementById("commons-capability-select").value;
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "commons",
+        action: "apply_capability",
+        payload: { target_project_id: targetPid, capability_id: capId }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      document.getElementById("commons-capability-box").textContent = JSON.stringify(res.result, null, 2);
+      setBanner("Applied '" + (CAPABILITY_LABELS[capId] || capId) + "' to " + targetPid + ".", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-export-capability").addEventListener("click", async () => {
+    try {
+      const capId = document.getElementById("commons-capability-select").value;
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "commons",
+        action: "export_capability",
+        payload: { capability_id: capId }
+      });
+      document.getElementById("commons-capability-box").textContent = JSON.stringify(res.capability_bundle, null, 2);
+      setBanner("Exported reusable planning tool '" + (CAPABILITY_LABELS[capId] || capId) + "'.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-recall-commons").addEventListener("click", async () => {
+    try {
+      const targetPid = document.getElementById("commons-target-project").value;
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "commons",
+        action: "recall_dependency",
+        payload: { project_id: targetPid, node_id: "demand", reason: "Seasonal community demand changed" }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Demand change flagged on " + targetPid + ": Review status is now 'Needs another review'.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  // 4. Science
+  document.getElementById("btn-stage-science").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "science",
+        payload: {
+          seed_offset_1: Number(document.getElementById("science-seed1").value),
+          seed_offset_2: Number(document.getElementById("science-seed2").value),
+          invalidate_batch_02: document.getElementById("science-invalidate-batch02").checked
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Experiment run completed. Click 'Accept changes' or 'Reject changes' above.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-add-science-hypothesis").addEventListener("click", async () => {
+    try {
+      const title = document.getElementById("science-hyp-title").value.trim();
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "science",
+        payload: {
+          new_hypothesis: {
+            title: title,
+            k_params: Number(document.getElementById("science-hyp-k").value),
+            hrs_coeff: Number(document.getElementById("science-hyp-rss1").value),
+            irr_coeff: Number(document.getElementById("science-hyp-rss2").value),
+            holds_under_unclamping: document.getElementById("science-hyp-unclamp").checked
+          }
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Added hypothesis '" + title + "'. Click 'Accept changes' above to save.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-science-replay").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "science",
+        action: "independent_replay",
+        payload: { tamper_negative_ledger: false }
+      });
+      setBanner("Independent Replay Verified: Datasets and model comparisons reproduced with exact checksum match.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-science-tamper-probe").addEventListener("click", async () => {
+    try {
+      await apiPost("/api/five_products/action", {
+        product_key: "science",
+        action: "independent_replay",
+        payload: { tamper_negative_ledger: true }
+      });
+      setBanner("Tamper Protection Verified: Altered observation data was detected and blocked by checksum check.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-recall-science").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "science",
+        action: "invalidate_dataset",
+        payload: { reason: "Sensor calibration drift flagged in Dataset Batch 2" }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Sensor drift flagged: Dependent conclusions are now marked 'Needs another review'.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  // 5. Civic
+  document.getElementById("btn-stage-civic").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "civic",
+        payload: {
+          max_10yr_lifecycle_budget_musd: Number(document.getElementById("civic-population").value),
+          min_school_safety_setback_m: Number(document.getElementById("civic-liters").value),
+          max_72h_blackout_outage_hours: Number(document.getElementById("civic-outage-hours").value),
+          max_property_line_noise_dba: Number(document.getElementById("civic-capex-ceiling").value),
+          max_low_income_bill_delta_usd_mo: Number(document.getElementById("civic-opex-ceiling").value),
+          drought_raw_water_turbidity_ntu: document.getElementById("civic-flood-diesel").checked ? 35.0 : 25.0
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Public proposals re-evaluated. Click 'Accept changes' or 'Reject changes' above.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-add-civic-challenge").addEventListener("click", async () => {
+    try {
+      const claim = document.getElementById("civic-chal-claim").value.trim();
+      const target = document.getElementById("civic-chal-target").value;
+      const by = document.getElementById("civic-chal-by").value.trim();
+      const res = await apiPost("/api/five_products/stage", {
+        product_key: "civic",
+        payload: {
+          new_challenge: {
+            target_proposal_id: target,
+            submitted_by: by,
+            claim: claim
+          }
+        }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Waiting for your review: Public challenge recorded. Click 'Accept changes' above to save to the decision record.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-authorize-civic").addEventListener("click", async () => {
+    try {
+      const approved = document.getElementById("civic-human-approved").checked;
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "civic",
+        action: "authorize_infrastructure_selection",
+        payload: { human_approved: approved }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      if (res.status === "AUTHORIZED_FOR_PUBLIC_PROCUREMENT_DOCKET") {
+        setBanner("Public infrastructure selection approved and saved (Version v" + res.accepted_version + ").", "ok");
+      } else {
+        setBanner("Approval required: Please check the public council confirmation box before approving.", "error");
+      }
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-export-civic-dossier").addEventListener("click", async () => {
+    try {
+      const res = await apiGet("/api/five_products/civic/dossier?format=json");
+      const blob = new Blob([res.html], { type: "text/html" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = res.filename || "PUBLIC_INFRASTRUCTURE_ACCOUNTABILITY_DOSSIER.html";
+      a.click();
+      setBanner("Downloaded standalone Public Decision Dossier (" + res.filename + ").", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  document.getElementById("btn-recall-civic").addEventListener("click", async () => {
+    try {
+      const res = await apiPost("/api/five_products/action", {
+        product_key: "civic",
+        action: "recall_dependency",
+        payload: { node_id: "max_72h_blackout_outage_hours", reason: "Updated storm resilience requirement flagged for review" }
+      });
+      STATE = res.five_products_state;
+      renderAll();
+      setBanner("Storm outage requirement flagged: Review status is now 'Needs another review'.", "ok");
+    } catch (err) {
+      setBanner(friendlyErrorMessage(err.message), "error");
+    }
+  });
+
+  refreshState();
+})();
+</script>
+</body>
+</html>

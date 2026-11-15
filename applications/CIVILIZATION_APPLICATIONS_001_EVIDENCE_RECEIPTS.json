@@ -1,0 +1,397 @@
+{
+  "Defect_10_D3_CA_010": {
+    "defect_id": "D3-CA-010",
+    "status": "FIXED_AND_VERIFIED",
+    "summary": "Synchronized RecallLedger support_sets and ol_guard_project_highwater upon import_portable_bundle and added cryptographic export/import of qualified capabilities across separate SQLite installations."
+  },
+  "applications": {
+    "application_a_franklin": {
+      "application": "Application A \u2014 Community Energy and Essential-Cost Cooperative (Franklin)",
+      "autonomy_level": "AGENT-ASSISTED (Genie synthesis, RecallLedger, BUCSW & ReceiverGuard autonomous; cooperative CRF/sensitivity domain model Argon-engineered)",
+      "conventional_parity_max_diff_usd": 0.0,
+      "decision_recall_on_assumption_change": {
+        "accepted_bytes_preserved": true,
+        "recalled_assumption": "coop_loan_interest_pct",
+        "standing": "REOPEN"
+      },
+      "failure_condition_probes_blocked": "4/4",
+      "human_approval_gate": {
+        "approved_spend": "COMMITTED",
+        "unapproved_spend": "BLOCKED_OWNER_AUTHORIZATION_REQUIRED"
+      },
+      "level_1_verdict": "WORKING",
+      "level_2_verdict": "CREDIBLE_PORTABLE_MECHANISM_WITH_PHYSICAL_INSPECTION_BOUNDARY",
+      "options_summary": [
+        {
+          "battery_ewaste_10yr_kg": 0.0,
+          "monthly_cost_per_unit_usd": 283.35,
+          "net_capex_usd": 0.0,
+          "npc_10yr_savings_vs_baseline_usd": 0.0,
+          "npc_10yr_usd": 615106.45,
+          "option_id": "OPT-0-GRID-BASELINE",
+          "simple_payback_years": 0.0
+        },
+        {
+          "battery_ewaste_10yr_kg": 0.0,
+          "monthly_cost_per_unit_usd": 220.43,
+          "net_capex_usd": 17360.0,
+          "npc_10yr_savings_vs_baseline_usd": 134601.69,
+          "npc_10yr_usd": 480504.76,
+          "option_id": "OPT-1-SOLAR-EFFICIENCY-SHIFT",
+          "simple_payback_years": 0.85
+        },
+        {
+          "battery_ewaste_10yr_kg": 225.0,
+          "monthly_cost_per_unit_usd": 221.54,
+          "net_capex_usd": 27860.0,
+          "npc_10yr_savings_vs_baseline_usd": 128827.75,
+          "npc_10yr_usd": 486278.7,
+          "option_id": "OPT-2-SOLAR-LIFEPO4-COOP",
+          "simple_payback_years": 1.31
+        },
+        {
+          "battery_ewaste_10yr_kg": 0.0,
+          "monthly_cost_per_unit_usd": 212.71,
+          "net_capex_usd": 19880.0,
+          "npc_10yr_savings_vs_baseline_usd": 151029.11,
+          "npc_10yr_usd": 464077.34,
+          "option_id": "OPT-3-SOLAR-THERMAL-PCM-WATER",
+          "simple_payback_years": 0.87
+        }
+      ],
+      "project_id": "genie-synth-community-energy-cooperative-and-essentialcost",
+      "second_user_modified_sha256": "6c6b744245674882d4f69454e3018498858a9bb2854494e138214f04523d0b24",
+      "sensitivity_scenarios_count": 6,
+      "v1_accepted_sha256": "c51d722e4892b2c415594d46faa7931bc54c198c6cc570719ca3081e0d9a3caf",
+      "v2_accepted_sha256": "3e4887c3752938356d5c362e01584b7c4de70bdb00267a17156a5b56271377f0"
+    },
+    "application_b_baldwin": {
+      "application": "Application B \u2014 Public-Benefits and Institutional Appeal Assistant (Baldwin)",
+      "autonomy_level": "AGENT-ASSISTED (RecallLedger, ReceiverGuard & Connect gate autonomous; epistemic 3-bucket triage, statutory effective-date validator & fail-closed deadline engine Argon-engineered)",
+      "deadline_fail_closed": {
+        "conservative_aid_paid_pending_deadline": "2026-11-16",
+        "conservative_standard_appeal_deadline": "2026-12-01",
+        "earliest_anchor_date": "2026-11-01",
+        "requires_human_date_verification": true,
+        "status": "DEADLINE_UNCERTAIN_FAIL_CLOSED_EARLIEST_CONSERVATIVE_BOUND",
+        "uncertainties": [
+          "missing_envelope_postmark_date_using_earliest_notice_date"
+        ]
+      },
+      "decision_recall_standing": "REOPEN",
+      "expired_rule_blocked": true,
+      "incomplete_packet_blocked": true,
+      "level_1_verdict": "WORKING",
+      "level_2_verdict": "CREDIBLE_LOCAL_PRIVACY_ADVOCACY_TOOL_WITH_JURISDICTIONAL_RULE_BOUNDARY",
+      "pii_redaction_verified": true,
+      "project_id": "genie-synth-privacyconscious-publicbenefits-and-institutiona",
+      "unauthorized_filing_status": "BLOCKED_OWNER_AUTHORIZATION_REQUIRED",
+      "unsupported_conclusion_blocked": true,
+      "unverified_allegations_count": 1,
+      "v1_accepted_sha256": "d4754d56bf78d3eaa3794f8c52bb3cf1e9a9716e15bd76e48165ec94fb89beb4",
+      "v2_accepted_sha256": "e705e5ca5ef84ddfe7f544999f201cda556f9e38e2e7ca8a69c4ef83b637b74e",
+      "verified_facts_count": 4
+    },
+    "application_c_morrison": {
+      "application": "Application C \u2014 Reusable Community Project Library (Morrison)",
+      "autonomy_level": "AUTONOMOUSLY BUILT & EXECUTED BY GENIE/007/008/009 + AGENT-ASSISTED DEFECT 10 REPAIR (One-prompt synthesis, 007/008 capability creation/compression/inheritance, SIGKILL recovery & Defect 10 cross-install recall repair)",
+      "creator_persistence_verified": true,
+      "defect_10_repair_verified": {
+        "defect_id": "D3-CA-010",
+        "status": "FIXED_AND_VERIFIED",
+        "summary": "Synchronized RecallLedger support_sets and ol_guard_project_highwater upon import_portable_bundle and added cryptographic export/import of qualified capabilities across separate SQLite installations."
+      },
+      "level_1_verdict": "WORKING",
+      "level_2_verdict": "WORKING_PORTABLE_LIBRARY_AND_CROSS_ORG_TRANSFER_MECHANISM",
+      "projects_verified": [
+        {
+          "capability_mode_in_creator": "CREATED_AND_COMPRESSED",
+          "conventional_eval_cost": 47,
+          "creator_eval_cost": 163,
+          "domain_key": "WATER_PROJECT",
+          "imported_sha256": "16dc80123a11bacaf0f574e7be9dbffc426f48aae4d88e0b19872a3bb43e7237",
+          "post_transfer_recall_standing": "REOPEN",
+          "project_id": "genie-synth-community-rainwater-and-biosand-multibarrier",
+          "successor_continued_sha256": "aeb27eff39ddc28447c942bf74c3ff0c0704151cd0fb951821cd5821db2b2187",
+          "successor_continued_version": 2
+        },
+        {
+          "capability_mode_in_creator": "INHERITED",
+          "conventional_eval_cost": 47,
+          "creator_eval_cost": 1,
+          "domain_key": "FOOD_AND_CHILDCARE_PROJECT",
+          "imported_sha256": "81aafd0fb8743edf63f96f7d9c39945f7d1199240f6df085b879b9e837cf1d92",
+          "post_transfer_recall_standing": "REOPEN",
+          "project_id": "genie-synth-neighborhood-cooperative-childcare-and-healthy",
+          "successor_continued_sha256": "feb4ec5ff7bef00a7afd51a4b47fc5b2671876919aa2957ff6fd43cf350de7c3",
+          "successor_continued_version": 2
+        },
+        {
+          "capability_mode_in_creator": "INHERITED",
+          "conventional_eval_cost": 47,
+          "creator_eval_cost": 1,
+          "domain_key": "BUILDING_AND_COMMUNITY_SPACE_PROJECT",
+          "imported_sha256": "8fb4507dbe34b5c9cf2ec9d586d9f3f0cec8288dfa049d17523c4435f88172e3",
+          "post_transfer_recall_standing": "REOPEN",
+          "project_id": "genie-synth-shared-community-resilience-and-makerspace",
+          "successor_continued_sha256": "3a045d85aec8ff8ecab81242bb81146203b09af88999aedad4ce4613a0385f13",
+          "successor_continued_version": 2
+        }
+      ],
+      "reusable_capability_id": "operational-trajectory-stabilizer-v1",
+      "successor_persistence_verified": true
+    },
+    "application_d_einstein": {
+      "application": "Application D \u2014 Self-Correcting Scientific Research Workspace (Einstein)",
+      "autonomy_level": "AGENT-ASSISTED (RecallLedger, BUCSW & zero-oracle checks autonomous; thermal-hydraulic hypothesis benchmark & zero-trust replayer Argon-engineered)",
+      "fabricated_observation_blocked": true,
+      "falsified_hypotheses_preserved": [
+        "H1_UNCOUPLED_ADDITIVE_DECAY",
+        "H2_VISCOELASTIC_SCALAR_WITNESS_CRP001"
+      ],
+      "hypothesis_metrics": {
+        "B0_CONVENTIONAL_2PARAM_LINEAR": {
+          "aic_score": 311.62,
+          "beats_conventional_baseline": false,
+          "falsified_against_baseline": false,
+          "label": "Conventional 2-Parameter Linear Regression / EWMA Baseline",
+          "mdl_score": 158.192,
+          "model_id": "B0_CONVENTIONAL_2PARAM_LINEAR",
+          "option_id": "B0_CONVENTIONAL_2PARAM_LINEAR",
+          "parameter_count": 2,
+          "primary_objective_cost_or_loss": 6.8389,
+          "rmse_hours": 6.8389
+        },
+        "H1_UNCOUPLED_ADDITIVE_DECAY": {
+          "aic_score": 416.588,
+          "beats_conventional_baseline": false,
+          "falsified_against_baseline": true,
+          "label": "Hypothesis 1: Uncoupled Linear Additive Thermal Decay (No Regime Clamp)",
+          "mdl_score": 211.867,
+          "model_id": "H1_UNCOUPLED_ADDITIVE_DECAY",
+          "option_id": "H1_UNCOUPLED_ADDITIVE_DECAY",
+          "parameter_count": 3,
+          "primary_objective_cost_or_loss": 13.0159,
+          "rmse_hours": 13.0159
+        },
+        "H2_VISCOELASTIC_SCALAR_WITNESS_CRP001": {
+          "aic_score": 497.237,
+          "beats_conventional_baseline": false,
+          "falsified_against_baseline": true,
+          "label": "Hypothesis 2: Passive 1D Viscoelastic Strain-Witness Proxy (CRP-001 Candidate)",
+          "mdl_score": 253.383,
+          "model_id": "H2_VISCOELASTIC_SCALAR_WITNESS_CRP001",
+          "option_id": "H2_VISCOELASTIC_SCALAR_WITNESS_CRP001",
+          "parameter_count": 4,
+          "primary_objective_cost_or_loss": 21.2793,
+          "rmse_hours": 21.2793
+        },
+        "H3_REGIME_CLAMPED_LATENT_CONSERVATION": {
+          "aic_score": -1345.844,
+          "beats_conventional_baseline": true,
+          "falsified_against_baseline": false,
+          "label": "Hypothesis 3: Piecewise Regime-Clamped Latent-Heat & Priority-Slack Conservation",
+          "mdl_score": -669.349,
+          "model_id": "H3_REGIME_CLAMPED_LATENT_CONSERVATION",
+          "option_id": "H3_REGIME_CLAMPED_LATENT_CONSERVATION",
+          "parameter_count": 3,
+          "primary_objective_cost_or_loss": 0.0002,
+          "rmse_hours": 0.0002
+        }
+      },
+      "independent_replay": {
+        "batch_01_sha256_matched": true,
+        "batch_02_sha256_matched": true,
+        "h2_confirmed_inferior_to_b0": true,
+        "recomputed_b0_rmse": 6.8389,
+        "recomputed_h2_rmse": 21.2793,
+        "recomputed_h3_rmse": 0.0002,
+        "replay_verified": true
+      },
+      "invalidated_evidence_propagation": {
+        "invalidated_dataset": "DATASET_BATCH_02",
+        "recall_ledger_standing": "REOPEN",
+        "reopened_conclusions": [
+          "C2_EXTREME_HEAT_43C_THRESHOLD_CALIBRATION"
+        ],
+        "retained_conclusions": [
+          "C1_REGIME_CLAMP_DOMINATES_LINEAR_MODELS",
+          "C3_VISCOELASTIC_SCALAR_WITNESS_FALSIFIED"
+        ]
+      },
+      "level_1_verdict": "WORKING",
+      "level_2_verdict": "WORKING_REPRODUCIBLE_COMPUTATIONAL_RESEARCH_MEMORY_WITH_WETLAB_BOUNDARY",
+      "negative_finding_erasure_blocked": true,
+      "oracle_answer_leakage_blocked": true,
+      "project_id": "genie-synth-selfcorrecting-scientific-research-workspace-for",
+      "surviving_hypotheses": [
+        "H3_REGIME_CLAMPED_LATENT_CONSERVATION",
+        "B0_CONVENTIONAL_2PARAM_LINEAR"
+      ]
+    },
+    "application_e_arendt": {
+      "application": "Application E \u2014 Public Infrastructure Decision Accountability (Arendt)",
+      "autonomy_level": "AGENT-ASSISTED (Hash-chained receipts, RecallLedger, BUCSW & standalone export autonomous; multi-proposal P10/P50/P90 & public-challenge verifier Argon-engineered)",
+      "decision_recall_standing": "REOPEN",
+      "disqualified_proposals_after_challenge": [
+        {
+          "option_id": "PROP-A-DIESEL-CHLORINE",
+          "violations": [
+            "npc_p50_2.24M_exceeds_budget_2.15M",
+            "noise_74.0dBA_exceeds_max_60.0dBA",
+            "bill_impact_$5.2_exceeds_max_$4.5"
+          ]
+        },
+        {
+          "option_id": "PROP-B-OVERSIZED-LFP-MEMBRANE",
+          "violations": [
+            "school_setback_62.0m_below_min_100.0m"
+          ]
+        },
+        {
+          "option_id": "PROP-D-STATUS-QUO-DEFERRED",
+          "violations": [
+            "npc_p50_2.45M_exceeds_budget_2.15M",
+            "blackout_outage_48.0h_exceeds_max_2.0h",
+            "raw_turbidity_25.0NTU_exceeds_rating_15.0NTU"
+          ]
+        }
+      ],
+      "drought_assumption_shift_qualified_proposals": [],
+      "level_1_verdict": "WORKING",
+      "level_2_verdict": "WORKING_TRANSPARENT_DECISION_AND_CHALLENGE_RECORD_WITH_INSTITUTIONAL_ADOPTION_BOUNDARY",
+      "project_id": "genie-synth-public-infrastructure-decision-accountability-re",
+      "qualified_proposals_after_challenge": [
+        "PROP-C-SDD-GRAVITY-MULTIBARRIER"
+      ],
+      "qualified_proposals_before_challenge": [
+        "PROP-C-SDD-GRAVITY-MULTIBARRIER",
+        "PROP-B-OVERSIZED-LFP-MEMBRANE"
+      ],
+      "recommended_proposal_id": "PROP-C-SDD-GRAVITY-MULTIBARRIER",
+      "standalone_dossier_sha256": "2976c11c81b36e2a062c0265806196be5161addf4b370bf69e7ea75b3206bf82",
+      "standalone_portable_html_sha256": "70a914a192e3f37aab689e1f095fbbb3f23bd2d53985a2abbf0e9feae8e8c525",
+      "v1_accepted_sha256": "3b11ee6a08e579fa6621e309f9672a138e2da44c81cb21c71d41c1e4fc1a6419",
+      "v2_accepted_sha256": "1ed89d95276bb0d1bdb4eb5c7ad52174972b7c585cc46b95e632f7a85f2c42ca"
+    }
+  },
+  "central_experiment": {
+    "active_model_after_swap": "anthropic-claude-3-7-sonnet-local-adapter-v2",
+    "break_even_project_count_n": 4,
+    "conventional_project_eval_cost": 48,
+    "evaluation_compounding_curve": [
+      {
+        "conventional_cumulative_evals": 48,
+        "openline_cheaper_than_conventional": false,
+        "openline_cumulative_evals": 149,
+        "projects_count_n": 1,
+        "speedup_ratio": 0.32
+      },
+      {
+        "conventional_cumulative_evals": 96,
+        "openline_cheaper_than_conventional": false,
+        "openline_cumulative_evals": 151,
+        "projects_count_n": 2,
+        "speedup_ratio": 0.64
+      },
+      {
+        "conventional_cumulative_evals": 144,
+        "openline_cheaper_than_conventional": false,
+        "openline_cumulative_evals": 153,
+        "projects_count_n": 3,
+        "speedup_ratio": 0.94
+      },
+      {
+        "conventional_cumulative_evals": 192,
+        "openline_cheaper_than_conventional": true,
+        "openline_cumulative_evals": 155,
+        "projects_count_n": 4,
+        "speedup_ratio": 1.24
+      },
+      {
+        "conventional_cumulative_evals": 240,
+        "openline_cheaper_than_conventional": true,
+        "openline_cumulative_evals": 157,
+        "projects_count_n": 5,
+        "speedup_ratio": 1.53
+      },
+      {
+        "conventional_cumulative_evals": 480,
+        "openline_cheaper_than_conventional": true,
+        "openline_cumulative_evals": 167,
+        "projects_count_n": 10,
+        "speedup_ratio": 2.87
+      },
+      {
+        "conventional_cumulative_evals": 960,
+        "openline_cheaper_than_conventional": true,
+        "openline_cumulative_evals": 187,
+        "projects_count_n": 20,
+        "speedup_ratio": 5.13
+      }
+    ],
+    "first_project_eval_cost": 149,
+    "first_project_wall_ms": 71.067,
+    "honest_compounding_boundary": "VERIFIED FOR OPERATIONAL & AUDIT SUBSTRATE (N_BE = 4 projects, 5.29x fewer evaluations across 20 projects); DOES NOT AUTOMATICALLY WRITE NEW DOMAIN EQUATIONS OR STATUTORY TABLES WITHOUT HUMAN/AGENT ENGINEERING IN --no-model MODE.",
+    "provider_swap_preserved_accepted_bytes": true,
+    "subsequent_project_eval_cost": 2,
+    "subsequent_project_wall_ms": 41.264
+  },
+  "civilization_scale_level_2": "2 / 5 LEVEL-2 GENERALIZED (App C Project Library & App E Public Decision Record) | 3 / 5 LEVEL-1 WORKING WITH EXTERNAL DOMAIN/HARDWARE BOUNDARIES (App A, App B, App D)",
+  "date": "2026-11-15",
+  "operating_law_falsifiers": {
+    "all_eight_vectors_passed": true,
+    "vectors": {
+      "F1_incorrect_or_contradictory_inputs": true,
+      "F2_missing_dependencies_fail_closed": true,
+      "F3_interrupted_worker_sigkill_recovery": true,
+      "F4_unauthorized_mutation_and_spend_blocked": true,
+      "F5_stop_enforcement_and_epoch_revocation": true,
+      "F6_export_import_tamper_and_continuation": true,
+      "F7_unavailable_model_and_service_drop": true,
+      "F8_plausible_but_incorrect_outputs_blocked": true
+    },
+    "vectors_passed_count": 8,
+    "vectors_total": 8
+  },
+  "program": "ARGON \u2014 OPENLINE CIVILIZATION APPLICATIONS 001",
+  "sixth_finding_emergent_capability": {
+    "capability_id": "evidence-triaged-counterfactual-auditor-v1",
+    "conventional_equivalent_eval_cost": 24,
+    "inheritance_mode": "INHERITED",
+    "missing_evidence_fail_closed_status": "HOLD_INCOMPLETE_EPISTEMIC_BASIS",
+    "name": "Evidence-Triaged Counterfactual Option & Standing Auditor (ET-COSA)",
+    "qualification_receipt_id": "b6c6eb5f884ada76925968bf81f5ae7f",
+    "recommended_option_at_34c": "PHARM-OPT-2-WHO-PQS-PCM-COOP-HUB",
+    "recommended_option_at_52c_heatwave": "PHARM-OPT-3-HYBRID-PCM-MICRO-LFP",
+    "reuse_eval_cost": 2,
+    "slack_certificate": {
+      "baseline_feasible": true,
+      "evaluation_calls": 23,
+      "slack_table": {
+        "ambient_heat_wave_c": {
+          "baseline_value": 34.0,
+          "consequential": true,
+          "downward_slack_margin": null,
+          "upward_slack_margin": 34.0
+        },
+        "fda_lot_recall_bulletin": {
+          "baseline_value": null,
+          "consequential": true,
+          "downward_slack_margin": 0.0,
+          "standing_class": "EXPLICIT_UNKNOWN_HOLD_ON_CHANGE",
+          "upward_slack_margin": 0.0
+        },
+        "min_required_holdover_h": {
+          "baseline_value": 48.0,
+          "consequential": true,
+          "downward_slack_margin": null,
+          "upward_slack_margin": 48.0
+        }
+      }
+    },
+    "unfamiliar_sixth_task_id": "genie-synth-municipal-pharmacy-coldchain-and-insulin",
+    "verified_evidence_accepted_status": "ACCEPTED"
+  },
+  "working_applications_level_1": "5 / 5 WORKING (Deterministic Local Execution, Authority, Recall, SIGKILL Recovery & Portable Export Verified)"
+}

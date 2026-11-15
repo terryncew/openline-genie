@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClearCovenant — Homeowner, Board &amp; Community Companion</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --primary: #0f172a;
+      --accent: #0284c7;
+      --accent-dark: #0369a1;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warn: #b45309;
+      --warn-bg: #fffbeb;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --border: #cbd5e1;
+      --text: #1e293b;
+      --muted: #475569;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+    .app-shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+    header.hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      color: #e0f2fe;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin: 6px 0 4px 0;
+      line-height: 1.25;
+    }
+    .hero-sub {
+      margin: 0;
+      font-size: 0.92rem;
+      color: #cbd5e1;
+    }
+    .safety-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+    }
+    .role-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 680px) {
+      .role-tabs { grid-template-columns: 1fr; }
+    }
+    .role-tab {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+    .role-tab.active {
+      border-color: var(--accent);
+      background: #f0f9ff;
+    }
+    .role-tab strong {
+      display: block;
+      font-size: 0.96rem;
+      color: var(--primary);
+    }
+    .role-tab span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .banner {
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+    .banner-draft {
+      background: var(--warn-bg);
+      border-color: #f59e0b;
+      color: #78350f;
+    }
+    .banner-recall {
+      background: var(--danger-bg);
+      border-color: #ef4444;
+      color: #7f1d1d;
+    }
+    .banner-ok {
+      background: var(--success-bg);
+      border-color: #22c55e;
+      color: #14532d;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 820px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      max-width: 100%;
+    }
+    .card h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.08rem;
+      color: var(--primary);
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      max-width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: #ffffff;
+      color: var(--text);
+    }
+    textarea {
+      min-height: 74px;
+      resize: vertical;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    button {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-success {
+      background: var(--success);
+      color: #ffffff;
+    }
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+    }
+    .btn-outline {
+      background: #ffffff;
+      border-color: var(--border);
+      color: var(--primary);
+    }
+    .verdict-box {
+      background: #f0f9ff;
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .verdict-box.unknown {
+      background: var(--warn-bg);
+      border-left-color: var(--warn);
+    }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 7px 9px;
+      text-align: left;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+    th {
+      background: var(--surface-alt);
+      font-weight: 700;
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+    .pill-private { background: #fae8ff; color: #86198f; }
+    .pill-board { background: #fef3c7; color: #92400e; }
+    .pill-shared { background: #dcfce7; color: #166534; }
+    .pill-warn { background: #fee2e2; color: #991b1b; }
+    pre.letter-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.84rem;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 8px 0;
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .kpi-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .kpi-card .k-label {
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .kpi-card .k-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 2px;
+      overflow-wrap: anywhere;
+    }
+    details.tech-drawer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 16px;
+      font-size: 0.84rem;
+    }
+    details.tech-drawer summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-top">
+        <span class="brand-badge">ClearCovenant — powered by OpenLine</span>
+        <span class="brand-badge" id="active-workspace-badge">Homeowner Companion · Private Local Mode ($0 Mandatory Fees)</span>
+      </div>
+      <h1>ClearCovenant — Your Home, Board &amp; Neighborhood Companion</h1>
+      <p class="hero-sub">
+        Upload your HOA rules, notices, and budgets. Understand what applies, prepare fair responses, check reserve math, and keep your records portable—while people stay 100% in control.
+      </p>
+    </header>
+
+    <!-- Top Safety & Privacy Bar -->
+    <div class="safety-bar">
+      <div>
+        <strong>Privacy &amp; Authority Guarantee:</strong>
+        <span id="privacy-summary-text">Your records stay on this computer. Anyone who can open this page on this computer can see them. ClearCovenant never sends anything to neighbors or the internet. AI assists; people decide.</span>
+      </div>
+      <div class="btn-row" style="margin-top:0;">
+        <button type="button" class="btn-outline" id="btn-recall-rule" onclick="triggerNeighborhoodRecall()">Flag Rule or Budget Change for Review</button>
+        <button type="button" class="btn-danger" id="btn-toggle-stop" onclick="toggleSafetyPause()">Pause All Changes (Safety Lock)</button>
+      </div>
+    </div>
+
+    <!-- Three-Customer Role Switcher -->
+    <div class="role-tabs" role="tablist" aria-label="Choose Your View">
+      <button type="button" class="role-tab active" id="tab-homeowner" onclick="switchWorkspace('homeowner')">
+        <strong>1. Homeowner Companion</strong>
+        <span>Works for 1 homeowner on your own · Understand rules, challenge unfair fines &amp; track requests</span>
+      </button>
+      <button type="button" class="role-tab" id="tab-board" onclick="switchWorkspace('board')">
+        <strong>2. Volunteer Board Desk</strong>
+        <span>Explain decisions with citations, compare vendor bids, check reserves &amp; preserve board memory</span>
+      </button>
+      <button type="button" class="role-tab" id="tab-community" onclick="switchWorkspace('community')">
+        <strong>3. Community Commons &amp; Transition</strong>
+        <span>Coordinate neighbor solutions, share redacted decisions &amp; switch managers without losing records</span>
+      </button>
+    </div>
+
+    <!-- Status / Draft / Recall Notification Banners -->
+    <div id="status-message-banner" class="banner banner-ok" style="display:none;"></div>
+
+    <div id="draft-review-banner" class="banner banner-draft" style="display:none;">
+      <strong>Preview Draft Ready for Your Review:</strong>
+      <span id="draft-summary-text"></span>
+      <div class="btn-row">
+        <button type="button" class="btn-success" id="btn-accept-draft" onclick="acceptCurrentDraft()">Save to Official Record</button>
+        <button type="button" class="btn-danger" id="btn-reject-draft" onclick="rejectCurrentDraft()">Discard Draft</button>
+      </div>
+    </div>
+
+    <div id="recall-review-banner" class="banner banner-recall" style="display:none;">
+      <strong>Review Needed (Rule or Budget Assumption Changed):</strong>
+      <span id="recall-reasons-text">An underlying governing document or budget assumption changed. Your saved records are untouched—review whether your response needs updating.</span>
+    </div>
+
+    <!-- Step 1: Try a Real HOA Conflict Scenario or Upload Documents -->
+    <div class="grid-2">
+      <section class="card" aria-labelledby="heading-scenarios">
+        <h2 id="heading-scenarios">Step 1: Load a Sample HOA Situation or Select State Law</h2>
+        <div class="field">
+          <label for="select-scenario">Explore 12 Real-World HOA Conflict Scenarios</label>
+          <select id="select-scenario">
+            <option value="SCENARIO-01-FENCE-CONFLICT">1. Fence Height Restriction vs. Conflicting Board Bulletin (CA)</option>
+            <option value="SCENARIO-02-SELECTIVE-ENFORCEMENT">2. Selective Enforcement &amp; Unrecorded Annual Rule (SC)</option>
+            <option value="SCENARIO-03-DISPUTED-FINE-AB130">3. Disputed $350 Trash Bin Fine &amp; Pre-Hearing Cure Right (CA AB 130)</option>
+            <option value="SCENARIO-04-LANDSCAPING-DROUGHT">4. Drought-Tolerant Native Landscaping vs. Obsolete Turf Rule (CA)</option>
+            <option value="SCENARIO-05-CONDO-ROOF-LEAK">5. Condo Exterior Roof Leak Responsibility (FL)</option>
+            <option value="SCENARIO-06-RESERVE-SHORTFALL">6. Reserve Shortfall &amp; 2-Year Roof Cash Deficit Audit (Board/Homeowner)</option>
+            <option value="SCENARIO-07-SPECIAL-ASSESSMENT">7. Unilateral $1,800 Special Assessment Without Member Vote (CA)</option>
+            <option value="SCENARIO-08-RECORDS-ACCESS">8. Ignored Official Records Request &amp; Statutory Damages (FL)</option>
+            <option value="SCENARIO-09-VENDOR-DISPUTE">9. Vendor Bid Comparison &amp; Conflict-of-Interest Audit (Board)</option>
+            <option value="SCENARIO-10-BOARD-ELECTION">10. Board Election Notice, Secret Ballot &amp; Non-Dictator Boundary (CA)</option>
+            <option value="SCENARIO-11-MANAGEMENT-TRANSITION">11. Management-Company Transition &amp; Record Portability (TX)</option>
+            <option value="SCENARIO-12-INSUFFICIENT-EVIDENCE">12. Insufficient Evidence ('The documents don’t establish an answer.')</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="select-jurisdiction">State HOA Law Profile</label>
+            <select id="select-jurisdiction">
+              <option value="CA">California (Davis-Stirling Act + AB 130)</option>
+              <option value="FL">Florida (Ch. 720 HOAs &amp; Ch. 718 Condos)</option>
+              <option value="TX">Texas (Property Code Ch. 209)</option>
+              <option value="SC">South Carolina (SC HOA Act § 27-30-110)</option>
+              <option value="GENERAL_US">General U.S. Baseline</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="input-hoa-name">Association Name</label>
+            <input type="text" id="input-hoa-name" value="Oak Creek Homeowners Association">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" id="btn-load-scenario" onclick="loadSelectedScenario()">Load Scenario &amp; Preview Analysis</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="heading-upload">
+        <h2 id="heading-upload">Upload HOA Governing Document, Notice, or Budget</h2>
+        <div class="field-row">
+          <div class="field">
+            <label for="doc-title-input">Document Title</label>
+            <input type="text" id="doc-title-input" placeholder="e.g., 2026 Solar &amp; Patio Amendment">
+          </div>
+          <div class="field">
+            <label for="doc-section-input">Article / Section Citation</label>
+            <input type="text" id="doc-section-input" placeholder="e.g., Article VI, Section 6.4">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="doc-tier-select">Document Type (Hierarchy Level)</label>
+            <select id="doc-tier-select">
+              <option value="RECORDED_CCRS_DECLARATION">Recorded CC&amp;Rs / Declaration (Highest Covenant Authority)</option>
+              <option value="ARTICLES_OR_BYLAWS">Articles of Incorporation or Bylaws</option>
+              <option value="BOARD_RULE_OR_ARC_GUIDELINE">Board Operating Rule / Architectural Guideline</option>
+              <option value="FINANCIAL_BUDGET_OR_RESERVE_STUDY">Official Budget, Reserve Study, or Vendor Bid</option>
+              <option value="NOTICE_OR_CORRESPONDENCE">Violation Notice, Request, or Photo Exhibit</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="doc-scope-select">Who Can See This Document?</label>
+            <select id="doc-scope-select">
+              <option value="HOMEOWNER_PRIVATE">Private to My Home Only (Never Shared)</option>
+              <option value="COMMUNITY_SHARED">Shared Community Document</option>
+              <option value="BOARD_CONFIDENTIAL">Board Confidential Record</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="doc-content-input">Exact Provision Text or Notice Excerpt</label>
+          <textarea id="doc-content-input" placeholder="Paste the rule, notice, or budget clause here..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-outline" id="btn-add-document" onclick="uploadDocumentAndStage()">Add Document to Packet &amp; Preview</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Step 2: Ask a Question & Resolve a Problem -->
+    <div class="grid-2">
+      <section class="card" aria-labelledby="heading-qa">
+        <h2 id="heading-qa">Step 2: Ask a Question &amp; Check What Applies</h2>
+        <div class="field">
+          <label for="question-input">Your Question or Situation</label>
+          <textarea id="question-input">Can I replace my backyard fence with a 6-foot cedar privacy fence, or does the 2024 Board Bulletin limit me to 4 feet?</textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="category-select">Issue Category</label>
+            <select id="category-select">
+              <option value="fence_restrictions">Fence &amp; Architectural Rules</option>
+              <option value="selective_enforcement">Selective Enforcement / Unrecorded Rule</option>
+              <option value="disputed_fine">Disputed Fine or Violation Hearing</option>
+              <option value="landscaping">Landscaping &amp; Drought Plants</option>
+              <option value="roof_leaks">Roof Leak / Common Area Maintenance</option>
+              <option value="reserve_shortfalls">Reserve Study &amp; Repair Shortfall</option>
+              <option value="special_assessments">Special Assessment / Dues Cap</option>
+              <option value="records_access">Ignored Official Records Request</option>
+              <option value="vendor_disputes">Vendor Bid Comparison</option>
+              <option value="board_elections">Board Election &amp; Voting Rules</option>
+              <option value="management_transitions">Management Company Transition</option>
+              <option value="insufficient_evidence">Check Missing / Uncovered Topic</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fine-amount-input">Disputed Fine Amount ($ Optional)</label>
+            <input type="number" id="fine-amount-input" value="0" min="0" step="10">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="notice-date-input">Notice Date</label>
+            <input type="date" id="notice-date-input" value="2026-11-01">
+          </div>
+          <div class="field">
+            <label for="postmark-date-input">Envelope Postmark Date</label>
+            <input type="date" id="postmark-date-input" value="2026-11-05">
+          </div>
+        </div>
+        <div class="field" style="flex-direction:row; align-items:center; gap:8px;">
+          <input type="checkbox" id="chk-cured-before-hearing" style="width:auto;">
+          <label for="chk-cured-before-hearing" style="margin:0;">Condition was already fixed/cured before the board hearing date</label>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" id="btn-ask-question" onclick="submitQuestionAndStage()">Check Rules &amp; Draft Response</button>
+        </div>
+
+        <div id="answer-verdict-box" class="verdict-box">
+          <strong id="answer-headline">Loading rule analysis...</strong>
+          <p id="answer-body" style="margin:6px 0 0 0;"></p>
+        </div>
+        <div id="conflicts-alert-box" style="font-size:0.84rem; color:var(--warn); margin-top:6px;"></div>
+      </section>
+
+      <section class="card" aria-labelledby="heading-resolve">
+        <h2 id="heading-resolve">Step 3: Resolve the Problem — Prepared Action &amp; Deadlines</h2>
+        <div class="kpi-strip">
+          <div class="kpi-card">
+            <div class="k-label">Conservative Reply By</div>
+            <div class="k-val" id="kpi-deadline-date">2026-11-11</div>
+          </div>
+          <div class="kpi-card">
+            <div class="k-label">Recommended Action</div>
+            <div class="k-val" id="kpi-action-type" style="font-size:0.86rem;">Prepared Response</div>
+          </div>
+        </div>
+        <label for="prepared-letter-preview">Prepared Response / Request (Personal Account &amp; Phone Auto-Scrubbed on Export)</label>
+        <pre class="letter-box" id="prepared-letter-preview">Loading prepared draft...</pre>
+
+        <div class="field" style="flex-direction:row; align-items:center; gap:8px; margin-top:10px;">
+          <input type="checkbox" id="chk-human-approve" style="width:auto;">
+          <label for="chk-human-approve" style="margin:0;">I have reviewed this draft and approve locking it for my personal delivery (ClearCovenant never auto-sends or auto-fines)</label>
+        </div>
+        <div class="field" style="flex-direction:row; align-items:center; gap:8px;">
+          <input type="checkbox" id="chk-allow-records-on-unknown" style="width:auto;">
+          <label for="chk-allow-records-on-unknown" style="margin:0;">If documents don't establish an answer, lock as a formal Records Request for the missing rules</label>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-success" id="btn-authorize-packet" onclick="authorizeActionPacket()">Lock My Approved Response Packet</button>
+          <button type="button" class="btn-outline" id="btn-export-dossier" onclick="downloadStandaloneDossier()">Download Portable HTML Record</button>
+        </div>
+        <div id="authorization-result-text" style="font-size:0.84rem; margin-top:8px; font-weight:600;"></div>
+      </section>
+    </div>
+
+    <!-- Uploaded Documents & Provenance Table -->
+    <section class="card" aria-labelledby="heading-docs-table">
+      <h2 id="heading-docs-table">Uploaded Governing Documents, Notices &amp; Privacy Scope</h2>
+      <p style="margin:0 0 8px 0; font-size:0.85rem; color:var(--muted);">
+        Higher-ranking legal sources (State Statutes and Recorded CC&amp;Rs) control over unrecorded board bulletins or expired rules.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Document Title &amp; Section</th>
+              <th>Authority Level</th>
+              <th>Effective Window</th>
+              <th>Privacy Scope</th>
+              <th>Enforceability &amp; Status</th>
+            </tr>
+          </thead>
+          <tbody id="documents-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Step 4: Understand Money (Assessments, Reserves & Vendor Bids) -->
+    <section class="card" aria-labelledby="heading-money">
+      <h2 id="heading-money">Step 4: Understand Money — Assessments, Reserve Health &amp; Vendor Comparisons</h2>
+      <div class="field-row">
+        <div class="field">
+          <label for="fin-units-input">Homes / Units</label>
+          <input type="number" id="fin-units-input" value="48" min="1">
+        </div>
+        <div class="field">
+          <label for="fin-dues-input">Monthly Dues ($/Home)</label>
+          <input type="number" id="fin-dues-input" value="285" min="0" step="5">
+        </div>
+        <div class="field">
+          <label for="fin-reserve-bal-input">Actual Reserve Cash ($)</label>
+          <input type="number" id="fin-reserve-bal-input" value="42000" min="0" step="1000">
+        </div>
+        <div class="field">
+          <label for="fin-reserve-target-input">Fully Funded Target ($)</label>
+          <input type="number" id="fin-reserve-target-input" value="240000" min="1" step="1000">
+        </div>
+        <div class="field">
+          <label for="fin-special-input">Proposed Special Assessment ($/Home)</label>
+          <input type="number" id="fin-special-input" value="0" min="0" step="100">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-primary" id="btn-calc-finances" onclick="recalculateFinancesAndStage()">Recalculate Budget &amp; Reserve Health</button>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-card">
+          <div class="k-label">Reserve Percent Funded</div>
+          <div class="k-val" id="fin-kpi-pct">17.5%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Reserve Deficit per Home</div>
+          <div class="k-val" id="fin-kpi-deficit">$4,125.00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">2-Year Roof Cash Shortfall</div>
+          <div class="k-val" id="fin-kpi-shortfall">$12,680.00</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Qualified Best Vendor Bid</div>
+          <div class="k-val" id="fin-kpi-vendor" style="font-size:0.86rem;">Bay Ridge ($44,500)</div>
+        </div>
+      </div>
+      <div id="fin-statutory-flags" style="font-size:0.85rem; color:var(--danger); font-weight:600; margin-bottom:8px;"></div>
+
+      <div class="grid-2" style="margin-bottom:0;">
+        <div>
+          <h3 style="font-size:0.95rem; margin:6px 0;">Vendor Proposal Comparison (Disqualified Bids Preserved)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Vendor &amp; Bid</th>
+                  <th>Warranty</th>
+                  <th>Status &amp; Audit Notes</th>
+                </tr>
+              </thead>
+              <tbody id="vendors-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:0.95rem; margin:6px 0;">Annual Software vs. Management Cost Comparison</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Option</th>
+                  <th>Annual Cost</th>
+                  <th>Who Controls Records?</th>
+                </tr>
+              </thead>
+              <tbody id="cost-comparison-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 5: Work with Neighbors & Leave Freely (Portability) -->
+    <div class="grid-2">
+      <section class="card" aria-labelledby="heading-neighbors">
+        <h2 id="heading-neighbors">Step 5: Work with Neighbors (Shared Records Only)</h2>
+        <p style="margin:0 0 8px 0; font-size:0.85rem; color:var(--muted);">Only post what you are willing to share: anything you put here is visible to anyone who can open this page on this computer, and to anyone you send an export to. Personal account and phone details are removed automatically.</p>
+        <div class="field">
+          <label for="neighbor-prop-title">Shared Proposal Title</label>
+          <input type="text" id="neighbor-prop-title" placeholder="e.g., Shared Rear Fence Cedar Bulk Order (Units 104–112)">
+        </div>
+        <div class="field">
+          <label for="neighbor-prop-summary">Plain-Language Summary (Personal Account/Phone Auto-Redacted)</label>
+          <textarea id="neighbor-prop-summary" placeholder="Describe the shared maintenance or rule solution..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-outline" id="btn-share-neighbor" onclick="addNeighborProposal()">Post Neighbor Proposal Draft</button>
+        </div>
+        <div id="neighbor-proposals-list" style="margin-top:10px; font-size:0.86rem;"></div>
+      </section>
+
+      <section class="card" aria-labelledby="heading-portability">
+        <h2 id="heading-portability">Step 6: Keep the History &amp; Leave Freely (Export / Import)</h2>
+        <p style="margin:0 0 8px 0; font-size:0.85rem; color:var(--muted);">
+          Export your complete HOA packet, decision history, and budget analysis as a portable bundle. Continue using it offline or transfer it to a new board without paying any software vendor.
+        </p>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" id="btn-export-bundle" onclick="exportPortableJsonBundle()">Export Portable Record Bundle (JSON)</button>
+          <button type="button" class="btn-outline" id="btn-import-bundle" onclick="importPortableJsonBundle()">Restore / Import Record Bundle</button>
+        </div>
+        <div class="field" style="margin-top:8px;">
+          <label for="portable-bundle-textarea">Portable Bundle Data (Copy to Save or Paste to Restore)</label>
+          <textarea id="portable-bundle-textarea" placeholder="Click 'Export Portable Record Bundle' to inspect or save your portable JSON record..."></textarea>
+        </div>
+      </section>
+    </div>
+
+    <!-- Optional Collapsible Verification & Security Details Drawer (Zero Jargon in Main View) -->
+    <details class="tech-drawer" id="technical-verification-drawer">
+      <summary>Verification, Security &amp; OpenLine Receipt Details (Optional)</summary>
+      <div class="kpi-strip" style="margin-top:10px;">
+        <div class="kpi-card">
+          <div class="k-label">Accepted Record Version</div>
+          <div class="k-val" id="kpi-version">v2</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Accepted State SHA-256</div>
+          <div class="k-val" id="kpi-sha" style="font-size:0.78rem;">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Decision Recall Standing</div>
+          <div class="k-val" id="kpi-standing">CLEAR</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Active Worker Identity</div>
+          <div class="k-val" id="kpi-worker">worker-a</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-outline" id="btn-replace-worker" onclick="replaceWorkerAndRecover()">Recover Interrupted Worker</button>
+        <a href="/products" style="font-size:0.84rem; color:var(--accent); align-self:center; margin-left:8px;">Open Five-Product Suite (/products)</a>
+        <a href="/openline_genie.html" style="font-size:0.84rem; color:var(--accent); align-self:center; margin-left:8px;">Open Genie Builder (/openline_genie.html)</a>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    let currentState = null;
+    let activeWorkspace = "homeowner";
+
+    function showStatusBanner(msg, isError = false) {
+      const el = document.getElementById("status-message-banner");
+      el.style.display = "block";
+      el.className = isError ? "banner banner-recall" : "banner banner-ok";
+      el.textContent = msg;
+    }
+
+    // Plain-language versions of server messages. The raw code is kept in
+    // the browser console for diagnosis; people see the plain sentence.
+    const PLAIN_ERRORS = {
+      loopback_host_required: "This page must be opened from this same computer (address 127.0.0.1).",
+      cross_origin_request_refused: "That request came from a different website, so it was refused.",
+      application_json_required: "That request was not sent in the expected format. Please try again.",
+      invalid_json_object: "That request was not understood. Please try again.",
+      invalid_content_length: "That request was not understood. Please try again.",
+      request_too_large: "That request was too large. Please send a smaller one.",
+      unknown_neighborhood_workspace: "That workspace does not exist. Please pick Homeowner, Board, or Community.",
+      document_title_and_content_required: "Please provide both a document title and provision text.",
+      neighbor_proposal_title_and_summary_required: "A neighbor proposal needs both a title and a summary.",
+      negative_financial_parameter_refused: "Amounts cannot be negative. Please check the numbers and try again.",
+      unknown_product_action: "That action is not available. Please try again.",
+      unsupported_neighborhood_action: "That action is not available. Please try again.",
+      project_not_found: "Those records could not be found. Please reload the page.",
+      stale_proposal: "That draft is out of date. Please stage it again.",
+      stopped_at_epoch: "Safety Lock is on. Turn it off to make changes.",
+      old_authority_dead: "Safety Lock is on. Turn it off to make changes.",
+      REVOKED_BY_STOP_EPOCH: "Safety Lock is on. Turn it off to make changes.",
+      REVOKED_BY_WORKER_SWAP: "The worker changed, so that draft was cancelled. Please stage it again.",
+      STALE_REOPEN_REQUIRED: "Those records were reopened for review. Please stage your change again.",
+    };
+    function plainError(code) {
+      if (!code) return "";
+      const text = String(code);
+      for (const [key, msg] of Object.entries(PLAIN_ERRORS)) {
+        if (text.includes(key)) return msg;
+      }
+      if (text.includes("ROLE_PRIVACY_BOUNDARY_REFUSED")) return "That workspace belongs to someone else, so these records keep it separate.";
+      if (text.includes("PROHIBITED_HOA_DICTATOR_ACTION_REFUSED")) return "ClearCovenant never fines, liens, sues, or spends money on its own. People make those decisions.";
+      if (text.includes("GuardRefused")) return "Safety Lock is on. Turn it off to make changes.";
+      console.warn("ClearCovenant server message (kept for diagnosis):", text);
+      return "Something went wrong. Please try again.";
+    }
+
+    async function fetchNeighborhoodState() {
+      // Local single-operator model: the server takes no role or identity
+      // from the client. This request asks only for the operator's state.
+      const resp = await fetch(`/api/neighborhood/state`);
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data;
+        renderCurrentWorkspace();
+      } else {
+        showStatusBanner(plainError(data.error) || "Unable to load state", true);
+      }
+    }
+
+    function switchWorkspace(wkey) {
+      activeWorkspace = wkey;
+      for (const k of ["homeowner", "board", "community"]) {
+        const tab = document.getElementById(`tab-${k}`);
+        if (tab) tab.classList.toggle("active", k === wkey);
+      }
+      const labels = {
+        homeowner: "Homeowner Companion · Private Local Mode (Unit 104 Private Records Isolated)",
+        board: "Volunteer Board Desk · Authorized Governance & Vendor Review",
+        community: "Community Commons & Transition Vault · Shared PII-Scrubbed Transparency",
+      };
+      document.getElementById("active-workspace-badge").textContent = labels[wkey] || labels.homeowner;
+      fetchNeighborhoodState();
+    }
+
+    function renderCurrentWorkspace() {
+      if (!currentState || !currentState.workspaces) return;
+      const ws = currentState.workspaces[activeWorkspace];
+      if (!ws) return;
+      const nh = ws.neighborhood_app || {};
+      const qa = nh.active_resolution || {};
+      const pkt = nh.document_packet || {};
+      const fin = nh.financial_analysis || {};
+
+      // Technical drawer KPIs
+      document.getElementById("kpi-version").textContent = `v${ws.accepted_version}`;
+      document.getElementById("kpi-sha").textContent = ws.accepted_sha256 || "";
+      const standingStatus = (ws.dnf_standing && ws.dnf_standing.status) ? ws.dnf_standing.status : "CLEAR";
+      document.getElementById("kpi-standing").textContent = standingStatus;
+      document.getElementById("kpi-worker").textContent = (currentState.engine_status && currentState.engine_status.active_worker) || "worker-a";
+
+      // Safety Lock button state
+      const stopped = Boolean(ws.stopped || (currentState.engine_status && currentState.engine_status.stopped));
+      const stopBtn = document.getElementById("btn-toggle-stop");
+      stopBtn.textContent = stopped ? "Resume Changes (Safety Lock Active)" : "Pause All Changes (Safety Lock)";
+      stopBtn.className = stopped ? "btn-success" : "btn-danger";
+
+      // Draft preview banner
+      const pendingList = (ws.exploratory || []).filter(e => e.status === "EXPLORATORY_PENDING");
+      const draftBanner = document.getElementById("draft-review-banner");
+      if (pendingList.length > 0) {
+        draftBanner.style.display = "block";
+        document.getElementById("draft-summary-text").textContent = pendingList[0].summary;
+      } else {
+        draftBanner.style.display = "none";
+      }
+
+      // Recall banner
+      const recallBanner = document.getElementById("recall-review-banner");
+      if (standingStatus === "REOPEN" || standingStatus === "UNRESOLVED") {
+        recallBanner.style.display = "block";
+        const reasons = (ws.dnf_standing && ws.dnf_standing.reasons && ws.dnf_standing.reasons.length)
+          ? ws.dnf_standing.reasons.join(", ")
+          : "Underlying rule or budget assumption flagged for review.";
+        document.getElementById("recall-reasons-text").textContent = `Standing: ${standingStatus} (${reasons}). Accepted record bytes remain unchanged (${(ws.accepted_sha256 || "").slice(0, 12)}...).`;
+      } else {
+        recallBanner.style.display = "none";
+      }
+
+      // Populate form selectors
+      if (nh.active_scenario_id) {
+        document.getElementById("select-scenario").value = nh.active_scenario_id;
+      }
+      if (nh.jurisdiction) {
+        document.getElementById("select-jurisdiction").value = nh.jurisdiction;
+      }
+      if (nh.association_name) {
+        document.getElementById("input-hoa-name").value = nh.association_name;
+      }
+      if (qa.question) {
+        document.getElementById("question-input").value = qa.question;
+      }
+      if (qa.conflict_category) {
+        document.getElementById("category-select").value = qa.conflict_category;
+      }
+
+      // Answer & verdict
+      const vbox = document.getElementById("answer-verdict-box");
+      const isUnknown = qa.epistemic_status === "EXPLICIT_UNKNOWN_INSUFFICIENT_DOCUMENTS";
+      vbox.className = isUnknown ? "verdict-box unknown" : "verdict-box";
+      document.getElementById("answer-headline").textContent = qa.headline_verdict || "";
+      document.getElementById("answer-body").textContent = qa.plain_language_answer || "";
+
+      const conflictsArr = [];
+      for (const hc of (qa.hierarchy_conflicts || [])) {
+        conflictsArr.push(`Hierarchy Rule: ${hc.resolution_rule}`);
+      }
+      for (const ob of (qa.conflicting_or_obsolete_rules || [])) {
+        conflictsArr.push(`Non-Enforceable / Superseded Document Flagged: ${ob.title} (${(ob.status_flags || []).join(", ")})`);
+      }
+      if (qa.missing_documents && qa.missing_documents.length > 0) {
+        conflictsArr.push(`Missing Documents Needed: ${qa.missing_documents.join("; ")}`);
+      }
+      document.getElementById("conflicts-alert-box").textContent = conflictsArr.join(" | ");
+
+      // Deadlines & Prepared letter
+      const dl = qa.deadline_analysis || {};
+      document.getElementById("kpi-deadline-date").textContent = dl.conservative_deadline_date || "2026-11-11";
+      document.getElementById("kpi-action-type").textContent = (qa.recommended_action_type || "PREPARED_RESPONSE").replace(/_/g, " ");
+      document.getElementById("prepared-letter-preview").textContent = qa.prepared_response_draft || "";
+
+      // Uploaded documents table
+      const docsTbody = document.getElementById("documents-tbody");
+      docsTbody.innerHTML = "";
+      for (const d of (pkt.documents || [])) {
+        const tr = document.createElement("tr");
+        let scopeBadge = `<span class="pill pill-shared">Community Shared</span>`;
+        if (d.visibility_scope === "HOMEOWNER_PRIVATE") {
+          scopeBadge = `<span class="pill pill-private">Private to My Home</span>`;
+        } else if (d.visibility_scope === "BOARD_CONFIDENTIAL") {
+          scopeBadge = `<span class="pill pill-board">Board Confidential</span>`;
+        }
+        const enfText = d.is_enforceable
+          ? `Enforceable (${d.recorded_in_county ? "County Recorded" : "Active Policy"})`
+          : `<span class="pill pill-warn">Not Enforceable: ${(d.status_flags || []).join(", ")}</span>`;
+        tr.innerHTML = `
+          <td><strong>${d.title}</strong><br><small>${d.section_citation}</small></td>
+          <td>${d.authority_label} (Rank #${d.authority_rank})</td>
+          <td>${d.effective_from} to ${d.effective_to === "9999-12-31" ? "Present" : d.effective_to}</td>
+          <td>${scopeBadge}</td>
+          <td>${enfText}<br><small>${d.sanitized_excerpt}</small></td>
+        `;
+        docsTbody.appendChild(tr);
+      }
+
+      // Financial inputs & KPIs
+      if (fin.units_count) document.getElementById("fin-units-input").value = fin.units_count;
+      if (fin.monthly_dues_per_unit_usd !== undefined) document.getElementById("fin-dues-input").value = fin.monthly_dues_per_unit_usd;
+      if (fin.actual_reserve_balance_usd !== undefined) document.getElementById("fin-reserve-bal-input").value = fin.actual_reserve_balance_usd;
+      if (fin.fully_funded_reserve_target_usd !== undefined) document.getElementById("fin-reserve-target-input").value = fin.fully_funded_reserve_target_usd;
+      if (fin.proposed_special_assessment_per_unit_usd !== undefined) document.getElementById("fin-special-input").value = fin.proposed_special_assessment_per_unit_usd;
+
+      document.getElementById("fin-kpi-pct").textContent = `${Number(fin.reserve_percent_funded || 0).toFixed(1)}%`;
+      document.getElementById("fin-kpi-deficit").textContent = `$${Number(fin.reserve_deficit_per_unit_usd || 0).toLocaleString()}`;
+      document.getElementById("fin-kpi-shortfall").textContent = `$${Number(fin.immediate_2yr_cash_shortfall_usd || 0).toLocaleString()}`;
+      const vc = fin.vendor_comparison || {};
+      document.getElementById("fin-kpi-vendor").textContent = vc.recommended_option_id || "VENDOR-C-QUALIFIED-COMPETITIVE";
+      document.getElementById("fin-statutory-flags").textContent = (fin.statutory_budget_and_assessment_flags || []).join(" | ");
+
+      // Vendors table
+      const vTbody = document.getElementById("vendors-tbody");
+      vTbody.innerHTML = "";
+      const allVendors = [...(vc.qualified_options || []), ...(vc.disqualified_options || [])];
+      for (const v of allVendors) {
+        const tr = document.createElement("tr");
+        const isQual = v.status === "QUALIFIED_CANDIDATE";
+        tr.innerHTML = `
+          <td><strong>${v.vendor_name || v.option_id}</strong><br>$${Number(v.bid_amount_usd || 0).toLocaleString()}</td>
+          <td>${v.warranty_years || 0} yrs</td>
+          <td>${isQual ? '<span class="pill pill-shared">Qualified Best Bid</span>' : `<span class="pill pill-warn">Disqualified (Preserved in Ledger): ${(v.violations || []).join(", ")}</span>`}</td>
+        `;
+        vTbody.appendChild(tr);
+      }
+
+      // Cost comparison table
+      const costTbody = document.getElementById("cost-comparison-tbody");
+      costTbody.innerHTML = "";
+      const costs = (fin.software_and_management_cost_comparison && fin.software_and_management_cost_comparison.options_annual_cost_usd) || {};
+      const rows = [
+        ["ClearCovenant Local-First (Homeowner / Self-Hosted Board)", `$${Number(costs.clearcovenant_free_homeowner_or_local_self_hosted || 0).toLocaleString()}/yr`, "100% Resident & Board Portable"],
+        ["HOA Flow (Self-Managed Cloud)", `$${Number(costs.hoa_flow_self_managed || 348).toLocaleString()}/yr`, "Exportable CSV/Records"],
+        ["PayHOA (Base + Gable AI)", `$${Number(costs.payhoa_base_yearly || 708).toLocaleString()} – $${Number(costs.payhoa_with_gable_ai_yearly || 1002).toLocaleString()}/yr`, "Cloud Portal (30-day cancel window)"],
+        ["Buildium / AppFolio (PM Suites)", `$${Number(costs.buildium_growth_or_essential || 2304).toLocaleString()} – $${Number(costs.appfolio_community_associations_min || 3576).toLocaleString()}/yr`, "Manager-Controlled Ledger"],
+        ["Full-Service Management Company", `$18,000 – $30,000+/yr`, "High Transition Lock-In Risk"],
+      ];
+      for (const r of rows) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td>`;
+        costTbody.appendChild(tr);
+      }
+
+      // Neighbor proposals
+      const npList = document.getElementById("neighbor-proposals-list");
+      npList.innerHTML = "";
+      for (const np of (nh.neighbor_proposals || [])) {
+        const div = document.createElement("div");
+        div.style.padding = "8px";
+        div.style.border = "1px solid var(--border)";
+        div.style.borderRadius = "8px";
+        div.style.marginBottom = "6px";
+        div.innerHTML = `<strong>${np.title}</strong> (${np.author_unit}) — <span class="pill pill-shared">${np.supporters_count} Neighbors Supporting</span><br><span>${np.summary}</span>`;
+        npList.appendChild(div);
+      }
+    }
+
+    async function loadSelectedScenario() {
+      const scenId = document.getElementById("select-scenario").value;
+      const jur = document.getElementById("select-jurisdiction").value;
+      const hoaName = document.getElementById("input-hoa-name").value;
+      const resp = await fetch("/api/neighborhood/stage", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          payload: {
+            scenario_id: scenId,
+            jurisdiction: jur,
+            association_name: hoaName,
+          }
+        })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        showStatusBanner("Scenario draft staged! Review the analysis below and click 'Save to Official Record' to commit or 'Discard Draft' to cancel.");
+      } else {
+        showStatusBanner(plainError(data.error) || "Could not stage scenario", true);
+      }
+    }
+
+    async function uploadDocumentAndStage() {
+      const title = document.getElementById("doc-title-input").value;
+      const section = document.getElementById("doc-section-input").value;
+      const tier = document.getElementById("doc-tier-select").value;
+      const scope = document.getElementById("doc-scope-select").value;
+      const content = document.getElementById("doc-content-input").value;
+      const jur = document.getElementById("select-jurisdiction").value;
+      const resp = await fetch("/api/neighborhood/stage", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          payload: {
+            jurisdiction: jur,
+            conflict_category: document.getElementById("category-select").value,
+            question: document.getElementById("question-input").value,
+            new_document: {
+              title: title,
+              section_citation: section,
+              authority_tier: tier,
+              visibility_scope: scope,
+              content: content,
+            }
+          }
+        })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        showStatusBanner("Document scanned and added to draft packet. Click 'Save to Official Record' to commit.");
+      } else {
+        showStatusBanner(plainError(data.error) || "Please provide both a document title and provision text.", true);
+      }
+    }
+
+    async function submitQuestionAndStage() {
+      const resp = await fetch("/api/neighborhood/stage", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          payload: {
+            jurisdiction: document.getElementById("select-jurisdiction").value,
+            association_name: document.getElementById("input-hoa-name").value,
+            question: document.getElementById("question-input").value,
+            conflict_category: document.getElementById("category-select").value,
+            disputed_fine_amount_usd: Number(document.getElementById("fine-amount-input").value || 0),
+            notice_date_iso: document.getElementById("notice-date-input").value,
+            postmark_date_iso: document.getElementById("postmark-date-input").value,
+            violation_cured_before_hearing: document.getElementById("chk-cured-before-hearing").checked,
+          }
+        })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        showStatusBanner("Rule check complete and draft response prepared. Review and click 'Save to Official Record' to save.");
+      } else {
+        showStatusBanner(plainError(data.error) || "Could not process question", true);
+      }
+    }
+
+    async function recalculateFinancesAndStage() {
+      const resp = await fetch("/api/neighborhood/stage", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          payload: {
+            jurisdiction: document.getElementById("select-jurisdiction").value,
+            units_count: Number(document.getElementById("fin-units-input").value),
+            monthly_dues_per_unit_usd: Number(document.getElementById("fin-dues-input").value),
+            actual_reserve_balance_usd: Number(document.getElementById("fin-reserve-bal-input").value),
+            fully_funded_reserve_target_usd: Number(document.getElementById("fin-reserve-target-input").value),
+            proposed_special_assessment_per_unit_usd: Number(document.getElementById("fin-special-input").value),
+          }
+        })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        showStatusBanner("Budget & reserve analysis staged. Click 'Save to Official Record' to commit.");
+      } else {
+        showStatusBanner(plainError(data.error) || "Invalid financial input", true);
+      }
+    }
+
+    async function addNeighborProposal() {
+      const title = document.getElementById("neighbor-prop-title").value;
+      const summary = document.getElementById("neighbor-prop-summary").value;
+      const resp = await fetch("/api/neighborhood/stage", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          payload: {
+            new_neighbor_proposal: { title, summary }
+          }
+        })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        showStatusBanner("Neighbor proposal staged with automatic personal-data redaction.");
+      } else {
+        showStatusBanner(plainError(data.error) || "Proposal requires title and summary", true);
+      }
+    }
+
+    async function acceptCurrentDraft() {
+      const ws = currentState.workspaces[activeWorkspace];
+      const pending = (ws.exploratory || []).filter(e => e.status === "EXPLORATORY_PENDING");
+      if (!pending.length) return;
+      const resp = await fetch("/api/accept", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          project_id: ws.project_id,
+          proposal_id: pending[0].proposal_id,
+        })
+      });
+      if (resp.ok) {
+        await fetchNeighborhoodState();
+        showStatusBanner("Saved to Official Record! Version and verification receipt updated.");
+      }
+    }
+
+    async function rejectCurrentDraft() {
+      const ws = currentState.workspaces[activeWorkspace];
+      const pending = (ws.exploratory || []).filter(e => e.status === "EXPLORATORY_PENDING");
+      if (!pending.length) return;
+      const resp = await fetch("/api/reject", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          project_id: ws.project_id,
+          proposal_id: pending[0].proposal_id,
+          reason: "User discarded draft in ClearCovenant UI",
+        })
+      });
+      if (resp.ok) {
+        await fetchNeighborhoodState();
+        showStatusBanner("Draft discarded. Your previous saved record remains untouched.");
+      }
+    }
+
+    async function authorizeActionPacket() {
+      const approved = document.getElementById("chk-human-approve").checked;
+      const allowRecords = document.getElementById("chk-allow-records-on-unknown").checked;
+      const resp = await fetch("/api/neighborhood/action", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          action: "authorize_action_packet",
+          payload: {
+            human_approved: approved,
+            allow_records_request_on_unknown: allowRecords,
+          }
+        })
+      });
+      const data = await resp.json();
+      const outEl = document.getElementById("authorization-result-text");
+      if (resp.ok && data.status === "READY_FOR_HUMAN_DELIVERY") {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        outEl.style.color = "var(--success)";
+        outEl.textContent = `Approved & Locked (${data.authorization.action_id}) — Ready for you to print or email.`;
+        showStatusBanner("Response packet approved and locked in your permanent history.");
+      } else {
+        outEl.style.color = "var(--danger)";
+        outEl.textContent = `${data.status || "Blocked"}: ${data.reason || plainError(data.error) || "Human approval required"}`;
+      }
+    }
+
+    async function triggerNeighborhoodRecall() {
+      const resp = await fetch("/api/neighborhood/action", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          workspace_key: activeWorkspace,
+          action: "recall_dependency",
+          payload: {
+            node_id: "workflow",
+            reason: "CC&R amendment or updated reserve study flagged by resident/board",
+          }
+        })
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        currentState = data.neighborhood_state;
+        renderCurrentWorkspace();
+        showStatusBanner("Rule/Budget change flagged for review (REOPEN). Your saved records remain intact.");
+      }
+    }
+
+    async function toggleSafetyPause() {
+      const ws = currentState && currentState.workspaces && currentState.workspaces[activeWorkspace];
+      const stopped = Boolean((ws && ws.stopped) || (currentState && currentState.engine_status && currentState.engine_status.stopped));
+      const endpoint = stopped ? "/api/clear_stop" : "/api/stop";
+      const resp = await fetch(endpoint, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ reason: "User toggled Safety Lock in ClearCovenant" })
+      });
+      if (resp.ok) {
+        await fetchNeighborhoodState();
+        showStatusBanner(stopped ? "Safety Lock cleared — changes resumed." : "Safety Lock active — all modifications paused.");
+      }
+    }
+
+    async function replaceWorkerAndRecover() {
+      const resp = await fetch("/api/replace_worker", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({})
+      });
+      if (resp.ok) {
+        await fetchNeighborhoodState();
+        showStatusBanner("Interrupted background worker replaced; committed records preserved.");
+      }
+    }
+
+    function downloadStandaloneDossier() {
+      window.open(`/api/neighborhood/dossier?workspace=${encodeURIComponent(activeWorkspace)}`, "_blank");
+    }
+
+    async function exportPortableJsonBundle() {
+      const ws = currentState.workspaces[activeWorkspace];
+      const resp = await fetch(`/api/export?project_id=${encodeURIComponent(ws.project_id)}`);
+      const data = await resp.json();
+      if (resp.ok) {
+        document.getElementById("portable-bundle-textarea").value = JSON.stringify(data, null, 2);
+        showStatusBanner("Portable record bundle exported! You can save or restore this JSON anywhere.");
+      }
+    }
+
+    async function importPortableJsonBundle() {
+      const raw = document.getElementById("portable-bundle-textarea").value.trim();
+      if (!raw) {
+        showStatusBanner("Paste a portable record bundle JSON first.", true);
+        return;
+      }
+      let parsed = null;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        showStatusBanner("Invalid JSON format in portable bundle box.", true);
+        return;
+      }
+      const ws = currentState.workspaces[activeWorkspace];
+      const resp = await fetch("/api/import", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          portable_bundle: parsed,
+          target_project_id: ws.project_id,
+          allow_overwrite: true,
+        })
+      });
+      if (resp.ok) {
+        await fetchNeighborhoodState();
+        showStatusBanner("Portable record bundle restored and verified!");
+      } else {
+        const err = await resp.json();
+        showStatusBanner(plainError(err.error) || "Import failed verification", true);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchNeighborhoodState();
+    });
+  </script>
+</body>
+</html>

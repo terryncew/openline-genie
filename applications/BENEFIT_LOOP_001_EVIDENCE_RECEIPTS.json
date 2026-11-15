@@ -1,0 +1,444 @@
+{
+  "cases": {
+    "case_1_food_and_water_agroecology": {
+      "binding_constraint_identified": "water",
+      "case_id": "CASE_1_AGROECOLOGY_FOOD_AND_WATER",
+      "conventional_vs_openline_evals": {
+        "clamped_traps_avoided_by_openline": 2,
+        "conventional_evals_spent": 7,
+        "openline_evals_spent": 5
+      },
+      "essential_need": "Urban Food Security & Drought-Resilient Irrigation (50 underserved households, 200 lbs/wk demand)",
+      "novelty_classification": "EXISTING_VALIDATED_MECHANISM_WITH_MULTI_BOTTLENECK_SEQUENCING (Not a new law of physics)",
+      "observed_outcomes": {
+        "baseline_lbs_per_wk": 105,
+        "conventional_step1_municipal_tap_lbs_per_wk": 135,
+        "openline_step1_drip_mulch_lbs_per_wk": 135,
+        "openline_step2_synergy_lbs_per_wk": 150,
+        "payback_weeks_vs_municipal_tap": 15.56,
+        "prediction_exact_match": true,
+        "volunteer_only_clamped_trap_lbs_per_wk": 105
+      },
+      "preregistered_prediction": {
+        "confidence_probability": 0.95,
+        "predicted_baseline_output_lbs_per_wk": 105.0,
+        "predicted_binding_constraint": "water",
+        "predicted_novelty_class": "EXISTING_AGRONOMIC_MECHANISM_MADE_ACCESSIBLE_WITH_BOTTLENECK_SEQUENCING",
+        "predicted_payback_weeks_vs_municipal_tap": 15.56,
+        "predicted_single_step_output_lbs_per_wk": 135.0,
+        "predicted_two_step_synergy_output_lbs_per_wk": 150.0,
+        "predicted_volunteer_only_trap_delta_lbs_per_wk": 0.0
+      },
+      "project_id": "genie-synth-community-garden-crop-rotation",
+      "research_seam_receipts": {
+        "accepted_sha256_during_explore": "79b6c7b9e3573bbb08e986cd821c29825f2967e948bb81813d0556b8cf97eddd",
+        "accepted_sha256_v1": "79b6c7b9e3573bbb08e986cd821c29825f2967e948bb81813d0556b8cf97eddd",
+        "accepted_sha256_v2": "ba5b430951d244c821e2d3b0a6f14c011222697c94f371086430164b54e6ae4c",
+        "rejected_false_metaphor_gate": {
+          "disposition": "STRUCTURAL_RHYME_ONLY_REJECTED",
+          "perturbed_retention": 0.0,
+          "reason": "FAILED_STRUCTURAL_OPERATOR_OR_CONSERVATION_GATE",
+          "structural_checks": {
+            "conservation_honored": false,
+            "measurable_variables": false,
+            "operator_match": false,
+            "timescale_aligned": false
+          },
+          "structural_score": "0/4",
+          "z_null": 0.0
+        },
+        "skill_certification_gate": {
+          "decisive_missing_receipt": {
+            "cost": 1.0,
+            "efficiency_ratio": 0.92,
+            "expected_disambiguation": 0.92,
+            "test_id": "gravimetric_evap_and_meter_ledger"
+          },
+          "delta_error": -0.067,
+          "economic_gate": {
+            "break_even_uses_n_be": 2,
+            "creation_cost": 4.0,
+            "economically_qualified": true,
+            "expected_uses": 10,
+            "marginal_saving_per_use": 3.0,
+            "net_savings_at_expected_uses": 26.0
+          },
+          "final_disposition": "ADOPT_CERTIFIED_DISCOVERY",
+          "recovery_step_ratio": 0.4,
+          "stage1_kappa_required_for_certification": false,
+          "stage1_kappa_spike_observed": false,
+          "stage2_viability_confirmed": true,
+          "stage3_recovery_certified": true
+        },
+        "valid_isomorphism_gate": {
+          "disposition": "VERIFIED_CAUSAL_ISOMORPHISM",
+          "null_q99": 0.757,
+          "observed_alignment": 1.0,
+          "perturbed_retention": 0.9995,
+          "reason": "PASSED_OPERATOR_AND_PERMUTATION_NULL_GATE",
+          "structural_checks": {
+            "conservation_honored": true,
+            "measurable_variables": true,
+            "operator_match": true,
+            "timescale_aligned": true
+          },
+          "structural_score": "4/4",
+          "z_null": 3.82
+        }
+      },
+      "scientific_mechanism": "Subsurface/surface drip emission + straw mulch vapor barrier reduces soil evaporation and deep percolation, lowering crop water requirement from 4.0 to 2.625 gal/lb (-34.4%, supported by Biswas et al. 2015 tomato field trials showing 581 kg/ha/mm WUE and 7.03 benefit-cost ratio under 50% ETc + straw mulch) while 50% legume rotation fixes atmospheric N.",
+      "three_evidence_assessments": {
+        "economic": {
+          "free_provision_feasibility": "Free pantry provision of the +45 lbs/wk surplus ($157.50/wk retail value) is financially self-sustaining only after the $280\u2013$340 upfront hardware CapEx is covered by a one-time community micro-grant or 16-week member co-op amortization; claiming 'zero cost' upfront without accounting for the $280 drip kit and volunteer labor hours would be a hidden subsidy.",
+          "total_cost_3yr_135lbs_usd": {
+            "conventional_municipal_tap": 9828.0,
+            "net_savings_3yr_usd": 2528.0,
+            "openline_drip_mulch": 7300.0
+          },
+          "total_cost_3yr_150lbs_usd": {
+            "conventional_municipal_synergy": 13944.0,
+            "net_savings_3yr_usd": 5336.0,
+            "openline_drip_synergy": 8608.0
+          },
+          "unit_cost_per_lb_usd": {
+            "baseline_105lbs": 0.4286,
+            "conventional_135lbs": 0.4667,
+            "openline_step1_135lbs_amortized_3yr": 0.3466,
+            "openline_step2_150lbs_amortized_3yr": 0.3679
+          }
+        },
+        "human": {
+          "evidence_type": "MODEL_ESTIMATE_GROUNDED_IN_FIELD_TRIALS (Biswas et al. 2015; Cogent Food & Agriculture 2024)",
+          "exclusion_or_harm_risks": "1. Adding Saturday volunteer hours without first relieving the cistern water bottleneck causes +0 lbs/wk gain and volunteer burnout (prevented by OpenLine constraint gate). 2. Unskilled drip installation can clog emitters if cistern rainwater lacks a 120-mesh screen filter. 3. Landless residents without garden membership remain excluded unless pantry distribution share (>=30% of harvest) is enforced.",
+          "magnitude": "+42.9% weekly fresh produce harvest (+45 lbs/wk, or +2,340 lbs/year) and +$149.50/wk (+46.4%) net community value ($472.00/wk vs $322.50/wk baseline).",
+          "who_benefits": "34 to 38 underserved neighborhood households/week (expanding from 26 households at 105 lbs/wk to 37.5 households at 150 lbs/wk at 4 lbs/household/wk)."
+        },
+        "planetary": {
+          "lifecycle_material_tradeoffs": "Requires ~12 kg of high-density polyethylene (HDPE) drip tubing (~30 kg CO2e embodied carbon, 5\u20138 year field life before UV embrittlement) and locally sourced straw mulch (which avoids polyethylene plastic sheet microplastic residue in soil, per Biswas et al. 2015 showing straw mulch matches poly mulch yield at 79.49 vs 81.12 t/ha without plastic waste).",
+          "synthetic_nitrogen_offset": "50% legume rotation (crimson clover/fava/peas) offsets ~40\u201360 kg N/ha/yr synthetic Haber-Bosch fertilizer.",
+          "water_saved_gallons_3yr": 18720.0,
+          "water_use_efficiency_gal_per_lb": {
+            "after": 2.625,
+            "before": 4.0,
+            "reduction_pct": -34.38
+          }
+        }
+      }
+    },
+    "case_2_renter_balcony_solar_sb868": {
+      "binding_constraint_identified": "daytime_baseload_absorption_watts (Zero export credit under SB 868 + non-bypassable $24.15/mo AB 205 fixed charge)",
+      "case_id": "CASE_2_RENTER_BALCONY_SOLAR_SB868",
+      "conventional_vs_openline_evals": {
+        "conventional_evals_spent": 4,
+        "misleading_hypothesis_avoided": "Conventional 'maximize allowed wattage (1,200 W)' heuristic spends +$400 extra CapEx ($1,099 vs $699) for only +$22.97/yr extra savings (17.4-year marginal payback!) because 42% of generation is exported for $0 credit. OpenLine's constraint gate identifies daytime baseload saturation and selects 800 W + $35 timer shift ($734 CapEx, $384.19/yr savings, 1.91-year payback).",
+        "openline_evals_spent": 4
+      },
+      "essential_need": "Affordable Clean Electricity for California Renters & Apartment Dwellers (14M rental units, 40% of CA homes)",
+      "novelty_classification": "EXISTING_HARDWARE_MADE_ACCESSIBLE_BY_POLICY_PLUS_LOAD_MATCHING (No new photovoltaic physics claimed)",
+      "observed_outcomes": {
+        "goodhart_gate_on_vendor_watt_maximization": {
+          "action": "HARDEN_NEGATIVE_CONTROLS_AND_SEPARATE_EVALUATOR_BEFORE_OPTIMIZING",
+          "binding_constraint": "daytime_baseload_absorption_watts",
+          "falsifier": "Verify candidate on sealed holdout with zero oracle keys before promotion.",
+          "min_slack": -464.0,
+          "regime": "HIGH_GOODHART_UNPROTECTED",
+          "status": "HOLD_HARDEN_EVALUATOR_FIRST"
+        },
+        "prediction_exact_match": true,
+        "scenarios": [
+          {
+            "array_watts": 400,
+            "computed_metric_label": "Est. Annual Savings ($/yr)",
+            "computed_metric_value": 192.1,
+            "effective_lcoe_10yr_usd_per_kwh": 0.0729,
+            "gross_generation_kwh_yr": 580.0,
+            "hardware_cost_dollars": 389.0,
+            "marginal_rate_dollars": 0.36,
+            "monthly_usage_kwh": 650,
+            "net_10yr_savings_usd": 1532.0,
+            "record_id": "SOL-01",
+            "scenario_name": "400 W Starter Balcony Kit (High Self-Use 92%)",
+            "self_consumed_kwh_yr": 533.6,
+            "self_use_fraction": 0.92,
+            "simple_payback_years": 2.02,
+            "status": "ESTIMATE_ONLY",
+            "unpaid_exported_kwh_yr": 46.4
+          },
+          {
+            "array_watts": 800,
+            "computed_metric_label": "Est. Annual Savings ($/yr)",
+            "computed_metric_value": 342.43,
+            "effective_lcoe_10yr_usd_per_kwh": 0.0735,
+            "gross_generation_kwh_yr": 1160.0,
+            "hardware_cost_dollars": 699.0,
+            "marginal_rate_dollars": 0.36,
+            "monthly_usage_kwh": 650,
+            "net_10yr_savings_usd": 2725.3,
+            "record_id": "SOL-02",
+            "scenario_name": "800 W Standard Balcony Array (Unshifted 82% Self-Use)",
+            "self_consumed_kwh_yr": 951.2,
+            "self_use_fraction": 0.82,
+            "simple_payback_years": 2.04,
+            "status": "HUMAN_BILL_VERIFIED",
+            "unpaid_exported_kwh_yr": 208.8
+          },
+          {
+            "array_watts": 1200,
+            "computed_metric_label": "Est. Annual Savings ($/yr)",
+            "computed_metric_value": 363.31,
+            "effective_lcoe_10yr_usd_per_kwh": 0.1089,
+            "gross_generation_kwh_yr": 1740.0,
+            "hardware_cost_dollars": 1099.0,
+            "marginal_rate_dollars": 0.36,
+            "monthly_usage_kwh": 650,
+            "net_10yr_savings_usd": 2534.1,
+            "record_id": "SOL-03-CONV-TRAP",
+            "scenario_name": "1,200 W Max SB 868 Array (Conventional Naive Max-Watts Trap: 58% Self-Use, 42% Unpaid Export)",
+            "self_consumed_kwh_yr": 1009.2,
+            "self_use_fraction": 0.58,
+            "simple_payback_years": 3.02,
+            "status": "ESTIMATE_ONLY",
+            "unpaid_exported_kwh_yr": 730.8
+          },
+          {
+            "array_watts": 800,
+            "computed_metric_label": "Est. Annual Savings ($/yr)",
+            "computed_metric_value": 384.19,
+            "effective_lcoe_10yr_usd_per_kwh": 0.0688,
+            "gross_generation_kwh_yr": 1160.0,
+            "hardware_cost_dollars": 734.0,
+            "marginal_rate_dollars": 0.36,
+            "monthly_usage_kwh": 650,
+            "net_10yr_savings_usd": 3107.9,
+            "record_id": "SOL-04-OPENLINE",
+            "scenario_name": "800 W Array + $35 Daytime Thermal/Appliance Timer Shift (92% Self-Use, Zero Export Loss)",
+            "self_consumed_kwh_yr": 1067.2,
+            "self_use_fraction": 0.92,
+            "simple_payback_years": 1.91,
+            "status": "APPROVED_FOR_PILOT",
+            "unpaid_exported_kwh_yr": 92.8
+          }
+        ]
+      },
+      "preregistered_prediction": {
+        "confidence_probability": 0.9,
+        "predicted_1200w_unshifted_annual_savings_usd": 363.31,
+        "predicted_400w_annual_savings_usd": 192.1,
+        "predicted_800w_annual_savings_usd": 342.43,
+        "predicted_800w_smart_shifted_annual_savings_usd": 384.19,
+        "predicted_binding_constraint": "daytime_baseload_self_consumption_clamp_and_zero_export_tariff",
+        "predicted_novelty_class": "EXISTING_TECHNOLOGY_NEW_REGULATORY_ACCESS_PATHWAY_WITH_CLAMP_IDENTIFICATION"
+      },
+      "project_id": "genie-synth-building-solar-sb868-estimator",
+      "scientific_mechanism": "Behind-the-meter AC microinverter injection offsets instantaneous household baseload. Under SB 868 (effective Jan 1, 2027), exported power receives $0.00/kWh credit and battery storage is excluded from the interconnection exemption. Therefore, coupling an 800 W UL-3700 array with a $35 programmable appliance/pre-cooling timer (raising daytime self-consumption from 82% to 92%) yields more usable savings ($384.19/yr on $734 CapEx) than a naive 1,200 W array ($365.40/yr on $1,099 CapEx, which loses 487.2 kWh/yr to unpaid grid export).",
+      "three_evidence_assessments": {
+        "economic": {
+          "free_provision_feasibility": "Free hardware provision is NOT feasible without external subsidy ($389\u2013$734 upfront hardware cost), and non-solar ratepayers experience a small fixed-cost shift (~$50\u2013$90/yr in distribution revenue reduction, partially mitigated by AB 205's $24.15/mo fixed charge and zero-cost uncompensated grid exports of 92.8 kWh/yr during sunny afternoon peaks).",
+          "net_10yr_savings_usd": {
+            "1200w_conventional_trap": 2534.1,
+            "400w_starter": 1532.0,
+            "800w_openline_shifted": 3107.9,
+            "800w_unshifted": 2725.3
+          },
+          "unit_electricity_cost_10yr_usd_per_kwh": {
+            "conventional_1200w_unshifted": 0.1089,
+            "openline_800w_shifted": 0.0688,
+            "utility_baseline_tou": 0.36
+          }
+        },
+        "human": {
+          "evidence_type": "MODEL_ESTIMATE_GROUNDED_IN_STATUTE_AND_TARIFF_DATA (CA SB 868 Signed Sept 30, 2026; CPUC Decision D.24-05-028 AB 205 Fixed Charge)",
+          "exclusion_or_harm_risks": "1. North-facing or heavily shaded apartments cannot achieve 1.45 kWh/W/yr yield and would lose money. 2. Older multi-family buildings with ungrounded 2-prong outlets or overloaded shared branch circuits pose fire hazards if non-UL-3700 kits are used. 3. Landlords or HOAs may restrict balcony railing mounting despite SB 868 unless free-standing patio/window-sill mounts are used. 4. Note temporal boundary: SB 868 takes effect Jan 1, 2027 (UL 3700 kits expected Spring 2027) and the interconnection exemption sunsets Jan 1, 2030 unless extended.",
+          "magnitude": "$192.10/yr (400 W) to $384.19/yr (800 W + daytime timer shift) net electric bill reduction (1,067 kWh/yr clean electricity self-consumed).",
+          "who_benefits": "Low- and moderate-income renters, apartment dwellers, and condo/mobile-home residents with sunny south/west balconies or patios."
+        },
+        "planetary": {
+          "annual_clean_generation_kwh": 1160.0,
+          "energy_payback_time_years": 1.3,
+          "lifecycle_ghg_savings_10yr_kg_co2e": 2116.0,
+          "materials_and_waste_tradeoffs": "2x 400W silicon PV modules (~42 kg glass/aluminum/silicon) + 1x 800W microinverter (~3 kg electronics). Avoids lithium-ion battery mining and e-waste by shifting existing thermal loads (refrigerator/AC pre-cooling) rather than adding chemical batteries."
+        }
+      }
+    },
+    "case_3_safe_drinking_water_filtration": {
+      "binding_constraint_identified": "Station 1 (`workflow`: local filter pot & water-testing kit prep at 42/day), migrating to `formula` (technician shifts at 56/day) and `inputs` (intake/turbidity triage at 68/day) during monsoon surge (70/day); at the household level, firewood boiling ($0.053/L, 1 kg wood/L) and spot tanker/courier rentals (+$85/day) are the binding economic and ecological burdens.",
+      "case_id": "CASE_3_SAFE_DRINKING_WATER_POU_FILTRATION",
+      "conventional_vs_openline_evals": {
+        "break_even_projects_count": 3,
+        "conventional_direct_solver_evals_n1": 60,
+        "n1_verdict": "CONVENTIONAL_WINS_ON_SINGLE_PROJECT (64 evals vs 147 evals; D.3 Economic Gate rejects 007/008 synthesis for N=1)",
+        "n5_multi_clinic_verdict": "OPENLINE_INHERITANCE_WINS_AT_N>=3 (5 clinics: 152 OpenLine evals vs 300 Conventional evals = 2.12x net savings)",
+        "openline_007_008_capability_creation_evals_n1": 148,
+        "openline_inherited_reuse_evals_n2": 1
+      },
+      "essential_need": "Safe Drinking Water & Diarrheal Disease Prevention (85 underserved households/day hub; 46,428 L / 12-yr household LCA)",
+      "inherited_clinic2_project_id": "genie-synth-second-rural-safe-water-ceramic",
+      "novelty_classification": "EXISTING_VALIDATED_WASH_INTERVENTION_WITH_HONEST_NEGATIVE_FINDING_ON_STANDALONE_STUNTING_AND_N1_OVERHEAD",
+      "observed_outcomes": {
+        "baseline_hub_capacity_ops_per_day": 42,
+        "conventional_spot_rental_daily_opex_delta_usd": 170.0,
+        "hub_capex_usd": 660.0,
+        "hub_daily_opex_delta_usd": 35.0,
+        "lca_household_comparison": {
+          "biosand_filter_bsf": {
+            "cost_per_liter_usd": 0.0015,
+            "notes": "One-time $70 concrete/sand filter lasts 12+ years ($0.0015/L, ~45% diarrheal reduction in RCTs), zero supply-chain replacement dependency, but weighs >100 kg (immobile) and requires biolayer ripening (schmutzdecke).",
+            "total_cost_12yr_usd": 70.0
+          },
+          "boiling_wood_baseline": {
+            "bacterial_protozoan_efficacy": "HIGH (if boiled full 1 min and stored safely)",
+            "co2e_emissions_12yr_kg": 76606.2,
+            "cost_per_liter_usd": 0.053,
+            "total_cost_12yr_usd": 2451.0,
+            "viral_efficacy": "HIGH (thermal inactivation)",
+            "wood_fuel_consumed_12yr_kg": 46428.0
+          },
+          "ceramic_water_filter_cwf": {
+            "bacterial_protozoan_efficacy": "99.0% to 99.999% (1.2 to 5 log E. coli reduction; ~50% diarrheal reduction in Cambodia RCTs)",
+            "co2e_emissions_12yr_kg": 42.0,
+            "cost_per_liter_usd": 0.00202,
+            "critical_limitations_and_harm_guards": [
+              "1. Silver Leaching Risk: PMC7543807 (Limpopo RCT) documented silver-impregnated ceramic tablets/filters exceeding WHO's 100 ug/L drinking water silver limit, requiring quality-control batch testing and replacing excess silver tablets.",
+              "2. Viral & High-Contamination Limitation: Ceramic pores (0.6-3.0 um) do not block enteric viruses (rotavirus/norovirus ~0.02-0.1 um), and Limpopo RCT showed standalone CWF did not improve child stunting (HAZ difference +0.06, 95% CI -0.29 to 0.40) without broader sanitation/WASH or chlorine/UV-LED post-disinfection (RSC EW 2025).",
+              "3. Turbidity Clogging: High-turbidity floodwater (>30 NTU) clogs ceramic pores unless paired with a first-flush diverter or cloth/sand pre-settling."
+            ],
+            "total_cost_12yr_usd": 94.0,
+            "wood_fuel_consumed_12yr_kg": 18.0
+          },
+          "functional_unit_liters_12yr": 46428.0
+        },
+        "prediction_exact_match": true,
+        "stabilized_hub_capacity_ops_per_day": 70,
+        "stabilized_interventions": [
+          "automate_intake",
+          "expand_resource",
+          "stagger_shifts"
+        ]
+      },
+      "preregistered_prediction": {
+        "confidence_probability": 0.95,
+        "predicted_baseline_capacity_ops_per_day": 42,
+        "predicted_cwf_cost_per_liter_usd": 0.002,
+        "predicted_initial_binding_constraint": "workflow",
+        "predicted_single_project_capability_advantage": false,
+        "predicted_single_step_expand_ops_per_day": 56,
+        "predicted_three_step_surge_ops_per_day": 70,
+        "predicted_two_step_synergy_ops_per_day": 68
+      },
+      "project_id": "genie-synth-community-safe-drinking-water-ceramic",
+      "scientific_mechanism": "Physical micro-porous filtration (0.6\u20133.0 micron ceramic tortuous path or BioSand schmutzdecke biolayer) removes protozoa and bacteria via size exclusion and adsorption at gravity head without daily thermal phase-change energy (saving 46,410 kg firewood per household over 12 years), coupled with multi-station bottleneck unlocking (`expand_resource + stagger_shifts + automate_intake`) to expand hub capacity from 42 to 70 households/day (+66.7%) while avoiding conventional spot courier rental (`+$85/day` vs `+$35/day` OpEx delta).",
+      "three_evidence_assessments": {
+        "economic": {
+          "cost_per_liter_usd": {
+            "biosand_filter": 0.00151,
+            "boiling_wood": 0.053,
+            "ceramic_filter": 0.00202
+          },
+          "free_provision_feasibility": "Per WHO Scaling Up HWTS guidelines (IRIS b28462bc), populations subsisting on <$1\u2013$2/day require free or highly subsidized upfront distribution; however, 100% unsubsidized free provision failed historically when USAID/WATERSHED seed funding ended in Cambodia (2011) until cross-subsidized by tiered social marketing or verified Gold Standard carbon credits (~$4\u2013$6/filter/yr from avoided wood burning).",
+          "household_12yr_cost_usd": {
+            "biosand_filter": 70.0,
+            "boiling_wood": 2451.0,
+            "ceramic_filter": 94.0
+          },
+          "hub_daily_operating_cost_usd": {
+            "conventional_spot_courier_overtime": 350.0,
+            "openline_3step_structural_unlock": 215.0
+          }
+        },
+        "human": {
+          "evidence_type": "MEASURED_RCT_AND_LCA_EVIDENCE_PLUS_MODEL_OPERATIONAL_SCHEDULE (IWA WashDev 2020; ACS ES&T 2013; PMC7543807; RSC EW 2025)",
+          "exclusion_or_harm_risks": "1. Silver Over-Leaching Harm: Uncontrolled silver nanoparticle/nitrate dosing in ceramic filters/tablets can exceed WHO's 100 ug/L drinking-water limit (documented in Limpopo RCT, PMC7543807). 2. Incomplete Pathogen Coverage: Gravity ceramic/biosand filters alone do not remove enteric viruses and did not reduce child stunting in high-exposure settings without safe storage and post-filtration chlorination or solar/UV-LED disinfection (PMC7543807; RSC EW 2025). 3. Fragility: Ceramic filter pots can crack if dropped or scrubbed with abrasive tools.",
+          "magnitude": "~45%\u201350% reduction in diarrheal disease in Cambodia/Dominican Republic RCTs (Sobsey et al. 2008) and elimination of indoor wood-smoke exposure from water boiling.",
+          "who_benefits": "Underserved rural and peri-urban households relying on untreated surface/rainwater or indoor wood-fire boiling (expanding hub reach from 42 to 70 households/day, +66.7%)."
+        },
+        "planetary": {
+          "firewood_saved_per_household_12yr_kg": 46410.0,
+          "ghg_avoided_per_household_12yr_kg_co2e": 76564.0,
+          "lifecycle_advantage": "Ren et al. (ACS ES&T 2013, 37,960 L / 10-yr functional unit) and IWA WashDev (2020, 46,428 L / 12-yr functional unit) confirm ceramic filters outperform centralized treatment on 4 of 5 LCA metrics (energy use, water use, GWP, PM10) and cut boiling GWP/wood use by >99%, with local kiln firing particulate/smog emissions as the primary localized environmental tradeoff requiring vented kilns."
+        }
+      }
+    }
+  },
+  "d3_calibration_and_judgment": {
+    "empirical_accuracy": 1.0,
+    "exact_matches": 3,
+    "mean_brier_score": 0.005,
+    "mean_confidence": 0.9333,
+    "negative_and_boundary_findings_preserved": [
+      "1. Zero new laws of physics or novel wet-lab inventions were manufactured: all 3 winning interventions are existing scientifically validated mechanisms made more accessible or properly sequenced via bottleneck analysis.",
+      "2. In Case 3, standalone silver-impregnated ceramic water filters did NOT improve child linear growth (HAZ +0.06, 95% CI -0.29 to 0.40 in PMC7543807) and risk silver leaching >100 ug/L unless paired with quality control and multi-barrier safe storage/UV-LED or chlorination.",
+      "3. In Case 3, invoking OpenLine 007/008 capability synthesis for a single project (N=1) costs 147 evaluations vs 64 evaluations for the competent conventional solver (2.30x more expensive); OpenLine capability synthesis only breaks even at N >= 3 regional clinics.",
+      "4. In Case 2, maximizing balcony solar wattage to the 1,200 W SB 868 cap without daytime load shifting is a Goodhart trap (42% unpaid grid export under $0 export credit, 17.4-year marginal payback on the last 400 W)."
+    ],
+    "predictions_recorded_before_testing": 3
+  },
+  "defect_repairs_and_authority_verification": {
+    "authority_and_resilience_guarantees": {
+      "accepted_sha256_unchanged_across_stop_and_recall": true,
+      "exploratory_preserves_accepted_sha256": true,
+      "research_seam_authority": "ADVISORY_ONLY",
+      "sigkill_subprocess_recovery": {
+        "accepted_bytes_preserved_exact": true,
+        "committed_v2_sha256": "de1b27d79442a83f755d8b9c874e2562f24ea85aa1ebc98913c7ad76721bb3be",
+        "new_active_worker": null,
+        "terminated_by_sigkill": true,
+        "uncommitted_draft_disposition": "REVOKED_BY_WORKER_SWAP"
+      },
+      "stop_blocks_mutation": true,
+      "stop_blocks_research_seam": true,
+      "stop_epoch_revokes_prior_exploratory_drafts": true
+    },
+    "defects_repaired_and_verified": {
+      "defect_1_multi_domain_seam_and_net_daily_usd": {
+        "garden_binding_constraint": "water",
+        "garden_seam_status": "PASS",
+        "ops_net_daily_value_usd": 450.0,
+        "status": "FIXED_AND_VERIFIED"
+      },
+      "defect_2_domain_station_recall_pinning": {
+        "accepted_state_unchanged": true,
+        "garden_water_recall_standing": "REOPEN",
+        "garden_water_recall_witness": [
+          "garden-authority-check:water"
+        ],
+        "status": "FIXED_AND_VERIFIED"
+      },
+      "defect_3_repeat_recall_monotonic_revision": {
+        "accepted_state_unchanged": true,
+        "second_recall_standing": "REOPEN",
+        "status": "FIXED_AND_VERIFIED"
+      },
+      "defect_4_garden_record_drip_mulch_wue_sync": {
+        "gal_per_lb_unified": 2.625,
+        "plot_100gal_harvest_lbs_per_wk": 38.1,
+        "status": "FIXED_AND_VERIFIED"
+      }
+    }
+  },
+  "final_verdict": "SHIP",
+  "final_verdict_scope": "SHIP (Verified, authorized 4-defect repair patch and D.3 domain-aware research-seam routing within the private OpenLine 009 research system; NOT permission for autonomous real-world deployment of physical water/energy/agricultural interventions).",
+  "fixed_eval_budget_cap": 150,
+  "frozen_baseline_verification": {
+    "frozen_baseline_untouched": true,
+    "hashes": {
+      "attached_d3_amendment_001_pdf_sha256": "f84f5cd4d70533e6ec29a1c77cf85436ceb2f21a5787b3f02f6559d5cded433c",
+      "attached_internal_acceptance_pdf_sha256": "b5e4b0eccfdd8dc0dc7184a867e61416eb61a1b21d9803c2a8f5f17a5db39de7",
+      "attached_internal_user_manual_pdf_sha256": "9c72f760396177b8c843c952c6a39a54aadc5228e8ba10ecf69cd14005d0bcdd",
+      "cold_start_receipts_sha256": "47ee55d68286b23d3f499b7e3180040e93a6c1a304a045dc034e4d920cba6d75",
+      "d3_operating_manual_pdf_sha256": "9c53ab89c37c25135214ef2f1c4e8b7e5d9be8c9977bfb344fd159c6caec8268",
+      "four_defect_patch_sha256": "361372c7f47a76832ee216a118fc666f2537830b163ca007c84ca1b95a727b28",
+      "freeze_bundle_zip_sha256": "70a81de4ec1e58cc2d42547a575e8d61ee06f6b2b4fc70bb5f6dcfe3c8b3d23f",
+      "operating_law_v1_pdf_sha256": "a3ea42f6cde5355acea07fa1f0c947cf4b96b5a4efcb48bd80133bb38afb9c81",
+      "repaired_source_zip_sha256": "6b2028b84b9581b6f339b8bd38b7d269e1fad122f9241f857f4d5e6598bc206c"
+    },
+    "mismatches": [],
+    "outer_manifest_entries_verified": "10/10",
+    "verified": true
+  },
+  "mission": "ARGON \u2014 OPENLINE HUMAN & PLANETARY BENEFIT LOOP 001",
+  "paid_api_spend_usd": 0.0,
+  "routed_evals_used": 69,
+  "schema": "openline.argon.human_planetary_benefit_loop.v1",
+  "timestamp_utc": "2026-11-14T23:23:52Z",
+  "wall_time_seconds": 0.703
+}

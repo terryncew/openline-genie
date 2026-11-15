@@ -1,0 +1,126 @@
+{
+  "total": 24,
+  "passed": 24,
+  "checks": [
+    {
+      "check": "mobile no sideways overflow",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "honest preview disclosure visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "demo fixture project loads in the UI",
+      "pass": true,
+      "detail": "demo-a snapshot did not render"
+    },
+    {
+      "check": "stored HTML injection inert",
+      "pass": true,
+      "detail": "payload executed or was not rendered as escaped text"
+    },
+    {
+      "check": "rejected proposals preserve local accepted version",
+      "pass": true,
+      "detail": "sha moved b632e95fd628edb04de339734e874ab4bcea5ccc8e1f32f121b74de909abf5c4"
+    },
+    {
+      "check": "accepted proposals advance local draft",
+      "pass": true,
+      "detail": "version stayed v2"
+    },
+    {
+      "check": "worker switch is real, not simulated",
+      "pass": true,
+      "detail": "worker-b"
+    },
+    {
+      "check": "browser JavaScript errors absent",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "check": "playable robot demo reaches target",
+      "pass": true,
+      "detail": "{'cells': [{'id': 'cell-a', 'x': 0.9, 'y': 1.3}, {'id': 'cell-b', 'x': 2.3, 'y': 1.3}], 'collected_cells': ['cell-a', 'cell-b'], 'dist_to_target_m': 0.0, 'feedb"
+    },
+    {
+      "check": "template record can be added",
+      "pass": true,
+      "detail": "before=3 last=REC-104"
+    },
+    {
+      "check": "signing identities differ across installations",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "key file restricted to owner",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "state directory reload retains verification identity",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "recipient defaults do not silently dispatch",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "unsigned dispatcher ACK remains UNKNOWN",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "standalone HTML exports escaped",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "CSV formula injection neutralized",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "solar nonfinite nan refused",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "solar nonfinite inf refused",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "solar nonfinite -inf refused",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "quote nonfinite nan refused",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "quote nonfinite inf refused",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "cross-origin STOP request refused",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "check": "form-compatible content-type refused",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

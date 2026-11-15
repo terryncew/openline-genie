@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Small Neighborhood Bakery Hearth Crumb Bakery — Operational App &amp; Living Model — Read-Only Export</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 24px; background: #F8FAFC; color: #0F172A; }
+  .box { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; padding: 18px; max-width: 960px; margin: 0 auto 16px; }
+  h1 { font-size: 20px; margin-bottom: 6px; }
+  pre { background: #0F172A; color: #F8FAFC; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; background: #ECFDF5; color: #059669; font-weight: 700; font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <span class="badge">PORTABLE STANDALONE EXPORT (READ-ONLY SNAPSHOT) • ZERO OPENLINE LOCK-IN • $0 SUBSCRIPTION</span>
+    <h1>Small Neighborhood Bakery Hearth Crumb Bakery — Operational App &amp; Living Model</h1>
+    <p>SYNTHESIZED LOCAL-FIRST APPLICATION: Compiled deterministically from your request with local storage, editable records, live calculations, and standalone HTML/CSV/JSON export. External actions remain owner-controlled.</p>
+    <p><strong>Accepted State SHA-256:</strong> <code>07092ed085ae6bb2521149bdbaab8ada32f977f2d40c6aa92d7d999537c5480a</code> (Version 2)</p>
+    <p><strong>Source Receiver Public Key:</strong> <code>_27eVZF9E5g33VgLuaUQFl_6yXVyb987bJdxpfdoJdI</code></p>
+  </div>
+  <div class="box">
+    <h2>Exported CSV Table</h2>
+    <pre>Metric,Value,BindingConstraint,DailyMargin($)
+AcceptedBakeryThroughput,240,staff,925
+Option:add_baker,Add a second baker,600,
+Option:hours,Adjust shift schedule,0,
+Option:oven2,Another oven?,18500,
+Option:retarder_rack,Add cold retarder rack,3200,
+</pre>
+  </div>
+  <div class="box">
+    <h2>Portable JSON State (Take Anywhere)</h2>
+    <pre id="portable-json">{
+  &quot;app_slug&quot;: &quot;small-neighborhood-bakery-hearth-crumb&quot;,
+  &quot;bakery&quot;: {
+    &quot;assumptions&quot;: {
+      &quot;bake_window_minutes&quot;: 300,
+      &quot;bakers&quot;: 1,
+      &quot;batch_size_loaves&quot;: 29,
+      &quot;cycle_minutes&quot;: 50,
+      &quot;decks_per_oven&quot;: 1,
+      &quot;demand_loaves_per_day&quot;: 320,
+      &quot;extra_baker_loaves&quot;: 160,
+      &quot;extra_retarder_racks&quot;: 0,
+      &quot;fixed_cost_usd_per_day&quot;: 140,
+      &quot;loaf_price_usd&quot;: 8.5,
+      &quot;loaves_per_baker_per_shift&quot;: 240,
+      &quot;margin_per_loaf_usd&quot;: 4.5,
+      &quot;ovens&quot;: 2,
+      &quot;proofing_rack_loaves&quot;: 280,
+      &quot;retarder_rack_loaves&quot;: 60,
+      &quot;scenario_capacity_loaves&quot;: 400,
+      &quot;schedule_capacity_loaves&quot;: 360,
+      &quot;shift_pattern&quot;: &quot;05:00-13:00&quot;,
+      &quot;shop_capacity_loaves&quot;: 300,
+      &quot;staggered_shift&quot;: false,
+      &quot;staggered_shift_bonus_loaves&quot;: 60,
+      &quot;uncertainty_pct&quot;: 7,
+      &quot;variable_cost_per_loaf_usd&quot;: 4,
+      &quot;wish_capacity_loaves&quot;: 500
+    },
+    &quot;computed&quot;: {
+      &quot;bottleneck_id&quot;: &quot;staff&quot;,
+      &quot;bottleneck_label&quot;: &quot;Staff&quot;,
+      &quot;capacities&quot;: {
+        &quot;demand&quot;: 320,
+        &quot;ingredients&quot;: 280,
+        &quot;oven&quot;: 348,
+        &quot;scenario&quot;: 400,
+        &quot;schedule&quot;: 360,
+        &quot;shop&quot;: 300,
+        &quot;staff&quot;: 240,
+        &quot;wish&quot;: 500
+      },
+      &quot;capex_usd&quot;: 18500,
+      &quot;fixed_cost_usd_per_day&quot;: 155.0,
+      &quot;ingredient_capacity&quot;: 280,
+      &quot;margin_per_loaf_usd&quot;: 4.5,
+      &quot;net_daily_band_usd&quot;: [
+        848,
+        1002
+      ],
+      &quot;net_daily_usd&quot;: 925,
+      &quot;oven_batches_per_day&quot;: 6.0,
+      &quot;oven_capacity&quot;: 348,
+      &quot;staff_capacity&quot;: 240,
+      &quot;throughput_band_loaves_per_day&quot;: [
+        223,
+        257
+      ],
+      &quot;throughput_loaves_per_day&quot;: 240,
+      &quot;uncertainty_pct&quot;: 7,
+      &quot;unit&quot;: &quot;loaves/day&quot;
+    },
+    &quot;notes&quot;: &quot;Computed capacity/cost/throughput from stated assumptions only. No customer behaviour, demand forecast, or savings invented. Uncertainty band is +/-7% around throughput.&quot;,
+    &quot;paths&quot;: {
+      &quot;add_baker&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;bakers&quot;: 2
+        },
+        &quot;capex_usd&quot;: 600,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 165,
+        &quot;label&quot;: &quot;Add a second baker&quot;
+      },
+      &quot;hours&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;shift_pattern&quot;: &quot;04:30-14:30 staggered&quot;,
+          &quot;staggered_shift&quot;: true
+        },
+        &quot;capex_usd&quot;: 0,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 35,
+        &quot;label&quot;: &quot;Adjust shift schedule&quot;
+      },
+      &quot;oven2&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;ovens&quot;: 3
+        },
+        &quot;capex_usd&quot;: 18500,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 15,
+        &quot;label&quot;: &quot;Another oven?&quot;
+      },
+      &quot;retarder_rack&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;extra_retarder_racks&quot;: 1
+        },
+        &quot;capex_usd&quot;: 3200,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 12,
+        &quot;label&quot;: &quot;Add cold retarder rack&quot;
+      }
+    }
+  },
+  &quot;category&quot;: &quot;synthesized_operational_application&quot;,
+  &quot;constraints&quot;: {
+    &quot;binding_constraint_id&quot;: &quot;workflow&quot;,
+    &quot;binding_constraint_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+    &quot;capacities&quot;: {
+      &quot;demand&quot;: 85,
+      &quot;formula&quot;: 56,
+      &quot;inputs&quot;: 68,
+      &quot;scenario&quot;: 96,
+      &quot;wish&quot;: 120,
+      &quot;workflow&quot;: 42
+    },
+    &quot;options_compared&quot;: {
+      &quot;automate_intake&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;auto_triage_enabled&quot;: true
+        },
+        &quot;capacity_delta&quot;: 20,
+        &quot;capex_usd&quot;: 220.0,
+        &quot;expected_delta_ops_per_day&quot;: 0,
+        &quot;expected_net_daily_usd&quot;: 442.0,
+        &quot;expected_throughput_ops_per_day&quot;: 42,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 8.0,
+        &quot;is_clamped_trap&quot;: true,
+        &quot;is_conventional_comparator&quot;: false,
+        &quot;label&quot;: &quot;Add structured intake validation templates&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;workflow&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+        &quot;node&quot;: &quot;inputs&quot;
+      },
+      &quot;expand_resource&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;efficiency_multiplier&quot;: 1.25,
+          &quot;resource_units&quot;: 4
+        },
+        &quot;capacity_delta&quot;: 28,
+        &quot;capex_usd&quot;: 360.0,
+        &quot;expected_delta_ops_per_day&quot;: 14,
+        &quot;expected_net_daily_usd&quot;: 645.0,
+        &quot;expected_throughput_ops_per_day&quot;: 56,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 15.0,
+        &quot;is_clamped_trap&quot;: false,
+        &quot;is_conventional_comparator&quot;: false,
+        &quot;label&quot;: &quot;Expand primary equipment &amp; resource pool (+1 unit +25% eff.)&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;formula&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Assigned Crew &amp; Rules&quot;,
+        &quot;node&quot;: &quot;workflow&quot;
+      },
+      &quot;spot_rental_overtime&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;reserve_buffer_units&quot;: 14
+        },
+        &quot;capacity_delta&quot;: 14,
+        &quot;capex_usd&quot;: 0.0,
+        &quot;expected_delta_ops_per_day&quot;: 14,
+        &quot;expected_net_daily_usd&quot;: 575.0,
+        &quot;expected_throughput_ops_per_day&quot;: 56,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 85.0,
+        &quot;is_clamped_trap&quot;: false,
+        &quot;is_conventional_comparator&quot;: true,
+        &quot;label&quot;: &quot;Use high-cost spot overtime / rental capacity (Conventional)&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;workflow&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+        &quot;node&quot;: &quot;workflow&quot;
+      },
+      &quot;stagger_shifts&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;staggered_handoff_enabled&quot;: true
+        },
+        &quot;capacity_delta&quot;: 14,
+        &quot;capex_usd&quot;: 80.0,
+        &quot;expected_delta_ops_per_day&quot;: 0,
+        &quot;expected_net_daily_usd&quot;: 438.0,
+        &quot;expected_throughput_ops_per_day&quot;: 42,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 12.0,
+        &quot;is_clamped_trap&quot;: true,
+        &quot;is_conventional_comparator&quot;: false,
+        &quot;label&quot;: &quot;Stagger crew handoff &amp; processing shifts&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;workflow&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+        &quot;node&quot;: &quot;formula&quot;
+      }
+    },
+    &quot;plain_language_diagnosis&quot;: &quot;Small Neighborhood Baker Resource Pool (42 ops/day) is the current binding constraint. Next ceiling is Assigned Crew &amp; Rules (56 ops/day).&quot;
+  },
+  &quot;domain_subtype&quot;: &quot;operational_micro_app&quot;,
+  &quot;fields&quot;: [
+    {
+      &quot;key&quot;: &quot;ovens&quot;,
+      &quot;label&quot;: &quot;Deck ovens&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;batch_size_loaves&quot;,
+      &quot;label&quot;: &quot;Loaves per batch&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;cycle_minutes&quot;,
+      &quot;label&quot;: &quot;Bake cycle (minutes)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;bakers&quot;,
+      &quot;label&quot;: &quot;Bakers on shift&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;proofing_rack_loaves&quot;,
+      &quot;label&quot;: &quot;Proofing rack (loaves/day)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;demand_loaves_per_day&quot;,
+      &quot;label&quot;: &quot;Stated demand (loaves/day)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;margin_per_loaf_usd&quot;,
+      &quot;label&quot;: &quot;Margin per loaf (USD)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    },
+    {
+      &quot;key&quot;: &quot;fixed_cost_usd_per_day&quot;,
+      &quot;label&quot;: &quot;Fixed cost (USD/day)&quot;,
+      &quot;type&quot;: &quot;number&quot;
+    }
+  ],
+  &quot;formula_description&quot;: &quot;net_total_dollars = round(((quantity_units * unit_rate_dollars) + adjustments_dollars) * efficiency_multiplier, 2)&quot;,
+  &quot;honesty_boundary&quot;: &quot;SYNTHESIZED LOCAL-FIRST APPLICATION: Compiled deterministically from your request with local storage, editable records, live calculations, and standalone HTML/CSV/JSON export. External actions remain owner-controlled.&quot;,
+  &quot;operations_model&quot;: {
+    &quot;assumptions&quot;: {
+      &quot;active_staff_count&quot;: 4,
+      &quot;auto_triage_bonus_ops&quot;: 20,
+      &quot;auto_triage_enabled&quot;: false,
+      &quot;cases_per_staff_hour&quot;: 2.0,
+      &quot;cycles_per_unit_per_day&quot;: 14,
+      &quot;daily_fixed_cost_usd&quot;: 180.0,
+      &quot;efficiency_multiplier&quot;: 1.0,
+      &quot;hours_per_shift&quot;: 7.0,
+      &quot;intake_channels&quot;: 2,
+      &quot;intake_rate_per_channel&quot;: 34,
+      &quot;reserve_buffer_units&quot;: 0,
+      &quot;resource_units&quot;: 3,
+      &quot;scenario_capacity_ops&quot;: 96,
+      &quot;staggered_handoff_bonus_ops&quot;: 14,
+      &quot;staggered_handoff_enabled&quot;: false,
+      &quot;stated_daily_demand&quot;: 85,
+      &quot;uncertainty_pct&quot;: 7,
+      &quot;unit_value_usd&quot;: 15.0,
+      &quot;wish_capacity_ops&quot;: 120
+    },
+    &quot;computed&quot;: {
+      &quot;bottleneck_id&quot;: &quot;workflow&quot;,
+      &quot;bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+      &quot;capacities&quot;: {
+        &quot;demand&quot;: 85,
+        &quot;formula&quot;: 56,
+        &quot;inputs&quot;: 68,
+        &quot;scenario&quot;: 96,
+        &quot;wish&quot;: 120,
+        &quot;workflow&quot;: 42
+      },
+      &quot;capex_usd&quot;: 0.0,
+      &quot;demand_capacity_ops_per_day&quot;: 85,
+      &quot;fixed_cost_usd_per_day&quot;: 180.0,
+      &quot;formula_capacity_ops_per_day&quot;: 56,
+      &quot;inputs_capacity_ops_per_day&quot;: 68,
+      &quot;net_daily_band_usd&quot;: [
+        405.0,
+        495.0
+      ],
+      &quot;net_daily_usd&quot;: 450.0,
+      &quot;next_ceiling_id&quot;: &quot;formula&quot;,
+      &quot;next_ceiling_label&quot;: &quot;Assigned Crew &amp; Rules&quot;,
+      &quot;station_labels&quot;: {
+        &quot;demand&quot;: &quot;Daily Operational Demand&quot;,
+        &quot;formula&quot;: &quot;Assigned Crew &amp; Rules&quot;,
+        &quot;inputs&quot;: &quot;Request &amp; Record Intake&quot;,
+        &quot;scenario&quot;: &quot;Portable App &amp; Export&quot;,
+        &quot;wish&quot;: &quot;Your goal&quot;,
+        &quot;workflow&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;
+      },
+      &quot;third_ceiling_id&quot;: &quot;inputs&quot;,
+      &quot;third_ceiling_label&quot;: &quot;Request &amp; Record Intake&quot;,
+      &quot;throughput_band_ops_per_day&quot;: [
+        39,
+        45
+      ],
+      &quot;throughput_ops_per_day&quot;: 42,
+      &quot;uncertainty_pct&quot;: 7,
+      &quot;unit&quot;: &quot;ops/day&quot;,
+      &quot;unit_value_usd&quot;: 15.0,
+      &quot;workflow_capacity_ops_per_day&quot;: 42
+    },
+    &quot;notes&quot;: &quot;Deterministic multi-station operational capacity, bottleneck, and counterfactual model compiled from stated prompt parameters. Propagates assumption changes into record calculations.&quot;,
+    &quot;paths&quot;: {
+      &quot;automate_intake&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;auto_triage_enabled&quot;: true
+        },
+        &quot;capacity_delta&quot;: 20,
+        &quot;capex_usd&quot;: 220.0,
+        &quot;expected_delta_ops_per_day&quot;: 0,
+        &quot;expected_net_daily_usd&quot;: 442.0,
+        &quot;expected_throughput_ops_per_day&quot;: 42,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 8.0,
+        &quot;is_clamped_trap&quot;: true,
+        &quot;is_conventional_comparator&quot;: false,
+        &quot;label&quot;: &quot;Add structured intake validation templates&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;workflow&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+        &quot;node&quot;: &quot;inputs&quot;
+      },
+      &quot;expand_resource&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;efficiency_multiplier&quot;: 1.25,
+          &quot;resource_units&quot;: 4
+        },
+        &quot;capacity_delta&quot;: 28,
+        &quot;capex_usd&quot;: 360.0,
+        &quot;expected_delta_ops_per_day&quot;: 14,
+        &quot;expected_net_daily_usd&quot;: 645.0,
+        &quot;expected_throughput_ops_per_day&quot;: 56,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 15.0,
+        &quot;is_clamped_trap&quot;: false,
+        &quot;is_conventional_comparator&quot;: false,
+        &quot;label&quot;: &quot;Expand primary equipment &amp; resource pool (+1 unit +25% eff.)&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;formula&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Assigned Crew &amp; Rules&quot;,
+        &quot;node&quot;: &quot;workflow&quot;
+      },
+      &quot;spot_rental_overtime&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;reserve_buffer_units&quot;: 14
+        },
+        &quot;capacity_delta&quot;: 14,
+        &quot;capex_usd&quot;: 0.0,
+        &quot;expected_delta_ops_per_day&quot;: 14,
+        &quot;expected_net_daily_usd&quot;: 575.0,
+        &quot;expected_throughput_ops_per_day&quot;: 56,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 85.0,
+        &quot;is_clamped_trap&quot;: false,
+        &quot;is_conventional_comparator&quot;: true,
+        &quot;label&quot;: &quot;Use high-cost spot overtime / rental capacity (Conventional)&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;workflow&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+        &quot;node&quot;: &quot;workflow&quot;
+      },
+      &quot;stagger_shifts&quot;: {
+        &quot;assumption_patch&quot;: {
+          &quot;staggered_handoff_enabled&quot;: true
+        },
+        &quot;capacity_delta&quot;: 14,
+        &quot;capex_usd&quot;: 80.0,
+        &quot;expected_delta_ops_per_day&quot;: 0,
+        &quot;expected_net_daily_usd&quot;: 438.0,
+        &quot;expected_throughput_ops_per_day&quot;: 42,
+        &quot;fixed_cost_delta_usd_per_day&quot;: 12.0,
+        &quot;is_clamped_trap&quot;: true,
+        &quot;is_conventional_comparator&quot;: false,
+        &quot;label&quot;: &quot;Stagger crew handoff &amp; processing shifts&quot;,
+        &quot;next_bottleneck_id&quot;: &quot;workflow&quot;,
+        &quot;next_bottleneck_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+        &quot;node&quot;: &quot;formula&quot;
+      }
+    },
+    &quot;profile&quot;: {
+      &quot;adj_field_label&quot;: &quot;Materials / Adjustment ($)&quot;,
+      &quot;app_slug&quot;: &quot;small-neighborhood-bakery-hearth-crumb&quot;,
+      &quot;assignee_field_label&quot;: &quot;Assigned Owner / Lead&quot;,
+      &quot;auto_label&quot;: &quot;Add structured intake validation templates&quot;,
+      &quot;category&quot;: &quot;synthesized_operational_application&quot;,
+      &quot;category_field_label&quot;: &quot;Category / Operational Scope&quot;,
+      &quot;demand_label&quot;: &quot;Daily Operational Demand&quot;,
+      &quot;domain_title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery&quot;,
+      &quot;expand_label&quot;: &quot;Expand primary equipment &amp; resource pool (+1 unit +25% eff.)&quot;,
+      &quot;formula_label&quot;: &quot;Assigned Crew &amp; Rules&quot;,
+      &quot;inputs_label&quot;: &quot;Request &amp; Record Intake&quot;,
+      &quot;item_field_label&quot;: &quot;Item / Request Name&quot;,
+      &quot;metric_label&quot;: &quot;Calculated Net Total ($)&quot;,
+      &quot;primary_entity&quot;: &quot;Operational Record&quot;,
+      &quot;qty_field_label&quot;: &quot;Resource Units / Hours&quot;,
+      &quot;rate_field_label&quot;: &quot;Unit Rate / Value ($)&quot;,
+      &quot;seed_records&quot;: [
+        {
+          &quot;adjustments_dollars&quot;: 25.0,
+          &quot;assignee_name&quot;: &quot;Operations Lead A&quot;,
+          &quot;category_tag&quot;: &quot;Priority Fulfillment&quot;,
+          &quot;item_title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery \u2014 Primary Operational Batch #1&quot;,
+          &quot;quantity_units&quot;: 4.0,
+          &quot;record_id&quot;: &quot;REC-101&quot;,
+          &quot;status&quot;: &quot;COMPLETED_VERIFIED&quot;,
+          &quot;unit_rate_dollars&quot;: 65.0
+        },
+        {
+          &quot;adjustments_dollars&quot;: 15.0,
+          &quot;assignee_name&quot;: &quot;Operations Lead B&quot;,
+          &quot;category_tag&quot;: &quot;Standard Operations&quot;,
+          &quot;item_title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery \u2014 Scheduled Queue Item #2&quot;,
+          &quot;quantity_units&quot;: 2.5,
+          &quot;record_id&quot;: &quot;REC-102&quot;,
+          &quot;status&quot;: &quot;ACTIVE&quot;,
+          &quot;unit_rate_dollars&quot;: 80.0
+        }
+      ],
+      &quot;spot_label&quot;: &quot;Use high-cost spot overtime / rental capacity (Conventional)&quot;,
+      &quot;stagger_label&quot;: &quot;Stagger crew handoff &amp; processing shifts&quot;,
+      &quot;subtitle&quot;: &quot;Local-First Operational Record Tracker, Bottleneck Solver &amp; Portable Workspace&quot;,
+      &quot;title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery \u2014 Operational App &amp; Living Model&quot;,
+      &quot;workflow_label&quot;: &quot;Small Neighborhood Baker Resource Pool&quot;,
+      &quot;workflow_states&quot;: [
+        &quot;ACTIVE&quot;,
+        &quot;IN_PROGRESS&quot;,
+        &quot;COMPLETED_VERIFIED&quot;,
+        &quot;NEEDS_REVIEW&quot;
+      ]
+    }
+  },
+  &quot;primary_entity&quot;: &quot;Operational Record&quot;,
+  &quot;project_family&quot;: &quot;bakery&quot;,
+  &quot;project_id&quot;: &quot;genie-synth-small-neighborhood-bakery-hearth-crumb&quot;,
+  &quot;prompt&quot;: &quot;Design a small neighborhood bakery \u2014 Hearth &amp; Crumb Bakery: a single-file HTML app to plan daily baking, track batches, and see capacity.&quot;,
+  &quot;records&quot;: [
+    {
+      &quot;adjustments_dollars&quot;: 25.0,
+      &quot;assignee_name&quot;: &quot;Operations Lead A&quot;,
+      &quot;capacity_share_pct&quot;: 9.52,
+      &quot;category_tag&quot;: &quot;Priority Fulfillment&quot;,
+      &quot;computed_metric_label&quot;: &quot;Calculated Net Total ($)&quot;,
+      &quot;computed_metric_value&quot;: 285.0,
+      &quot;item_title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery \u2014 Primary Operational Batch #1&quot;,
+      &quot;quantity_units&quot;: 4.0,
+      &quot;record_id&quot;: &quot;REC-101&quot;,
+      &quot;status&quot;: &quot;COMPLETED_VERIFIED&quot;,
+      &quot;unit_rate_dollars&quot;: 65.0
+    },
+    {
+      &quot;adjustments_dollars&quot;: 15.0,
+      &quot;assignee_name&quot;: &quot;Operations Lead B&quot;,
+      &quot;capacity_share_pct&quot;: 5.95,
+      &quot;category_tag&quot;: &quot;Standard Operations&quot;,
+      &quot;computed_metric_label&quot;: &quot;Calculated Net Total ($)&quot;,
+      &quot;computed_metric_value&quot;: 215.0,
+      &quot;item_title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery \u2014 Scheduled Queue Item #2&quot;,
+      &quot;quantity_units&quot;: 2.5,
+      &quot;record_id&quot;: &quot;REC-102&quot;,
+      &quot;status&quot;: &quot;ACTIVE&quot;,
+      &quot;unit_rate_dollars&quot;: 80.0
+    }
+  ],
+  &quot;schema&quot;: &quot;openline.genie.synthesized_app.v1&quot;,
+  &quot;subtitle&quot;: &quot;Local-First Operational Record Tracker, Bottleneck Solver &amp; Portable Workspace&quot;,
+  &quot;title&quot;: &quot;Small Neighborhood Bakery Hearth Crumb Bakery \u2014 Operational App &amp; Living Model&quot;,
+  &quot;workflow_states&quot;: [
+    &quot;ACTIVE&quot;,
+    &quot;IN_PROGRESS&quot;,
+    &quot;COMPLETED_VERIFIED&quot;,
+    &quot;NEEDS_REVIEW&quot;
+  ]
+}</pre>
+  </div>
+</body>
+</html>

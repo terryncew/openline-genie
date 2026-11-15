@@ -1,0 +1,81 @@
+{
+  "brand_identity": {
+    "full_display_title": "ClearCovenant \u00b7 Be Neighborly \u2014 powered by OpenLine",
+    "name_research_decision": {
+      "consumer_tone_finding": "In homeowner complaint data (SCDCA 2026 HOA Report, r/HOA), residents fighting unfair fines or ignored records requests find imperative slogans ('Be Neighborly') dismissive when management is non-compliant. 'ClearCovenant' communicates immediate practical utility (clear rules, clear budgets, clear records) for homeowners, volunteer boards, and communities alike, while keeping 'Be Neighborly \u2014 powered by OpenLine' as the collaborative subtitle.",
+      "empirical_collisions_found": [
+        {
+          "entity": "Project Neighborly, LLC (beneighborly.com)",
+          "issue": "Active domain and mobile app operating under 'Be Neighborly' / 'Neighborly'.",
+          "url": "https://beneighborly.com/terms/"
+        },
+        {
+          "entity": "Neighborly Assetco LLC (neighborly.com / The Neighborly App)",
+          "issue": "Registered US trademark (USPTO Serial #97603111 et al.) in home services, property repair, and homeowner management software.",
+          "url": "https://www.neighborly.com/about/the-neighborly-app"
+        }
+      ],
+      "verdict": "ADOPT_CLEARCOVENANT_WITH_BE_NEIGHBORLY_SUBTITLE",
+      "working_name_tested": "Be Neighborly \u2014 powered by OpenLine"
+    },
+    "primary_name": "ClearCovenant",
+    "tagline": "Understand your HOA rules, protect your home, and run a fairer neighborhood\u2014without giving up control.",
+    "working_name_preserved": "Be Neighborly \u2014 powered by OpenLine"
+  },
+  "exported_workspaces": {
+    "board": {
+      "accepted_sha256": "bfb7f5bf7a474a894ae58b6b2b54802d181a778a613a1774de6f3d2077ff4fef",
+      "accepted_version": 2,
+      "dossier_filename": "CLEARCOVENANT_BOARD_PORTABLE_RECORD.html",
+      "dossier_sha256": "245d9d005dd4217c4096e73914f260af5d4fd75bf74fe3141f9780e10b15c3f2",
+      "portable_csv_rows": 4,
+      "project_id": "neighborhood-board-oak-creek",
+      "standalone_html_bytes": 6035
+    },
+    "community": {
+      "accepted_sha256": "b6b86b6259e6d147c24f8f09a9b67a01bc32061fdf99746547be9c9953e91026",
+      "accepted_version": 2,
+      "dossier_filename": "CLEARCOVENANT_COMMUNITY_PORTABLE_RECORD.html",
+      "dossier_sha256": "7042e87fb176cab750923789e1acdb644d98ed43c0ff3787bd5b6c699f488a11",
+      "portable_csv_rows": 3,
+      "project_id": "neighborhood-community-oak-creek",
+      "standalone_html_bytes": 5931
+    },
+    "homeowner": {
+      "accepted_sha256": "e7058d864ee52dbad272c3ee87ce87b732dbb1622d349aeb99db2bec1f033dfe",
+      "accepted_version": 2,
+      "dossier_filename": "CLEARCOVENANT_HOMEOWNER_PORTABLE_RECORD.html",
+      "dossier_sha256": "c17974bcf99408eb4f09db50d53824075f755d92f1a44ee5b98697ad217e82e8",
+      "portable_csv_rows": 3,
+      "project_id": "neighborhood-homeowner-unit-104",
+      "standalone_html_bytes": 6827
+    }
+  },
+  "schema": "openline.neighborhood.portability_demonstration.v1",
+  "second_user_clean_restorations": {
+    "board": {
+      "accepted_state_unchanged_on_recall": true,
+      "neighborhood_app_preserved_exact": false,
+      "post_restore_recall_standing": "REOPEN",
+      "project_id": "neighborhood-board-oak-creek",
+      "restored_sha256": "beff45077c662ecf4d40f9ac9d7d51fc512da3cb91395e2a0e331674a4e84e48",
+      "restored_version": 1
+    },
+    "community": {
+      "accepted_state_unchanged_on_recall": true,
+      "neighborhood_app_preserved_exact": false,
+      "post_restore_recall_standing": "REOPEN",
+      "project_id": "neighborhood-community-oak-creek",
+      "restored_sha256": "716404192587fe0527e67b4f680e512d9add4ab43fd64a750c26126767455e4d",
+      "restored_version": 1
+    },
+    "homeowner": {
+      "accepted_state_unchanged_on_recall": true,
+      "neighborhood_app_preserved_exact": false,
+      "post_restore_recall_standing": "REOPEN",
+      "project_id": "neighborhood-homeowner-unit-104",
+      "restored_sha256": "f08801b05914e841baea20e73419e28b567de55bebe749b2ede62a064bb298e5",
+      "restored_version": 1
+    }
+  }
+}

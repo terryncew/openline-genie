@@ -1,0 +1,9 @@
+# Platform and security limits
+
+**Local-only**. No public hosting or registry presence. OpenAI's ChatGPT custom MCP connection requires a reachable HTTPS endpoint or permitted secure tunnel and workspace permission. Current OpenAI guidance: Business and Enterprise/Edu admins control workspace publication; Pro custom MCP permissions are restricted compared with Business/Enterprise, and Deep Research uses read-only tools. No local stdio server is automatically visible in ChatGPT Web. Codex CLI can attach a local stdio MCP server.
+
+Official MCP SDK v2 supports stdio and Streamable HTTP; `openline-connect mcp --fallback-stdio` is a **test-only JSON-RPC approximation**, not certified MCP. The optional `mcp` package was not installed in the local build environment. The plugin's `example.invalid` HTTPS endpoint is an **unconfigured placeholder**, not a deployable connector. OpenAI's documentation uses `agents/openai.yaml` tool dependencies; supplied config is a candidate requiring live test.
+
+**x402:** SDK optional extra and v2-shaped representations are not official SDK integration. Signing a mock facilitator settlement does not establish money movement, payout, payment finality, or refund. The official x402 offer-receipt extension is optional and its wire shape can change; do not claim universal client parsing. PAYMENT-RESPONSE integration is not validated with the official SDK.
+
+All effects in the test are SQLite-local. The decorated Python callback is **not** an external-effect atomicity guarantee; the example business action explicitly passes the same DB connection. A privileged process can bypass any software wrapper. TLS, auth, HSM keys, deployment reconciliation, external consistency witnesses, full key-rotation lifecycle, compliance and code provenance require review.
