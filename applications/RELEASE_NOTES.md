@@ -1,3 +1,23 @@
+# OpenLine Genie v1.1.0-RC1 — Public Release Notes
+
+## Highlights
+- **Advocate Case Packets (new, inside Advocate)**: Portable, verifiable case records. Original documents are kept byte-for-byte with SHA-256 checksums; claims carry exact source citations; rule authority is checked in four tiers (verified, user-supplied, outdated/superseded, unverified); deadlines are never invented (fail-closed to `NO_KNOWN_DEADLINE_DO_NOT_INVENT`); new evidence reopens affected conclusions through Decision Recall while the original record stays intact. A packet exports as an offline-readable HTML dossier plus a self-contained signed `.zip` bundle, and imports into a clean installation with the original record reconstructed from the packet alone. A signature proves record integrity and human approval at a point in time — not legal truth, not legal advice, no guaranteed outcome.
+- **Robotics Studio (new, seventh application)**: Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls, for Open Duck Mini v2 and LeRobot SO-101. Runs as its own loopback-only server on port 8796 (`./run_robotics_studio.sh`), linked from the applications launcher. **Simulation only**: every result is verified in simulation and never establishes physical hardware safety; the hardware adapter is verified in dry-run only and nothing here drives a physical robot.
+- **All six v1.0.0-rc1 applications preserved** with their workflows, receipts, and limitations unchanged.
+
+## Measured results (2026-11-15, this tree)
+- Applications suite: 186 Python tests ran, 175 passed, 1 failure, 5 errors, 5 skipped; Node 11 passed, 0 failed. The 1 failure and 5 errors are browser tests needing Chrome (not installed here) and 2 tests checking external archive files not in the package — recorded NOT VERIFIED, never passed.
+- Robotics suite: 6 passed, 0 failed, including the unfamiliar dogfood suite and the 9-gate independent acceptance (controller comparisons reproduced, cross-robot transfer in 8 evaluations vs 21 de novo, STOP, authorization refusal, corrupted-import rejection).
+- Case Packet module: 4-case Installation A → Installation B handoffs pass; 12/12 adversarial vectors blocked; tampered packets rejected. A fresh fictional dispute was dogfooded end to end (export, clean-install import, contradictory evidence, Decision Recall, original record preserved).
+- Live smoke on the release tree: applications server binds loopback-only; `/products`, `/robotics`, and `/api/advocate/case_packets` return 200; Neighborhood identity re-attack byte-identical across claimed identities; foreign Host returns 403. Robotics server binds loopback-only; `/robotics` returns 200; real simulations succeed for both robots.
+
+## Limitations (unchanged from v1.0.0-rc1, plus)
+- Browser end-to-end tests need Chrome/Chromium (not verified here). macOS/Windows installs, iPhone Safari, and uncoached human testing remain not tested.
+- Robotics results are simulation only. Physical-hardware behavior is unverified; do not connect this software to a physical robot on the strength of these results.
+- The Case Packet workbench browser test needs Chromium (not verified here); the packet engine itself is verified by the passing module tests and the dogfood run.
+
+---
+
 # OpenLine Genie v1.0.0-RC1 — Public Release Notes
 
 ## Highlights

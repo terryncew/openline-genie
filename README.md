@@ -7,7 +7,7 @@ OpenLine Genie runs on your own computer, in your web browser. Nothing is upload
 This repository holds two things:
 
 1. **OpenLine Genie v0.7.1** — the original product: build an idea in your browser, discover what breaks, explore what works, keep what you approve, with a receiver gate and a signed receipt, so swapping the model mid-task does not lose the work. Free and open source.
-2. **Six community applications (v1.0.0-rc1)** — in the `applications/` directory: Energy Commons, Advocate, Capability Commons, Science, Civic, and Neighborhood. Each one is a working local tool for a real community job. See below.
+2. **Seven applications (v1.1.0-rc1)** — six in the `applications/` directory (Energy Commons, Advocate, Capability Commons, Science, Civic, and Neighborhood) plus Robotics Studio at the repository root. Each one is a working local tool for a real job. See below.
 
 ## Try Genie v0.7.1
 
@@ -16,22 +16,23 @@ This repository holds two things:
 - **How it works:** https://terryncew.github.io/openline-genie/how/
 - **See a real session:** https://terryncew.github.io/openline-genie/see/
 
-## Six community applications (v1.0.0-rc1)
+## Seven applications (v1.1.0-rc1)
 
-All six run from one local server on your own computer. No account, no cloud, no subscription, no paid AI key required. Open `http://127.0.0.1:8795/products` after launching, and pick a tab.
+All seven run on your own computer. No account, no cloud, no subscription, no paid AI key required. The six in `applications/` run from one local server; open `http://127.0.0.1:8795/products` after launching, and pick a tab. Robotics Studio runs as its own loopback-only server on port 8796 (see below).
 
 | Application | What it does | Entry point | Example |
 |---|---|---|---|
 | **Energy Commons** | Compare community energy options and costs. | `applications/` tab `energy` | `applications/examples/sample_1_energy_commons.json` |
-| **Advocate** | Understand decisions, organize evidence, and prepare challenges. | `applications/` tab `advocate` | `applications/examples/sample_2_advocate.json` |
+| **Advocate** | Understand decisions, organize evidence, and prepare challenges. Case Packets preserve institutional decisions, organize evidence, and transfer verifiable case records between people or AI assistants. | `applications/` tab `advocate` | `applications/examples/sample_2_advocate.json` |
 | **Capability Commons** | Build and share reusable community projects. | `applications/` tab `commons` | `applications/examples/sample_3_capability_commons.json` |
 | **Science** | Explore hypotheses and preserve reproducible research. | `applications/` tab `science` | `applications/examples/sample_4_science.json` |
 | **Civic** | Compare public projects and examine the evidence behind decisions. | `applications/` tab `civic` | `applications/examples/sample_5_civic.json` |
 | **Neighborhood (ClearCovenant)** | Understand HOA rules, resolve disputes, compare costs, and manage community records. | `applications/` tab `neighborhood`, or `http://127.0.0.1:8795/neighborhood` | `applications/SAMPLE_HOA_CONFLICT_SCENARIOS_12_CASES.md` |
+| **Robotics Studio** | Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls. Simulation only. | `./run_robotics_studio.sh`, then `http://127.0.0.1:8796/robotics` | `openline_robotics_001/examples/` |
 
 Full details, installation, and per-application limitations: `applications/README.md` and `applications/INSTALL.md`. Release notes: `applications/RELEASE_NOTES.md`. Checksums: `applications/SHA256SUMS.txt` (verify with `sha256sum -c applications/SHA256SUMS.txt`).
 
-## Install the six applications
+## Install the applications
 
 Requires Python 3.11 or newer and Linux (macOS and Windows are not tested). From the release archive, or from a clone of this repository working inside `applications/`:
 
@@ -43,7 +44,7 @@ python3 -m venv .venv
 
 Then open `http://127.0.0.1:8795/products`. Full instructions: `applications/INSTALL.md`.
 
-To check the install: `python3 launch_genie.py --verify-only` (inside `applications/`). To run the tests: `python3 -m unittest discover -s tests -p "test_*.py"` and `node --test tests/test_rc6_projection.mjs` (inside `applications/`). Measured 2026-11-15: 184 Python tests ran, 174 passed, 5 errors, 1 failure, 4 skipped; Node 11 passed, 0 failed. The errors and failure are browser tests that need Chrome (not installed in the test environment) and two tests that check external archive files not included in this package. They are recorded as NOT VERIFIED here, not passed.
+To check the install: `python3 launch_genie.py --verify-only` (inside `applications/`). To run the tests: `python3 -m unittest discover -s tests -p "test_*.py"` and `node --test tests/test_rc6_projection.mjs` (inside `applications/`), plus `python3 -m unittest openline_robotics_001.tests.test_robotics_breakthrough_001` (from the repository root, with `onnxruntime` installed). Measured 2026-11-15 on the v1.1.0-rc1 tree: 186 Python tests ran, 175 passed, 1 failure, 5 errors, 5 skipped; Node 11 passed, 0 failed; Robotics 6 passed, 0 failed. The 1 failure and 5 errors are browser tests that need Chrome (not installed in the test environment) and two tests that check external archive files not included in this package. They are recorded as NOT VERIFIED here, not passed.
 
 ## Robotics Studio (simulation only)
 
