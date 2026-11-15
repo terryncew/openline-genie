@@ -203,6 +203,21 @@ class GenieRequestHandler(BaseHTTPRequestHandler):
             except Exception as exc:
                 self._send_json(400, {"error": str(exc)})
             return
+        if parsed.path == "/api/advocate/case_packets":
+            try:
+                self._send_json(200, self._living_engine().get_advocate_case_packets_state())
+            except Exception as exc:
+                self._send_json(400, {"error": str(exc)})
+            return
+        if parsed.path == "/api/advocate/case_packet/export":
+            qs = parse_qs(parsed.query)
+            cid = qs.get("case_id", ["CASE-001-BENEFITS-MISSING-DOC"])[0]
+            redact = qs.get("redact_pii", ["0"])[0] in ("1", "true", "yes")
+            try:
+                self._send_json(200, self._living_engine().export_advocate_case_packet_bundle(cid, redact_pii_in_html=redact))
+            except Exception as exc:
+                self._send_json(400, {"error": str(exc)})
+            return
         if parsed.path in ("/ratchet", "/openline_ratchet_workbench_001.html"):
             r_path = HERE / "openline_ratchet_workbench_001.html"
             if not r_path.exists():
@@ -375,6 +390,22 @@ class GenieRequestHandler(BaseHTTPRequestHandler):
                 payload = dict(body.get("payload", body))
                 _force_operator_identity(wkey, payload)
                 self._send_json(200, self._living_engine().execute_neighborhood_action(wkey, action, payload))
+                return
+            if parsed.path == "/api/advocate/case_packet/stage":
+                cid = str(body.get("case_id", "CASE-001-BENEFITS-MISSING-DOC"))
+                payload = dict(body.get("payload", body))
+                self._send_json(200, self._living_engine().stage_advocate_case_packet_update(cid, payload))
+                return
+            if parsed.path == "/api/advocate/case_packet/import":
+                zip_b64 = str(body.get("zip_base64", ""))
+                target_pid = body.get("target_project_id")
+                self._send_json(
+                    200,
+                    self._living_engine().import_advocate_case_packet_bundle(
+                        zip_b64,
+                        target_project_id=str(target_pid) if target_pid else None,
+                    ),
+                )
                 return
             if parsed.path == "/api/build":
                 prompt = str(body.get("prompt", "Build a free quoting and invoicing tool for my small service business."))

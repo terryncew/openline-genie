@@ -316,6 +316,12 @@ class _Locator:
         with self._in_frame_context() as drv:
             el = drv.find_element(By.CSS_SELECTOR, self._selector)
             try:
+                # Scroll into center view first: sticky headers otherwise
+                # intercept clicks on long multi-workbench pages.
+                drv.execute_script(
+                    "arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});",
+                    el,
+                )
                 el.click()
             except Exception:
                 drv.execute_script("arguments[0].click();", el)
