@@ -46,6 +46,18 @@ python3 launch_genie.py --port 8795
 ```
 Then open **[http://127.0.0.1:8795/products](http://127.0.0.1:8795/products)** in your desktop or mobile browser.
 
+### Robotics Studio (separate server, simulation only)
+
+The Robotics Studio is a seventh, separate tool that lives at the repository root (`openline_robotics_001/`) and runs on its own loopback-only server on port 8796. It lets you design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls, for two robots: Open Duck Mini v2 (a small walking robot) and LeRobot SO-101 (a small robot arm).
+
+```bash
+# from the repository root
+.venv/bin/pip install onnxruntime
+./run_robotics_studio.sh
+```
+
+Then open `http://127.0.0.1:8796/robotics`, or follow the **Robotics Studio** entry on the launcher page (route `/robotics`). **Simulation only:** results are verified in simulation and never establish physical hardware safety; the hardware adapter is verified in dry-run only. Full details: `../openline_robotics_001/README.md`.
+
 ---
 
 ## What It Costs

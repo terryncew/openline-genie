@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trial 2 (IL-8-0) — Menu & Allergen Disclosure Worksheet</title><style>
+body{font-family:system-ui,sans-serif;background:#111827;color:#f9fafb;margin:0;padding:24px}main{max-width:900px;margin:auto}.warn{background:#451a03;border:1px solid #f59e0b;color:#fde68a;padding:12px;border-radius:8px;font-weight:700;font-size:13px}.card{background:#1f2937;border:1px solid #374151;border-radius:10px;padding:14px;margin:12px 0}.unverified{border-left:5px solid #ef4444}.verified{border-left:5px solid #10b981}pre{background:#030712;padding:14px;border-radius:8px;white-space:pre-wrap;font-size:13px}input[type="text"]{background:#111827;color:white;border:1px solid #4b5563;padding:6px 10px;border-radius:6px;margin-left:8px}
+</style></head><body><main>
+<div class="warn" id="disclaimer">DRAFT WORKSHEET ONLY — NOT A FOOD SAFETY CERTIFICATION OR LEGAL COMPLIANCE GUARANTEE</div>
+<h1>Menu & Allergen Disclosure Worksheet (IL-8-0 Prototype)</h1>
+<p id="counts" style="font-weight:700;color:#fca5a5"></p>
+<div id="items"></div>
+<h2>Printable / Exportable Markdown Preview</h2>
+<pre id="export-preview"></pre>
+<script type="module">
+import {INITIAL_FICTIONAL_MENU, evaluateWorksheet, exportPrintableWorksheet, canMarkHumanChecked} from './logic.mjs';
+const state = structuredClone(INITIAL_FICTIONAL_MENU);
+function render() {
+ const ev = evaluateWorksheet(state);
+ document.getElementById('counts').textContent = `Unverified items: ${ev.unverified_count} of ${ev.items.length} • Staff sign-off ready: ${ev.ready_for_staff_signoff ? 'YES (human-reviewed)' : 'NO (unchecked entries present)'}`;
+ const container = document.getElementById('items');
+ container.textContent = '';
+ ev.items.forEach((it, idx) => {
+  const div = document.createElement('div');
+  div.className = `card ${it.human_checked ? 'verified' : 'unverified'}`;
+  const title = document.createElement('strong');
+  title.textContent = `${it.name} — [${it.verification_badge}]`;
+  const meta = document.createElement('p');
+  meta.textContent = `Allergens: ${it.allergens.join(', ') || 'None listed'} | Cross-contact: ${it.cross_contact_note}`;
+  const lbl = document.createElement('label');
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.checked = state[idx].human_checked;
+  const rev = document.createElement('input');
+  rev.type = 'text';
+  rev.placeholder = 'Reviewer name required';
+  rev.value = state[idx].reviewer_name;
+  cb.title = 'Enter a reviewer name before ticking this box';
+  cb.addEventListener('change', () => { if (cb.checked && !canMarkHumanChecked(state[idx])) { cb.checked = false; rev.focus(); return; } state[idx].human_checked = cb.checked; render(); });
+  rev.addEventListener('input', () => { state[idx].reviewer_name = rev.value; render(); });
+  lbl.append(cb, ' Human verified by: ', rev);
+  div.append(title, meta, lbl);
+  container.appendChild(div);
+ });
+ document.getElementById('export-preview').textContent = exportPrintableWorksheet(state);
+}
+render();
+</script></main></body></html>

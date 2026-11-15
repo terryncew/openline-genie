@@ -45,6 +45,20 @@ Then open `http://127.0.0.1:8795/products`. Full instructions: `applications/INS
 
 To check the install: `python3 launch_genie.py --verify-only` (inside `applications/`). To run the tests: `python3 -m unittest discover -s tests -p "test_*.py"` and `node --test tests/test_rc6_projection.mjs` (inside `applications/`). Measured 2026-11-15: 184 Python tests ran, 174 passed, 5 errors, 1 failure, 4 skipped; Node 11 passed, 0 failed. The errors and failure are browser tests that need Chrome (not installed in the test environment) and two tests that check external archive files not included in this package. They are recorded as NOT VERIFIED here, not passed.
 
+## Robotics Studio (simulation only)
+
+Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls. It runs as its own loopback-only server on port 8796, next to the six applications above — not inside them.
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt onnxruntime
+./run_robotics_studio.sh
+```
+
+Then open `http://127.0.0.1:8796/robotics`. It is also linked from the applications launcher (`http://127.0.0.1:8795/products`, route `/robotics`). Two robots are supported: Open Duck Mini v2 (a small walking robot) and LeRobot SO-101 (a small robot arm). Full details: `openline_robotics_001/README.md`.
+
+**Simulation only.** Every result is verified in simulation and never establishes physical hardware safety. The hardware adapter is verified in dry-run only; nothing here drives a physical robot.
+
 ## How decisions stay under your control
 
 - **Preview before saving:** every calculation or edit is staged as a draft first. Nothing changes your saved record until you accept it. Rejecting leaves the accepted work untouched.

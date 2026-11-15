@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trial 1 (IL-3-0) — Fictional Public-Record Diff Viewer</title><style>
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#f8fafc;margin:0;padding:24px}main{max-width:900px;margin:auto}.banner{background:#1e293b;border:1px solid #38bdf8;color:#7dd3fc;padding:10px 14px;border-radius:8px;font-weight:700;font-size:13px;margin-bottom:16px}table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px}th,td{border:1px solid #334155;padding:10px;text-align:left;vertical-align:top}th{background:#1e293b;color:#93c5fd}.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-weight:700;font-size:12px}.MODIFIED{background:#422006;color:#fde047}.ADDED{background:#064e3b;color:#6ee7b7}.REMOVED{background:#450a0a;color:#fca5a5}.UNCHANGED{background:#1e293b;color:#94a3b8}button,select{background:#38bdf8;color:#0f172a;border:0;padding:9px 14px;border-radius:8px;font-weight:700;cursor:pointer;margin-right:8px}
+</style></head><body><main>
+<div class="banner" id="fictional-banner">FICTIONAL SAMPLE RECORD — NOT OFFICIAL PUBLIC DATA • Motive attribution disabled • Primary source citations required</div>
+<h1>Local Public-Record Revision Digest (IL-3-0 Prototype)</h1>
+<p>Tailored for local publishers (toolkit mode, one neighborhood). Compares two fictional council snapshots without attributing motives.</p>
+<div><label>Filter status: <select id="filter"><option value="ALL">All records (4)</option><option value="CHANGED">Changed only (3)</option></select></label><button id="toggle-mock">Toggle ORD-2026-101 Height (16ft vs 18ft)</button></div>
+<p id="summary" style="font-weight:700;color:#7dd3fc"></p>
+<table><thead><tr><th>Record ID</th><th>Status</th><th>Changed Fields</th><th>Snapshot A (Before)</th><th>Snapshot B (After)</th><th>Primary Source Citation</th></tr></thead><tbody id="rows"></tbody></table>
+<script type="module">
+import {SNAPSHOT_A, SNAPSHOT_B, diffSnapshots} from './logic.mjs';
+let altHeight = false;
+function render() {
+ const b = SNAPSHOT_B.map(r => r.record_id === 'ORD-2026-101' && altHeight ? {...r, summary: 'Permits accessory solar canopies up to 18ft.'} : r);
+ const d = diffSnapshots(SNAPSHOT_A, b);
+ const f = document.getElementById('filter').value;
+ const visible = d.rows.filter(r => f === 'ALL' || r.status !== 'UNCHANGED');
+ document.getElementById('summary').textContent = `Showing ${visible.length} of ${d.rows.length} fictional records (${d.changed_count} changed). Zero motive claims.`;
+ const tbody = document.getElementById('rows');
+ tbody.textContent = '';
+ for (const r of visible) {
+  const tr = document.createElement('tr');
+  for (const val of [r.record_id, r.status, r.changed_fields.join(', ') || 'none', r.before ? `${r.before.vote_tally}: ${r.before.summary}` : '—', r.after ? `${r.after.vote_tally}: ${r.after.summary}` : '—', r.primary_sources.join(' | ')]) {
+   const td = document.createElement('td');
+   td.textContent = val;
+   if (val === r.status) td.className = `badge ${r.status}`;
+   tr.appendChild(td);
+  }
+  tbody.appendChild(tr);
+ }
+}
+document.getElementById('filter').addEventListener('change', render);
+document.getElementById('toggle-mock').addEventListener('click', () => { altHeight = !altHeight; render(); });
+render();
+</script></main></body></html>
