@@ -62,6 +62,21 @@ class TestR72StopResumeRace(TestFinalReleaseBoundaries):
             self.assertEqual(code,400,(bad,code,raw))
             code, raw = self.request('/api/status')
             self.assertTrue(json.loads(raw)['stopped'])
-        # Existing single-operator clients remain backward compatible.
+        # Epoch-free Resume must not bypass owner intent fencing.
         code, raw = self.request('/api/clear_stop',method='POST',body={})
+        self.assertEqual(code,400,raw)
+        self.assertIn(b'invalid_expected_epoch',raw)
+        code, state_raw = self.request('/api/status')
+        self.assertTrue(json.loads(state_raw)['stopped'])
+        self.assertEqual(code,200)
+        epoch=json.loads(state_raw)['stop_epoch']
+        code, raw = self.request('/api/clear_stop',method='POST',body={'expected_epoch':epoch})
         self.assertEqual(code,200,raw)
+
+    def test_13_browser_resumes_are_epoch_bound(self):
+        from pathlib import Path
+        root=Path(__file__).resolve().parents[1]
+        html=(root/'openline_genie.html').read_text()
+        world=(root/'genie_living_world.html').read_text()
+        self.assertIn('expected_epoch: stopIntentEpoch',html)
+        self.assertIn('expected_epoch:ownerStopEpoch',world)
