@@ -2757,24 +2757,32 @@ class OpenLineGenieEngine:
     # Owner Authority Controls: STOP, Worker Succession & External Outbox
     # -----------------------------------------------------------------------
     def trigger_stop(self, reason: str = "owner_emergency_stop") -> dict[str, Any]:
-        # One bounded retry on stale_owner_intent only. Two concurrent STOPs can
-        # both read the same epoch; the loser's envelope is refused because the
-        # winner already advanced the epoch (guard issue_stop verifies the
-        # envelope epoch under BEGIN IMMEDIATE). A STOP is an owner intent to
-        # stop, so re-issuing it against the freshly read epoch honours that
-        # intent. The CLEAR path never retries: a newer STOP must never be
-        # cleared by an older Resume. Any other verification failure (e.g.
-        # stop_authority_owner_only) propagates immediately, unretried.
-        try:
-            cur_epoch = self.guard.read_stop_state()["epoch"]
-            env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
-            receipt = self.guard.issue_stop(env)
-        except VerificationError as exc:
-            if "stale_owner_intent" not in str(exc):
-                raise
-            cur_epoch = self.guard.read_stop_state()["epoch"]
-            env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
-            receipt = self.guard.issue_stop(env)
+        # Bounded retries on stale_owner_intent only (5 attempts). Two
+        # concurrent STOPs can both read the same epoch; the loser's envelope
+        # is refused because the winner already advanced the epoch (guard
+        # issue_stop verifies the envelope epoch under BEGIN IMMEDIATE). A
+        # STOP is an owner intent to stop, so re-issuing it against the
+        # freshly read epoch honours that intent. The epoch can advance more
+        # than once while a STOP settles — a queued Resume clearing behind
+        # it advances it again — so a single retry is not enough: with one
+        # retry a racing STOP could exhaust the budget and return 409 with
+        # the server still ACTIVE. The CLEAR path never retries: a newer
+        # STOP must never be cleared by an older Resume. Any other
+        # verification failure (e.g. stop_authority_owner_only) propagates
+        # immediately, unretried, as does the last stale failure once the
+        # budget is exhausted.
+        receipt = None
+        for _attempt in range(5):
+            try:
+                cur_epoch = self.guard.read_stop_state()["epoch"]
+                env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
+                receipt = self.guard.issue_stop(env)
+                break
+            except VerificationError as exc:
+                if "stale_owner_intent" not in str(exc):
+                    raise
+                if _attempt == 4:
+                    raise
         new_epoch = int(self.guard.read_stop_state()["epoch"])
         with sqlite3.connect(self.db_path) as db:
             cur = db.execute(
