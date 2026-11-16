@@ -71,12 +71,13 @@ class TestFinalReleaseBoundaries(unittest.TestCase):
             genie_server.HERE=old
 
     def test_04_stop_and_resume_before_bootstrap(self):
-        code,_=self.request('/api/stop',method='POST')
+        code,stop_raw=self.request('/api/stop',method='POST')
         self.assertEqual(code,200)
+        acknowledged_epoch=json.loads(stop_raw)['new_epoch']
         code,raw=self.request('/api/status')
         self.assertEqual(code,200)
         self.assertTrue(json.loads(raw).get('stopped'))
-        code,_=self.request('/api/clear_stop',method='POST')
+        code,_=self.request('/api/clear_stop',method='POST',body={'expected_epoch':acknowledged_epoch})
         self.assertEqual(code,200)
         code,raw=self.request('/api/status')
         self.assertFalse(json.loads(raw).get('stopped'))
