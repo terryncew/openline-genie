@@ -71,3 +71,28 @@ browser/installation reviewer accepts the exact new ZIP hash and the owner appro
 For detailed source-level tests, remaining browser-review and full-suite limits,
 see `GPT6_RELEASE_ACCEPTANCE.md`. Do not market this private candidate as
 production-safe multi-user software.
+- **Preview before saving:** every calculation or edit is staged as a draft first. Nothing changes your saved record until you accept it. Rejecting leaves the accepted work untouched.
+- **STOP:** pausing all changes freezes edits and approvals until you explicitly resume. Accepted work is never lost by STOP.
+- **Decision Recall:** accepted work can be recalled and verified later, with a signed receipt for what was accepted or refused.
+- **Export and import:** export gives a standalone file and a portable bundle with the accepted checksum and the receiver receipt. Import it on a fresh install to recover the project.
+
+## Honest limitations
+
+- **Local only.** The server binds `127.0.0.1` (loopback) and refuses other hosts. It is not reachable from another machine. Do not expose the port beyond your own computer. Anyone who can reach the port on your computer is the operator, with full access to every workspace.
+- **Same-user boundary.** Signing keys and the database live in the state directory. Any process running as the same OS user can read them. Separate OS users, containers, or hardware keys are needed for a stronger boundary.
+- **Neighborhood is a local single-user tool.** It runs for one household or association. It does not separate multiple households on one server, and multi-household separation is not a supported deployment.
+- **Not legal advice.** Advocate and Neighborhood organize evidence, dates, and rules for human review. They are not legal advice, do not create an attorney-client relationship, and never submit anything to an outside agency automatically. Neighborhood covers California, Florida, Texas, South Carolina, and a general U.S. baseline; other states need the statute text or local counsel.
+- **No guaranteed savings or outcomes.** Energy Commons compares costs; it does not promise savings. Science verifies computational reproducibility on recorded datasets; it does not validate a finding in the physical world. Civic compares proposals; it does not decide which one a community should choose.
+- **Not tested:** macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls. Browser tests need Chrome or Chromium.
+
+## Chip-package research (computational only, hardware on HOLD)
+
+**[Chip-package research: a proposed cooling and power-delivery design, independently challenged](research/chip-packaging/README.md).** A one-person AI-assisted team generated and independently challenged a chip-package research hypothesis: consolidating power delivery, liquid cooling, signal wiring, and structural support into one metal package. The nearly twofold modeled advantage collapses to +0.332% parity when the assigned yield, cost, and power-delivery values are equalized with a matched conventional design. The proposed design cannot route high-bandwidth memory on a single 8 µm wiring layer (343 of 1,750 connections). The independent audit found the electrical test design would draw 614.4 W instead of the stated 50 W, the transistor packages do not fit the stated 45 mm face, and the STEP files are not manufacturable solids. No hardware has been built. The step-by-step manufacturing instructions are withheld; what is published is a read-only computational snapshot with a one-command reproduction. **The freshwater-production claim is not established.**
+
+## For AI coding agents
+
+See `AGENTS.md` in this repository. It documents the layout, entry points, interfaces, how to run the tests, the safety boundaries, and what is implemented versus what is only proposed.
+
+## License
+
+Apache License 2.0. See `LICENSE`. OpenLine branding and trademarks are governed separately and are not licensed under Apache 2.0.
