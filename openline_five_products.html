@@ -1705,7 +1705,13 @@
         await resumeEditingAtEpoch(res.new_epoch);
       } else {
         await refreshState();
-        setBanner("All changes are now paused (STOP is active).", "error");
+        if (resumeRequestedDuringStop) {
+          // A Resume tap landed during the refresh: deliver it now, bound to
+          // this STOP's receipt epoch, instead of dropping it silently.
+          await resumeEditingAtEpoch(res.new_epoch);
+        } else {
+          setBanner("All changes are now paused (STOP is active).", "error");
+        }
       }
     } catch (err) {
       // If the stop response failed, no receipt authorizes an automatic clear.
