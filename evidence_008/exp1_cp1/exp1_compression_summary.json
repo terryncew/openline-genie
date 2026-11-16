@@ -1,0 +1,124 @@
+{
+  "capability_id": "compressed-trajectory-stabilizer",
+  "creation_and_verification_cost": {
+    "creation_reasoning_token_equivalents": 4800,
+    "dev_domain_evaluations": 1934,
+    "dev_episodes_verified": "40/40",
+    "dev_verification_cpu_ms": 84.44,
+    "synthesis_and_verification_cpu_ms": 126.44
+  },
+  "dev_cohort_n": 40,
+  "economic_acceptance_g1": {
+    "break_even_reuse_count": {
+      "by_cpu_ms": 5,
+      "by_domain_evaluations": 2,
+      "by_reasoning_token_equivalents": 2
+    },
+    "net_savings_after_n_uses": {
+      "N_1": {
+        "net_cpu_ms_saved": -98.28,
+        "net_domain_evaluations_saved": -900.6,
+        "net_reasoning_tokens_saved": -1285.8
+      },
+      "N_10": {
+        "net_cpu_ms_saved": 155.17,
+        "net_domain_evaluations_saved": 8400.0,
+        "net_reasoning_tokens_saved": 30342.0
+      },
+      "N_100": {
+        "net_cpu_ms_saved": 2689.66,
+        "net_domain_evaluations_saved": 101406.0,
+        "net_reasoning_tokens_saved": 346620.0
+      }
+    },
+    "per_use_savings": {
+      "compression_speedup_ratio_cpu_ms": 17.71,
+      "compression_speedup_ratio_evals": 23.61,
+      "cpu_ms_saved": 28.161,
+      "domain_evaluations_saved": 1033.4,
+      "reasoning_token_equivalents_saved": 3514.2
+    }
+  },
+  "experiment": "EXPERIMENT_1_INTELLIGENCE_COMPRESSION_G1",
+  "holdout_cohort_n": 60,
+  "holdout_comparators": {
+    "0_baseline_007_reflex_registry": {
+      "accuracy": 0.0,
+      "disposition": "INVESTIGATE (uncovered_requirements)",
+      "verified_accepted": 0
+    },
+    "1_strong_uncompressed_afresh": {
+      "accuracy": 1.0,
+      "cpu_ms_per_use": 29.846,
+      "domain_evaluations_per_use": 1079.1,
+      "reasoning_tokens_per_use": 3558.2,
+      "total_cpu_ms": 1790.78,
+      "total_domain_evaluations": 64746,
+      "total_reasoning_token_equivalents": 213492,
+      "verified_accepted": 60
+    },
+    "2_strong_with_inherited_007_planner": {
+      "accuracy": 0.8,
+      "cpu_ms_per_use": 4.692,
+      "domain_evaluations_per_use": 54.0,
+      "failure_mode": "Fails 12/60 compound two-stage shock episodes where single early upgrade exceeds cumulative OpEx budget",
+      "reasoning_tokens_per_use": 480.0,
+      "total_cpu_ms": 281.51,
+      "total_domain_evaluations": 3240,
+      "total_reasoning_token_equivalents": 28800,
+      "verified_accepted": 48
+    },
+    "3_compressed_g1_with_escalation": {
+      "accuracy": 1.0,
+      "cpu_ms_per_use": 1.685,
+      "domain_evaluations_per_use": 45.7,
+      "escalation_rate": 0.2,
+      "escalations_triggered": 12,
+      "quality_retention_vs_strong_afresh": 1.0,
+      "reasoning_tokens_per_use": 44.0,
+      "total_cpu_ms": 101.1,
+      "total_domain_evaluations": 2742,
+      "total_reasoning_token_equivalents": 2640,
+      "verified_accepted": 60
+    }
+  },
+  "registry_g1_sha256": "85b1089c90d2f0b88921af6f3bff79a3829f845adfc8199af604072fe2e39335",
+  "sample_execution_receipts": [
+    {
+      "capability_id": "compressed-trajectory-stabilizer",
+      "elapsed_us": 510.43,
+      "input_sha256": "6e72e6d544b230dc87c1d05932a783a801d8f054c33b01dc8c01567a48a8f29f",
+      "output_sha256": "d4ed9ad40f8a715ef6910e080a36701ba10494b8d4be01dc3022e9918e24aed4",
+      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7"
+    },
+    {
+      "capability_id": "compressed-trajectory-stabilizer",
+      "elapsed_us": 515.5,
+      "input_sha256": "a34f2d2e92713bc63f225e709a93f41eaac7c5b0aca761e760a8d39c7afd9613",
+      "output_sha256": "82ddb857912bb401f0754b8461b2d2fbca24a316d3ddcf5f2fbbcd744c45cb3a",
+      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7"
+    },
+    {
+      "capability_id": "compressed-trajectory-stabilizer",
+      "elapsed_us": 2273.32,
+      "input_sha256": "39752a233727d54a374fe8e5388addb545935c56e2a70192d796457e0771eefd",
+      "output_sha256": "ce08fe083f1d17367ff80cf27898454f8774a79f4c335212e4c48d4a4e1d730b",
+      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7"
+    },
+    {
+      "capability_id": "compressed-trajectory-stabilizer",
+      "elapsed_us": 646.99,
+      "input_sha256": "3578c12d0d987d812089928ab73ee029adfe63a0a141106aaa9a09d0ec6c3565",
+      "output_sha256": "81418fb643033815b15c86648caa436de86abd81b194895174a3c7b669e4b288",
+      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7"
+    },
+    {
+      "capability_id": "compressed-trajectory-stabilizer",
+      "elapsed_us": 286.25,
+      "input_sha256": "ddc06d116caef92fb6b8e75cf53078242463bac585905636e38c714ca251c30d",
+      "output_sha256": "442f589b5252d4c272b35827099a1ed6fbe0957a14c9e2361d411c08625afa1d",
+      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7"
+    }
+  ],
+  "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7"
+}

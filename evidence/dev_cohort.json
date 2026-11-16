@@ -1,0 +1,396 @@
+{
+  "purpose": "DEVELOPMENT SMOKE, not independent holdout",
+  "cases": 70,
+  "parity_with_competent_conventional": true,
+  "results": [
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "bounded-diagnosis"
+      ]
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "INVESTIGATE",
+      "capabilities": []
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge",
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge",
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge",
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge",
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge",
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "EXECUTED",
+      "capabilities": [
+        "energy-charge",
+        "garden-capacity"
+      ]
+    },
+    {
+      "disposition": "STOP",
+      "capabilities": []
+    },
+    {
+      "disposition": "STOP",
+      "capabilities": []
+    },
+    {
+      "disposition": "STOP",
+      "capabilities": []
+    },
+    {
+      "disposition": "STOP",
+      "capabilities": []
+    },
+    {
+      "disposition": "STOP",
+      "capabilities": []
+    },
+    {
+      "disposition": "REFUSE",
+      "capabilities": []
+    },
+    {
+      "disposition": "REFUSE",
+      "capabilities": []
+    },
+    {
+      "disposition": "REFUSE",
+      "capabilities": []
+    },
+    {
+      "disposition": "REFUSE",
+      "capabilities": []
+    },
+    {
+      "disposition": "REFUSE",
+      "capabilities": []
+    }
+  ],
+  "elapsed_ms_local_total": 24.257
+}

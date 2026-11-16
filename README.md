@@ -1,89 +1,73 @@
-# OpenLine Genie
+# OpenLine Genie & Living Projects (`v1.2.0-rc2`)
 
-**Local-first software that helps people plan community projects, organize evidence, run reproducible research, and keep consequential decisions under human control.**
+**Local-First Seven-Application Suite, Custom App Builder & Receiver-Governed Runtime**
 
-OpenLine Genie runs on your own computer, in your web browser. Nothing is uploaded anywhere. You see the work take shape, change things, and explore different directions. The AI does the exploring. You decide what stays.
+- **Canonical Public Repository**: [`https://github.com/terryncew/openline-genie`](https://github.com/terryncew/openline-genie)
+- **Zero-Install Static Browser Preview (`v0.7.1`)**: [`https://terryncew.github.io/openline-genie/try/`](https://terryncew.github.io/openline-genie/try/)
+- **Ecosystem Directory**: [`ECOSYSTEM.md`](https://github.com/terryncew/openline-genie/blob/main/ECOSYSTEM.md)
+- **Frozen Five-Application Baseline**: Tag [`v1.0.0-rc1`](https://github.com/terryncew/openline-genie/tree/v1.0.0-rc1) (`7148fe4de9488d30280ccbc0c9dfdbd419592dab`)
 
-**Find the related public projects and research:** [OpenLine ecosystem map](ECOSYSTEM.md).
+## 1. Quick Start (Clean Virtual Environment Installation)
 
-This repository holds two things:
-
-1. **OpenLine Genie v0.7.1** — the original product: build an idea in your browser, discover what breaks, explore what works, keep what you approve, with a receiver gate and a signed receipt, so swapping the model mid-task does not lose the work. Free and open source.
-2. **Seven applications (v1.2.0-rc1)** — six in the `applications/` directory (Energy Commons, Advocate, Capability Commons, Science, Civic, and Neighborhood) plus Robotics Studio at the repository root. Each one is a working local tool for a real job. The applications server also hosts the Semantic Authority Bridge workbench (see below). See below.
-
-## Try Genie v0.7.1
-
-- **Try it in your browser:** https://terryncew.github.io/openline-genie/try/
-- **Get the source:** https://github.com/terryncew/openline-genie/releases/tag/v0.7.1
-- **How it works:** https://terryncew.github.io/openline-genie/how/
-- **See a real session:** https://terryncew.github.io/openline-genie/see/
-
-## Seven applications (v1.2.0-rc1)
-
-All seven run on your own computer. No account, no cloud, no subscription, no paid AI key required. The six in `applications/` run from one local server; open `http://127.0.0.1:8795/products` after launching, and pick a tab. Robotics Studio runs as its own loopback-only server on port 8796 (see below).
-
-The **Semantic Authority Bridge** (v1.2.0-rc1) runs on the same applications server: when a definition behind a decision changes, it reopens only the decisions that depended on it and refuses consequential actions under a reopened decision until a human re-evaluates it. Workbench: `http://127.0.0.1:8795/semantic`. It reads Apache Ossie YAML definition files on your own computer — file-level compatibility only, no live NVIDIA service. Developer docs: `applications/SEMANTIC_AUTHORITY_BRIDGE.md`.
-
-| Application | What it does | Entry point | Example |
-|---|---|---|---|
-| **Energy Commons** | Compare community energy options and costs. | `applications/` tab `energy` | `applications/examples/sample_1_energy_commons.json` |
-| **Advocate** | Understand decisions, organize evidence, and prepare challenges. Case Packets preserve institutional decisions, organize evidence, and transfer verifiable case records between people or AI assistants. | `applications/` tab `advocate` | `applications/examples/sample_2_advocate.json` |
-| **Capability Commons** | Build and share reusable community projects. | `applications/` tab `commons` | `applications/examples/sample_3_capability_commons.json` |
-| **Science** | Explore hypotheses and preserve reproducible research. | `applications/` tab `science` | `applications/examples/sample_4_science.json` |
-| **Civic** | Compare public projects and examine the evidence behind decisions. | `applications/` tab `civic` | `applications/examples/sample_5_civic.json` |
-| **Neighborhood (ClearCovenant)** | Understand HOA rules, resolve disputes, compare costs, and manage community records. | `applications/` tab `neighborhood`, or `http://127.0.0.1:8795/neighborhood` | `applications/SAMPLE_HOA_CONFLICT_SCENARIOS_12_CASES.md` |
-| **Robotics Studio** | Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls. Simulation only. | `./run_robotics_studio.sh`, then `http://127.0.0.1:8796/robotics` | `openline_robotics_001/examples/` |
-
-Full details, installation, and per-application limitations: `applications/README.md` and `applications/INSTALL.md`. Release notes: `applications/RELEASE_NOTES.md`. Checksums: `applications/SHA256SUMS.txt` (verify with `sha256sum -c applications/SHA256SUMS.txt`).
-
-## Install the applications
-
-Requires Python 3.11 or newer and Linux (macOS and Windows are not tested). From the release archive, or from a clone of this repository working inside `applications/`:
+OpenLine Genie runs locally on `127.0.0.1` in **Free Local Mode (`$0.00` cost, no API keys, no cloud account required)**:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/python genie_server.py --host 127.0.0.1 --port 8795 --state-dir ./genie-state
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Verify all 7 applications & sample projects (exits 0):
+python3 launch_genie.py --verify-only
+
+# Start the local server on http://127.0.0.1:8795:
+python3 launch_genie.py
 ```
 
-Then open `http://127.0.0.1:8795/products`. Full instructions: `applications/INSTALL.md`.
+## 2. Included Applications (`v1.2.0-rc2` Seven-Application Local Suite)
 
-To check the install: `python3 launch_genie.py --verify-only` (inside `applications/`). To run the tests: `python3 -m unittest discover -s tests -p "test_*.py"` and `node --test tests/test_rc6_projection.mjs` (inside `applications/`), plus `python3 -m unittest openline_robotics_001.tests.test_robotics_breakthrough_001` (from the repository root, with `onnxruntime` installed). Measured 2026-11-15 on the v1.2.0-rc1 tree: 193 Python tests ran, 176 passed, 1 failure, 11 errors, 5 skipped; Node 11 passed, 0 failed; Robotics 6 passed, 0 failed. The 1 failure and 5 of the errors are browser tests that need Chrome (not installed in the test environment) and two tests that check external archive files not included in this package; the other 6 errors are live-server tests whose 20s client timeout is shorter than the ~42.5s first engine build on this 1.5-CPU box (reproduced on the pristine v1.1.0-rc1 tree). They are recorded as NOT VERIFIED here, not passed.
+1. **Energy Commons (`/products`)**: Community solar, battery/PCM reserve, and tariff planning.
+2. **Advocate + Case Packet (`/products`, `/api/advocate/case_packets`)**: Evidence organization, missing-document checks, and PII-redacted appeal packets.
+3. **Capability Commons (`/products`)**: Reusable community project templates and portable bundles.
+4. **Science (`/products`)**: Reproducible hypothesis testing, seed-offset checks, and model selection.
+5. **Civic (`/products`)**: Public infrastructure comparison, resident challenges, and accountability dossiers.
+6. **Neighborhood / ClearCovenant (`/neighborhood`)**: Role-separated homeowner, board, and community covenant governance.
+7. **Robotics Studio (`/robotics`)**: Multi-body Lagrangian/contact physics simulator and hardware safety adapter for **Open Duck Mini v2 (14-DoF Biped)** and **LeRobot SO-101 (6-DoF Arm)** (`SIMULATED_VERIFIED_ONLY`; physical servo hardware remains `HOLD` until benchtop robot run).
 
-## Robotics Studio (simulation only)
+## 3. Security, Authority & Honest Scope Boundaries
 
-Design, simulate, evaluate, and transfer robot capabilities with explicit safety and authorization controls. It runs as its own loopback-only server on port 8796, next to the six applications above — not inside them.
+- **Loopback & CSRF Protection**: Binds strictly to `127.0.0.1` / `localhost` with `Host`, `Origin`, and `Content-Type: application/json` guards on all mutating `POST` routes.
+- **Cryptographic Capsule Trust & No Arbitrary `exec()`**: `core/portable_verified_inheritance.py` requires trusted issuer verification and Ed25519 signature verification (`core.openline_guard.verify_envelope`) before import, and enforces an AST-checked static kernel allowlist (arbitrary Python `exec()` is disabled).
+- **Mandatory Consequential-Effect Recall Enforcement**: `ReceiverGuard` STOP/epoch state, `RecallLedger` DNF standing, and supporting assumptions (`data_version`, `calibration_expiry_utc`, `reference_sensor_health`, `source_sha256`, `policy_pin_sha256`, `authority_epoch`) are checked automatically at every consequential effect boundary, even if a worker omits a manual recall check.
+- **Browser & Viewport Scope**: Verified in headless Chromium at desktop (`1280x800`) and mobile width (`390x844`, `0px` horizontal overflow). Physical iOS Safari hardware is marked `UNTESTED_ON_PHYSICAL_IOS_DEVICE`.
 
-```bash
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt onnxruntime
-./run_robotics_studio.sh
-```
 
-Then open `http://127.0.0.1:8796/robotics`. It is also linked from the applications launcher (`http://127.0.0.1:8795/products`, route `/robotics`). Two robots are supported: Open Duck Mini v2 (a small walking robot) and LeRobot SO-101 (a small robot arm). Full details: `openline_robotics_001/README.md`.
+## Private RC2 release-repair candidate — independent reviewer notes
 
-**Simulation only.** Every result is verified in simulation and never establishes physical hardware safety. The hardware adapter is verified in dry-run only; nothing here drives a physical robot.
+The source in this archive is a **private post-Argon repair candidate**, not the
+published GitHub main branch. Public release remains **HOLD** until a separate
+browser/installation reviewer accepts the exact new ZIP hash and the owner approves.
 
-## How decisions stay under your control
+- HTTP listening is restricted to `127.0.0.1` or `localhost`. Host and Origin
+  are validated for **GET and POST**; non-loopback bind requests are refused.
+- Neighborhood uses one **server-configured local owner identity** per instance;
+  request URL, POST body, and role tabs are never credentials. Default is the
+  Unit 104 homeowner demo; board/community roles require a separately started
+  owner-configured session. This is **not a multi-user authorization service**.
+  All callers with local same-OS-user access can still access the local server.
+- When the owner accepts a change to an application assumption, dependent
+  standing becomes `REOPEN`. Consequential authorizations fail closed until
+  the exact accepted snapshot has undergone an explicit **local assumption
+  review**. That review does *not* establish independent physical/scientific truth
+  or repair unrelated revoked upstream evidence.
+- Portable import verifies the source receipt and state. Overwrite requires an
+  expected destination version and SHA plus a newer incoming version; importing
+  the same or older snapshot has an explicit refusal rather than a silent no-op.
+- `/api/semantic/state` serves the existing local research receipt; if absent,
+  the route returns `503` instead of launching expensive research on a GET.
+- Legacy research runners use `OPENLINE_RESEARCH_WORKSPACE`,
+  `OPENLINE_RESEARCH_DOWNLOADS`, and `OPENLINE_OUTPUT_DIR` rather than frozen
+  private `/working_dir` paths. Their external research inputs are not bundled.
 
-- **Preview before saving:** every calculation or edit is staged as a draft first. Nothing changes your saved record until you accept it. Rejecting leaves the accepted work untouched.
-- **STOP:** pausing all changes freezes edits and approvals until you explicitly resume. Accepted work is never lost by STOP.
-- **Decision Recall:** accepted work can be recalled and verified later, with a signed receipt for what was accepted or refused.
-- **Export and import:** export gives a standalone file and a portable bundle with the accepted checksum and the receiver receipt. Import it on a fresh install to recover the project.
-
-## Honest limitations
-
-- **Local only.** The server binds `127.0.0.1` (loopback) and refuses other hosts. It is not reachable from another machine. Do not expose the port beyond your own computer. Anyone who can reach the port on your computer is the operator, with full access to every workspace.
-- **Same-user boundary.** Signing keys and the database live in the state directory. Any process running as the same OS user can read them. Separate OS users, containers, or hardware keys are needed for a stronger boundary.
-- **Neighborhood is a local single-user tool.** It runs for one household or association. It does not separate multiple households on one server, and multi-household separation is not a supported deployment.
-- **Not legal advice.** Advocate and Neighborhood organize evidence, dates, and rules for human review. They are not legal advice, do not create an attorney-client relationship, and never submit anything to an outside agency automatically. Neighborhood covers California, Florida, Texas, South Carolina, and a general U.S. baseline; other states need the statute text or local counsel.
-- **No guaranteed savings or outcomes.** Energy Commons compares costs; it does not promise savings. Science verifies computational reproducibility on recorded datasets; it does not validate a finding in the physical world. Civic compares proposals; it does not decide which one a community should choose.
-- **Not tested:** macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls. Browser tests need Chrome or Chromium.
-
-## For AI coding agents
-
-See `AGENTS.md` in this repository. It documents the layout, entry points, interfaces, how to run the tests, the safety boundaries, and what is implemented versus what is only proposed.
-
-## License
-
-Apache License 2.0. See `LICENSE`. OpenLine branding and trademarks are governed separately and are not licensed under Apache 2.0.
+For detailed source-level tests, remaining browser-review and full-suite limits,
+see `GPT6_RELEASE_ACCEPTANCE.md`. Do not market this private candidate as
+production-safe multi-user software.

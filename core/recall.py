@@ -142,8 +142,23 @@ class RecallLedger:
                 Ed25519PublicKey.from_public_bytes(bytes.fromhex(row[0])).verify(signature, canonical(statement))
             except Exception as exc:
                 raise Rejected("invalid_event_signature") from exc
-            prior = c.execute("SELECT revision FROM sources WHERE source=?", (source,)).fetchone()
+            prior = c.execute("SELECT revision, digest, state, expires_at, signed_event FROM sources WHERE source=?", (source,)).fetchone()
             if prior and revision <= prior[0]:
+                # Idempotent re-application: an event byte-identical to the one
+                # already recorded (same revision, digest, state, expiry, and
+                # signature, verified above) is a no-op, not a replay. This
+                # covers concurrent lazy initialization re-applying the same
+                # rev-1 seed event. Anything that differs is still rejected
+                # below as a stale or replayed event.
+                if (revision == prior[0]
+                        and statement["digest"] == prior[1]
+                        and statement["state"] == prior[2]
+                        and statement["expires_at"] == prior[3]
+                        and canonical(event).decode() == prior[4]):
+                    touched = [r[0] for r in c.execute("SELECT work_id FROM links WHERE source=?", (source,))]
+                    result = [self._standing(c, work, now=now) for work in touched]
+                    c.commit()
+                    return result
                 raise Rejected("stale_or_replayed_source_event")
             if not prior and revision != 1:
                 raise Rejected("source_initial_revision_must_be_one")
@@ -172,8 +187,6 @@ class RecallLedger:
         advisory = advisory or []
         with self._conn() as c:
             c.execute("BEGIN IMMEDIATE")
-            if c.execute("SELECT 1 FROM work WHERE work_id=?", (work_id,)).fetchone():
-                raise Rejected("work_id_already_registered")
             dependencies = set(advisory)
             advisory_bound = []
             for src in sorted(set(advisory)):
@@ -193,6 +206,23 @@ class RecallLedger:
                     if check is None or check != (revision, digest):
                         raise Rejected("dependency_not_verified_at_registration")
                     dependencies.add(src)
+            existing = c.execute("SELECT support_sets,advisory,complete FROM work WHERE work_id=?", (work_id,)).fetchone()
+            if existing is not None:
+                # Idempotent re-registration: a retry of the exact same
+                # declaration (same support sets, advisory binding, and
+                # completeness) is a no-op, not a conflict. This covers a
+                # create aborted after registration but before its project
+                # record committed (e.g. STOP advancing the authority epoch
+                # mid-seeding): the retry re-registers identically and
+                # proceeds. A different declaration for the same work_id is
+                # still refused.
+                if (existing[0] == canonical(support_sets).decode()
+                        and existing[1] == canonical(advisory_bound).decode()
+                        and existing[2] == int(complete)):
+                    result = self._standing(c,work_id)
+                    c.commit()
+                    return result
+                raise Rejected("work_id_already_registered")
             manifest = {"work_id": work_id, "support_sets": support_sets,
                         "advisory": advisory_bound, "complete": complete}
             signature = b64(self._signer.sign(canonical(manifest)))

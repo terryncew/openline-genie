@@ -96,9 +96,11 @@ class TestRc6Live(unittest.TestCase):
              "--port", str(PORT), "--state-dir", cls.state_dir, "--no-model"],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
         )
-        assert wait_up(), "server did not come up"
+        if not wait_up():
+            raise RuntimeError("server did not come up")
         status, bundle = http_post("/api/build", {"prompt": BAKERY_PROMPT, "use_model": False})
-        assert status == 200, bundle
+        if status != 200:
+            raise RuntimeError(str(bundle))
         cls.project_id = bundle["project_id"]
 
     @classmethod
@@ -322,7 +324,7 @@ class TestDiscoveryFirstRun(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.state_dir = Path(__file__).resolve().parent / "state-discovery"
+        cls.state_dir = Path(tempfile.mkdtemp(prefix="state-discovery-"))
         shutil.rmtree(cls.state_dir, ignore_errors=True)
         cls.state_dir.mkdir(parents=True, exist_ok=True)
         cls.base = f"http://127.0.0.1:{cls.PORT}"

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpenLine Advocate Case Packet — Fictional Case 1 — Medical Baseline &amp; Utility Arrearage Benefits Denial</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background: #F8FAFC; color: #0F172A; line-height: 1.45; }
+  .card { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 16px; max-width: 1200px; margin: 0 auto 16px; }
+  h1 { font-size: 20px; margin: 4px 0 8px; }
+  h2 { font-size: 15px; margin: 0 0 10px; color: #1E3A8A; text-transform: uppercase; letter-spacing: 0.03em; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border: 1px solid #CBD5E1; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #F1F5F9; font-weight: 700; }
+  blockquote { margin: 4px 0; padding: 6px 8px; background: #F8FAFC; border-left: 3px solid #3B82F6; font-family: monospace; font-size: 11.5px; }
+  pre.excerpt { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 11px; max-height: 140px; overflow: auto; background: #F8FAFC; padding: 6px; border: 1px solid #E2E8F0; }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 999px; background: #EFF6FF; color: #1D4ED8; font-weight: 700; font-size: 11px; }
+  .disclosure { background: #FEF3C7; border-left: 4px solid #D97706; padding: 10px 12px; font-size: 12px; margin-top: 8px; border-radius: 4px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">PORTABLE VERIFIABLE CASE PACKET • READABLE IN ANY BROWSER</span>
+    <h1>Fictional Case 1 — Medical Baseline &amp; Utility Arrearage Benefits Denial (<code>CASE-001-BENEFITS-MISSING-DOC</code>, v3)</h1>
+    <p><strong>Institution:</strong> Bay Valley Regional Utility &amp; Benefits Administration (Fictional) &middot; <strong>Decision Date:</strong> <code>2026-11-01</code> &middot; <strong>Packet Status:</strong> <span class="badge">ACCEPTED_BY_HUMAN</span></p>
+    <p><strong>Adverse Determination Summary:</strong> Notice #MB-2026-0419 terminating Medical Baseline Allowance and Arrearage Forgiveness effective 2026-11-18 for (1) allegedly missing annual respiratory device recertification and (2) counting a one-time $1,200 county disaster relief grant as recurring monthly income.</p>
+    <p><strong>Payload SHA-256:</strong> <code>4b445b4efc64f3c328fa572a6cb39a879783cd2e412ac895b8aa6578c7277852</code> &middot; <strong>Signer Public Key:</strong> <code>Og3Sfg6l3vkSSO_vnhliZBqUoUi2oqhR63QKYeuChIo</code></p>
+    <div class="disclosure">
+      <strong>NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • THE INSTITUTION CONTROLS ITS DECISION; THE PERSON CONTROLS THEIR RECORD.</strong><br/>
+      CRYPTOGRAPHIC SIGNATURE DISCLOSURE: Ed25519 signatures and SHA-256 digests in this Case Packet prove record integrity, document provenance, and human approval history only. They do NOT certify the legal validity of any claim, constitute legal advice, create an attorney-client relationship, or guarantee an institutional outcome.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>1. Deadline &amp; Jurisdictional Window Audit (Never Invented)</h2>
+    <p>
+      <strong>Status:</strong> <span class="badge">UNCERTAIN_EARLIEST_CONSERVATIVE_BOUND</span> &middot;
+      <strong>Jurisdiction:</strong> California Public Utilities / Administrative Benefits &middot;
+      <strong>Authority:</strong> <code>General Order 168-B Section 4.2 (15-day Aid-Paid-Pending Window)</code> &middot;
+      <strong>Earliest Conservative Deadline:</strong> <code>2026-11-16</code> &middot;
+      <strong>Receipt-Based Deadline:</strong> <code>2026-11-21</code>
+    </p>
+    <p><small><strong>Uncertainties &amp; Assumptions:</strong> envelope_postmark_date_missing_using_decision_date_as_conservative_bound; anchor_spread_between_notice(2026-11-16)_and_delivery(2026-11-21)_use_earliest_bound_to_prevent_default</small></p>
+  </div>
+
+  <div class="card">
+    <h2>2. Discrepancy Analysis Matrix (Institution Claim vs. Cited Rule vs. Governing Authority vs. Evidence)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disputed Issue &amp; Standing</th>
+          <th>What the Institution Claimed</th>
+          <th>Institution's Cited Rule vs. Governing Authority</th>
+          <th>What Supporting Evidence Shows (Exact Citations)</th>
+          <th>Discrepancy Analysis</th>
+          <th>What Remains Disputed, Uncertain, or Missing</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><strong>ISSUE-1-MEDICAL-RECERT</strong><br/>Allegedly Missing Annual Medical Device Recertification Form MB-2026B<br/><span class='badge'>UPDATED_AFTER_RECALL</span></td><td>Institution claims no Annual Respiratory Device Recertification Form MB-2026B was logged in the portal.<br/><small>Source: <code>DOC-001-ADVERSE-NOTICE</code></small><blockquote>“Reason 1: Portal batch audit found no logged Annual Respiratory Device Recertification Form MB-2026B.”</blockquote></td><td><strong>Section 11008.14 / 7 CFR 273.9(c)(8)</strong><br/><span class='badge'>VERIFIED_AUTHORITY</span><br/><small>verified_in_governing_document_and_effective_on_decision_date</small><hr/><strong>Section 11008.14 / 7 CFR 273.9(c)(8)</strong> (<code>VERIFIED_AUTHORITY</code>)<br/><blockquote>“Non-recurring lump-sum emergency or county disaster relief grants shall be excluded from monthly recurring household income calculations.”</blockquote></td><td><ul><li><strong>Signed Pulmonary Clinic Form MB-2026B and portal confirmation #TX-44019 prove recertification was transmitted on 2026-10-24.</strong><br/><small>Source: <code>DOC-001-CLINIC-FAX-RECEIPT</code> (lines 2–2, chars 78–177, SHA-256 <code>0585c87dced1…</code>)</small><br/><blockquote>“Signed by: Dr. R. Vance, MD | Transmission Timestamp: 2026-10-24T14:18:00Z | Confirmation #TX-44019”</blockquote></li></ul></td><td><strong>FACTUAL_EVIDENCE_DISCREPANCY_DOCUMENTED</strong><p>Newly attached Clinic Form MB-2026B and portal confirmation #TX-44019 (2026-10-24) directly refute the agency&#x27;s claim that no recertification form was submitted prior to the 2026-11-01 notice.</p></td><td><em>None flagged</em></td></tr><tr><td><strong>ISSUE-2-DISASTER-GRANT-INCOME</strong><br/>Misclassification of $1,200 One-Time Disaster Grant Under Expired 2021 Guideline<br/><span class='badge'>CURRENT</span></td><td>Institution claims the $1,200.00 October deposit is recurring monthly income under 2021 Temp Guideline 4-B.<br/><small>Source: <code>DOC-001-ADVERSE-NOTICE</code></small><blockquote>“Reason 2: October bank statement shows a $1,200.00 deposit which exceeds the monthly recurring income cap under 2021 Temp Guideline 4-B.”</blockquote></td><td><strong>2021 Temp Guideline 4-B (Cited by Agency)</strong><br/><span class='badge'>OUTDATED_OR_SUPERSEDED_AUTHORITY</span><br/><small>rule_expired_before_2026-11-01(effective_to=2022-06-30)</small><hr/><strong>Section 11008.14 / 7 CFR 273.9(c)(8)</strong> (<code>VERIFIED_AUTHORITY</code>)<br/><blockquote>“Non-recurring lump-sum emergency or county disaster relief grants shall be excluded from monthly recurring household income calculations.”</blockquote></td><td><ul><li><strong>County voucher #DR-9921 proves the $1,200.00 deposit was a one-time, non-recurring emergency disaster assistance grant.</strong><br/><small>Source: <code>DOC-001-DISASTER-AWARD</code> (lines 3–3, chars 120–266, SHA-256 <code>0f49bb2f74b7…</code>)</small><br/><blockquote>“This payment is a one-time, non-recurring emergency disaster assistance grant for storm food/medication loss and is not wages or recurring income.”</blockquote></li></ul></td><td><strong>RULE_AND_EVIDENCE_DISCREPANCY_DOCUMENTED</strong><p>Agency applied 2021 Temp Guideline 4-B (expired 2022-06-30) to count a $1,200 deposit as recurring income, whereas County Voucher #DR-9921 proves it is a one-time disaster grant excluded under active Section 11008.14.</p></td><td><em>None flagged</em></td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>3. Separation of Evidence Facts, Institution Claims, User Assertions, AI Drafts &amp; Unknowns</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Epistemic Category</th><th>Statement</th><th>Source &amp; Span Location</th><th>Verbatim Quote</th><th>Span Verified?</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><code>[REDACTED-ID]-INST-MISSING-FORM</code></td><td><span class='badge'>INSTITUTION_CLAIM</span></td><td>Institution claims no Annual Respiratory Device Recertification Form MB-2026B was logged in the portal.</td><td><code>DOC-001-ADVERSE-NOTICE (L4–L4, C275–C376)</code></td><td>Reason 1: Portal batch audit found no logged Annual Respiratory Device Recertification Form MB-2026B.</td><td>YES</td></tr><tr><td><code>[REDACTED-ID]-INST-INCOME-CAP</code></td><td><span class='badge'>INSTITUTION_CLAIM</span></td><td>Institution claims the $1,200.00 October deposit is recurring monthly income under 2021 Temp Guideline 4-B.</td><td><code>DOC-001-ADVERSE-NOTICE (L5–L5, C377–C513)</code></td><td>Reason 2: October bank statement shows a $1,200.00 deposit which exceeds the monthly recurring income cap under 2021 Temp Guideline 4-B.</td><td>YES</td></tr><tr><td><code>FACT-103-ONE-TIME-GRANT</code></td><td><span class='badge'>VERIFIED_EVIDENCE_FACT</span></td><td>County voucher #DR-9921 proves the $1,200.00 deposit was a one-time, non-recurring emergency disaster assistance grant.</td><td><code>DOC-001-DISASTER-AWARD (L3–L3, C120–C266)</code></td><td>This payment is a one-time, non-recurring emergency disaster assistance grant for storm food/medication loss and is not wages or recurring income.</td><td>YES</td></tr><tr><td><code>USR-104-PHONE-WAIVER</code></td><td><span class='badge'>USER_ASSERTION</span></td><td>Claimant asserts a call-center representative verbally waived future medical recertification forms on Oct 15.</td><td><code>DOC-001-USER-CALL-NOTE (L1–L1, C24–C155)</code></td><td>I spoke to a call center agent named Mike on October 15 who told me over the phone that I never have to submit medical forms again.</td><td>NO</td></tr><tr><td><code>UNK-105-CLINIC-ATTESTATION</code></td><td><span class='badge'>DISPUTED_OR_UNKNOWN</span></td><td>Signed Pulmonary Clinic Attestation Form MB-2026B is missing from the initial packet and must be obtained before Issue 1 is fully corroborated.</td><td><code>No source document</code></td><td>—</td><td>NO</td></tr><tr><td><code>FACT-106-CLINIC-CONFIRMATION</code></td><td><span class='badge'>VERIFIED_EVIDENCE_FACT</span></td><td>Signed Pulmonary Clinic Form MB-2026B and portal confirmation #TX-44019 prove recertification was transmitted on 2026-10-24.</td><td><code>DOC-001-CLINIC-FAX-RECEIPT (L2–L2, C78–C177)</code></td><td>Signed by: Dr. R. Vance, MD | Transmission Timestamp: 2026-10-24T14:18:00Z | Confirmation #TX-44019</td><td>YES</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>4. Immutable Original Source Documents (Byte-Preserved with SHA-256 Provenance)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Doc ID</th><th>Filename</th><th>Role</th><th>SHA-256 Digest</th><th>Size</th><th>Verbatim Original Text</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><code>DOC-001-ADVERSE-NOTICE</code></td><td><code>notice_mb_2026_0419.txt</code></td><td><span class='badge'>INSTITUTIONAL_DECISION_NOTICE</span></td><td><code>9e0cf176a2e387903811…</code></td><td>659 bytes</td><td><pre class='excerpt'>FICTIONAL ADMINISTRATIVE DETERMINATION NOTICE #MB-2026-0419
+Date of Notice: 2026-11-01 | Account: [REDACTED-ID] | Tel: [REDACTED-PHONE] | Email: [REDACTED-EMAIL]
+Determination: Your Medical Baseline Allowance and Arrearage Forgiveness are terminated effective 2026-11-18.
+Reason 1: Portal batch audit found no logged Annual Respiratory Device Recertification Form MB-2026B.
+Reason 2: October bank statement shows a $1,200.00 deposit which exceeds the monthly recurring income cap under 2021 Temp Guideline 4-B.
+Appeal Notice: You must request an administrative hearing within 15 calendar days for aid-paid-pending or 30 calendar days for a standard appeal.</pre></td></tr><tr><td><code>DOC-001-STATUTE-TEXT</code></td><td><code>income_exclusion_and_hearing_rules_2026.txt</code></td><td><span class='badge'>GOVERNING_RULE_TEXT</span></td><td><code>a95d7bcd0b2715a6df72…</code></td><td>527 bytes</td><td><pre class='excerpt'>VERIFIED GOVERNING REGULATIONS (Effective 2024-01-01 through 2028-12-31)
+Section 11008.14 / 7 CFR 273.9(c)(8): Non-recurring lump-sum emergency or county disaster relief grants shall be excluded from monthly recurring household income calculations.
+General Order 168-B Section 4.2: A household filing a hearing request within 15 calendar days of notice retains continued medical baseline rates pending final hearing decision.
+Historical Note: 2021 Temp Guideline 4-B expired on 2022-06-30 and is superseded by Section 11008.14.</pre></td></tr><tr><td><code>DOC-001-DISASTER-AWARD</code></td><td><code>county_disaster_grant_award_2026_10_12.txt</code></td><td><span class='badge'>CLAIMANT_SUPPORTING_EXHIBIT</span></td><td><code>0f49bb2f74b7ac9a48be…</code></td><td>266 bytes</td><td><pre class='excerpt'>ALAMEDA COUNTY EMERGENCY RELIEF DISBURSEMENT VOUCHER #DR-9921
+Issue Date: 2026-10-12 | Amount: $1,200.00
+Certification: This payment is a one-time, non-recurring emergency disaster assistance grant for storm food/medication loss and is not wages or recurring income.</pre></td></tr><tr><td><code>DOC-001-USER-CALL-NOTE</code></td><td><code>claimant_interview_note.txt</code></td><td><span class='badge'>USER_STATEMENT</span></td><td><code>adacb1ffc7c09ede7a03…</code></td><td>155 bytes</td><td><pre class='excerpt'>Claimant personal note: I spoke to a call center agent named Mike on October 15 who told me over the phone that I never have to submit medical forms again.</pre></td></tr><tr><td><code>DOC-001-CLINIC-FAX-RECEIPT</code></td><td><code>pulmonary_clinic_mb2026b_signed_fax_receipt.txt</code></td><td><span class='badge'>CLAIMANT_SUPPORTING_EXHIBIT</span></td><td><code>0585c87dced1c21a7ff4…</code></td><td>318 bytes</td><td><pre class='excerpt'>PULMONARY CLINIC ATTESTATION FORM MB-2026B &amp; PORTAL TRANSMISSION CONFIRMATION
+Signed by: Dr. R. Vance, MD | Transmission Timestamp: 2026-10-24T14:18:00Z | Confirmation #TX-44019
+Attestation: Patient requires continuous nightly respiratory device operation; form transmitted to agency portal prior to 2026-11-01 notice.</pre></td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>5. Append-Only Correction, Decision Recall &amp; Human Approval History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ver</th><th>Worker / Installation</th><th>Action</th><th>Packet Status</th><th>Conclusions Snapshot</th><th>Record SHA-256</th>
+        </tr>
+      </thead>
+      <tbody><tr><td>v1</td><td><code>worker-a</code> (g-76pOFA530O)</td><td>Build Case Packet v1</td><td><span class='badge'>HOLD_INCOMPLETE_OR_CITATION_ERROR</span></td><td><small>ISSUE-1-MEDICAL-RECERT=OPEN_INCOMPLETE(INCOMPLETE_MISSING_SUPPORTING_EVIDENCE); ISSUE-2-DISASTER-GRANT-INCOME=CURRENT(RULE_AND_EVIDENCE_DISCREPANCY_DOCUMENTED)</small></td><td><code>36d7ddbb3810eb9e…</code></td></tr><tr><td>v2</td><td><code>worker-a</code> (Og3Sfg6l3vkS)</td><td>DECISION_RECALL_REOPEN:ISSUE-1-MEDICAL-RECERT:new_evidence=DOC-001-CLINIC-FAX-RECEIPT</td><td><span class='badge'>REOPENED_BY_NEW_EVIDENCE</span></td><td><small>ISSUE-1-MEDICAL-RECERT=REOPEN(INCOMPLETE_MISSING_SUPPORTING_EVIDENCE); ISSUE-2-DISASTER-GRANT-INCOME=CURRENT(RULE_AND_EVIDENCE_DISCREPANCY_DOCUMENTED)</small></td><td><code>36d7ddbb3810eb9e…</code></td></tr><tr><td>v3</td><td><code>worker-a</code> (Og3Sfg6l3vkS)</td><td>Continuation after Decision Recall on ISSUE-1-MEDICAL-RECERT (+DOC-001-CLINIC-FAX-RECEIPT)</td><td><span class='badge'>ACCEPTED_BY_HUMAN</span></td><td><small>ISSUE-1-MEDICAL-RECERT=UPDATED_AFTER_RECALL(FACTUAL_EVIDENCE_DISCREPANCY_DOCUMENTED); ISSUE-2-DISASTER-GRANT-INCOME=CURRENT(RULE_AND_EVIDENCE_DISCREPANCY_DOCUMENTED)</small></td><td><code>4b445b4efc64f3c3…</code></td></tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

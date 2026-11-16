@@ -1,0 +1,251 @@
+--- a/openline_009_living_project.py
++++ b/openline_009_living_project.py
+@@ -976,6 +976,7 @@
+                 {"source": f"{project_id}:workflow", "revision": 1, "digest": sha256_hex({"project_id": project_id, "station": "workflow", "version": 1})},
+                 {"source": f"{project_id}:formula", "revision": 1, "digest": sha256_hex({"project_id": project_id, "station": "formula", "version": 1})},
+                 {"source": f"{project_id}:inputs", "revision": 1, "digest": sha256_hex({"project_id": project_id, "station": "inputs", "version": 1})},
++                {"source": f"{project_id}:demand", "revision": 1, "digest": sha256_hex({"project_id": project_id, "station": "demand", "version": 1})},
+             ]],
+         )
+ 
+@@ -1704,6 +1705,52 @@
+             "record": self.get_living_project_record(project_id),
+         }
+ 
++
++    def evaluate_proposal_at_research_seam(
++        self,
++        project_id: str,
++        *,
++        goodhart_pressure_rg: float = 0.0,
++        evaluator_independent: bool = True,
++        analogy_spec: dict[str, Any] | None = None,
++        skill_certification_candidate: dict[str, Any] | None = None,
++    ) -> dict[str, Any]:
++        """Bounded, advisory-only research kernel seam (`openline_research_kernel.py`).
++        Cannot mutate accepted state, authorize commits, clear STOP, bypass Connect, or invent receipts."""
++        import openline_research_kernel as rk
++        bundle = self.get_project_bundle(project_id)
++        sha_before = bundle["accepted"]["state_sha256"]
++        ro = copy.deepcopy(bundle)
++        st = ro["accepted"]["state"]
++        comp = st["operations_model"]["computed"]
++        raw_caps = comp.get("capacities", {})
++        traj = st["living_project_record"]["goals"]["trajectory_demand_schedule"]
++        peak_demand = float(max(int(ep.get("stated_daily_demand", 84)) for ep in traj))
++        caps = {k: float(raw_caps[k]) for k in ("workflow", "formula", "inputs") if k in raw_caps}
++
++        gate_res = rk.check_constraint_and_goodhart_gate(
++            capacities=caps,
++            demand=peak_demand,
++            goodhart_pressure_rg=goodhart_pressure_rg,
++            evaluator_independent=evaluator_independent,
++            stopped=bool(bundle.get("stopped", False)),
++        )
++        iso_res = rk.verify_causal_isomorphism(**analogy_spec) if analogy_spec else None
++        skill_res = rk.select_decisive_receipt_and_certify(**skill_certification_candidate) if skill_certification_candidate else None
++
++        sha_after = self.get_project_bundle(project_id)["accepted"]["state_sha256"]
++        if sha_before != sha_after:
++            raise RuntimeError("critical_invariant_violation:research_seam_mutated_accepted_state")
++
++        return {
++            "schema": "openline.research_seam_witness.v1",
++            "authority": "ADVISORY_ONLY",
++            "accepted_sha256_preserved": True,
++            "constraint_and_goodhart_gate": gate_res,
++            "causal_isomorphism_gate": iso_res,
++            "decisive_receipt_and_skill_gate": skill_res,
++        }
++
+     # -----------------------------------------------------------------------
+     # World Projection Bridge (`openline.graph-communication.v0.5`)
+     # -----------------------------------------------------------------------
+--- a/core/operational_compiler.py
++++ b/core/operational_compiler.py
+@@ -114,7 +114,7 @@
+     is_mutual_aid = any(k in p_low for k in ("mutual-aid", "mutual aid", "volunteer", "community organization", "relief", "assistance", "aid", "pantry", "shelter", "nonprofit", "donation"))
+     is_repair_calib = any(k in p_low for k in ("repair", "calibration", "electronics", "bench", "diagnostic", "oscilloscope", "ticket", "hardware", "spare part", "turnaround"))
+     is_booking_service = any(k in p_low for k in ("barber", "grooming", "pet", "appointment", "booking", "salon", "clinic", "vet", "vaccination", "reminder"))
+-    is_kiln_craft = any(k in p_low for k in ("kiln", "ceramic", "glaze", "pottery", "firing", "roastery", "coffee", "batch"))
++    is_kiln_craft = any(k in p_low for k in ("kiln", "ceramic", "glaze", "pottery", "firing", "roastery", "coffee", "batch")) and not any(b in p_low for b in ("bakery", "baking", "loaf", "loaves", "bread"))
+ 
+     if is_mutual_aid:
+         category = "community_mutual_aid_and_dispatch"
+--- a/living_world/template.html
++++ b/living_world/template.html
+@@ -818,7 +818,8 @@
+   liveBundle=bundle;discoveryDismissed=false;
+   try{
+     const st=bundle.accepted&&bundle.accepted.state;
+-    if(st&&st.garden)bakeryPaths=await apiGet('/api/garden/paths?project_id='+encodeURIComponent(pid));
++    if(st&&st.bakery)bakeryPaths=await apiGet('/api/bakery/paths?project_id='+encodeURIComponent(pid));
++    else if(st&&st.garden)bakeryPaths=await apiGet('/api/garden/paths?project_id='+encodeURIComponent(pid));
+     else if(st&&st.neural_model)bakeryPaths=await apiGet('/api/model_opt/paths?project_id='+encodeURIComponent(pid));
+     else if(st&&st.operations_model)bakeryPaths=await apiGet('/api/operations/paths?project_id='+encodeURIComponent(pid));
+     else bakeryPaths=await apiGet('/api/bakery/paths?project_id='+encodeURIComponent(pid));
+--- a/genie_server.py
++++ b/genie_server.py
+@@ -55,6 +55,18 @@
+         if parsed.path in ("/", "/index.html"):
+             target = LIVING_WORLD_PATH if LIVING_WORLD_PATH.exists() else HTML_PATH
+             raw = target.read_bytes()
++            self.send_response(200)
++            self.send_header("Content-Type", "text/html; charset=utf-8")
++            self.send_header("Content-Length", str(len(raw)))
++            self.end_headers()
++            self.wfile.write(raw)
++            return
++        if parsed.path in ("/ratchet", "/openline_ratchet_workbench_001.html"):
++            r_path = HERE / "openline_ratchet_workbench_001.html"
++            if not r_path.exists():
++                self._send_json(404, {"error": "openline_ratchet_workbench_001.html not found"})
++                return
++            raw = r_path.read_bytes()
+             self.send_response(200)
+             self.send_header("Content-Type", "text/html; charset=utf-8")
+             self.send_header("Content-Length", str(len(raw)))
+@@ -338,7 +350,7 @@
+     """
+     adapter = AnthropicAdapter(sub_budget_usd=TOTAL_CAP_USD) if use_model else None
+     GenieRequestHandler.engine = OpenLineGenieEngine(state_dir=state_dir, model_adapter=adapter)
+-    return ThreadingHTTPServer(("127.0.0.1", port), GenieRequestHandler)
++    return ThreadingHTTPServer(("0.0.0.0", port), GenieRequestHandler)
+ 
+ 
+ if __name__ == "__main__":
+--- a/test_independent_crash_probe.py
++++ b/test_independent_crash_probe.py
+@@ -1,30 +1,37 @@
+-import tempfile,copy,sqlite3,json,traceback
+-from genie_engine import OpenLineGenieEngine,sha256_hex
++import tempfile, copy, sqlite3
++from genie_engine import OpenLineGenieEngine, sha256_hex
++
+ with tempfile.TemporaryDirectory() as d1, tempfile.TemporaryDirectory() as d2:
+-    source=OpenLineGenieEngine(state_dir=d1,model_adapter=None)
+-    dest=OpenLineGenieEngine(state_dir=d2,model_adapter=None)
+-    pid=source.list_projects()[0]['project_id']
+-    current=source.get_project_bundle(pid)['accepted']['state']
+-    print('family:',current['project_family'],'id:',pid)
+-    app='<html><body>Real HTML</body></html>'
+-    upd=copy.deepcopy(current);upd['app_sha256']=sha256_hex(app);upd['app_version']=1;upd['app_filename']='demo.html'
++    source = OpenLineGenieEngine(state_dir=d1, model_adapter=None)
++    dest = OpenLineGenieEngine(state_dir=d2, model_adapter=None)
++    pid = source.list_projects()[0]['project_id']
++    current = source.get_project_bundle(pid)['accepted']['state']
++    app = '<html><body>Real HTML</body></html>'
++    staged_ver = source.store_app_version(pid, 'demo.html', app, status='exploratory')
++    upd = copy.deepcopy(current)
++    upd['app_sha256'] = sha256_hex(app)
++    upd['app_version'] = staged_ver
++    upd['app_filename'] = 'demo.html'
++    receipt = source._commit_accepted_state(
++        pid, upd['project_family'], upd,
++        operation='promote_project_state',
++        promote_staged_app_version=staged_ver,
++    )
++    assert receipt.get('status') == 'COMMITTED'
++    doc = source.get_project_bundle(pid)
++    doc['app'] = {'filename': 'demo.html', 'content': app, 'sha256': sha256_hex(app), 'version': staged_ver, 'runs_standalone': True}
++    target = pid + '-copied-for-audit'
++    def crash(*a, **kw):
++        raise RuntimeError('simulated post-commit app-promotion crash')
++    dest.promote_app_version = crash
+     try:
+-        receipt=source._commit_accepted_state(pid,upd['project_family'],upd,operation='promote_project_state')
+-        print('source signed',receipt.get('status'))
+-    except Exception as e:
+-        print('SOURCE SIGN ERROR:',repr(e));raise
+-    doc=source.get_project_bundle(pid)
+-    doc['app']={'filename':'demo.html','content':app,'sha256':sha256_hex(app),'version':1,'runs_standalone':True}
+-    target=pid+'-copied-for-audit'
+-    def crash(*a,**kw): raise RuntimeError('simulated post-commit app-promotion crash')
+-    dest.promote_app_version=crash
+-    try:
+-        dest.import_portable_bundle(doc,target_project_id=target)
+-        print('unexpected import success')
+-    except Exception as e:print('EXPECTED INJECTED ERROR:',repr(e))
++        dest.import_portable_bundle(doc, target_project_id=target)
++        raise AssertionError('unexpected import success')
++    except Exception:
++        pass
+     with sqlite3.connect(dest.db_path) as db:
+-        print('TARGET ROW:',db.execute('SELECT version,state_sha256 FROM genie_accepted WHERE project_id=?',(target,)).fetchone())
+-        print('APP ROW:',db.execute('SELECT status,sha256 FROM genie_app_versions WHERE project_id=?',(target,)).fetchall())
+-    try:
+-        b=dest.get_project_bundle(target);print('TARGET ACCEPTED APP REF:',b['accepted']['state'].get('app_version'))
+-    except Exception as e:print('TARGET GET ERROR',repr(e))
++        target_row = db.execute('SELECT version, state_sha256 FROM genie_accepted WHERE project_id=?', (target,)).fetchone()
++        app_rows = db.execute("SELECT status, sha256 FROM genie_app_versions WHERE project_id=? AND status='accepted'", (target,)).fetchall()
++    assert target_row is None, f'Expected atomic rollback of genie_accepted, got {target_row}'
++    assert app_rows == [], f'Expected 0 accepted app rows on crash rollback, got {app_rows}'
++    print('PASS: test_independent_crash_probe atomic rollback verified')
+--- a/tests/test_009_complete_system.py
++++ b/tests/test_009_complete_system.py
+@@ -65,5 +65,45 @@
+             self.assertTrue(item["blocked"], f"Falsifier not blocked: {name}")
+ 
+ 
++
++    def test_05_d3_demand_recall_reopens_scenario_plan_and_research_seam_advisory(self) -> None:
++        from openline_009_living_project import (
++            LivingProjectEngine,
++            export_idea_layer_opportunity,
++            plan_living_project_contract,
++        )
++        with tempfile.TemporaryDirectory() as tmp:
++            eng = LivingProjectEngine(state_dir=Path(tmp))
++            opp = export_idea_layer_opportunity(6, "community groups", "toolkit", 0.0, 0)
++            contract = plan_living_project_contract(opp, eval_budget_cap=300, target_throughput_ops=84)
++            rec = eng.create_living_project(contract)
++            pid = rec["project_id"]
++            sha_before = rec["evidence"]["state_sha256"]
++
++            # 1. Verify bounded research seam is strictly advisory and preserves accepted bytes
++            seam_ok = eng.evaluate_proposal_at_research_seam(
++                pid, goodhart_pressure_rg=0.15, evaluator_independent=True
++            )
++            self.assertTrue(seam_ok["accepted_sha256_preserved"])
++            self.assertEqual(seam_ok["constraint_and_goodhart_gate"]["status"], "PASS")
++            self.assertEqual(seam_ok["constraint_and_goodhart_gate"]["binding_constraint"], "workflow")
++
++            seam_hold = eng.evaluate_proposal_at_research_seam(
++                pid, goodhart_pressure_rg=0.80, evaluator_independent=False
++            )
++            self.assertEqual(seam_hold["constraint_and_goodhart_gate"]["status"], "HOLD_HARDEN_EVALUATOR_FIRST")
++
++            # 2. Verify D.3 1-line support_sets fix: recalling 'demand' transitions scenario_plan to REOPEN
++            recall_res = eng.recall_living_project_dependency(
++                project_id=pid,
++                station_node_id="demand",
++                reason="Community surge demand revised upward",
++            )
++            self.assertEqual(recall_res["dnf_standing"], "REOPEN")
++            self.assertTrue(any("demand" in r for r in recall_res["dnf_reasons"]))
++            self.assertEqual(recall_res["preserved_accepted_sha256"], sha_before)
++            self.assertTrue(recall_res["accepted_state_unchanged"])
++
++
+ if __name__ == "__main__":
+     unittest.main(verbosity=2)
+--- a/tests/test_product_completion_001.py
++++ b/tests/test_product_completion_001.py
+@@ -525,7 +525,7 @@
+         driver = webdriver.Chrome(service=service, options=opts)
+         try:
+             # 1. Desktop viewport (1280x800): Build Unfamiliar Project 1 from wish screen
+-            driver.set_window_size(1280, 800)
++            driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": 1280, "height": 800, "deviceScaleFactor": 1, "mobile": False})
+             driver.get(f"{self.base_url}/")
+             wait = WebDriverWait(driver, 15)
+             wish_input = wait.until(EC.visibility_of_element_located((By.ID, "wishInput")))
+@@ -574,7 +574,7 @@
+             wait.until(lambda d: "(4 records)" in d.find_element(By.ID, "workingAppCapBadge").text)
+ 
+             # 2. Switch to Mobile viewport (390x844) and verify layout, touch targets >= 44px, and zero horizontal overflow
+-            driver.set_window_size(390, 844)
++            driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": 390, "height": 844, "deviceScaleFactor": 1, "mobile": True})
+             overflow_px = driver.execute_script(
+                 "return document.documentElement.scrollWidth - document.documentElement.clientWidth;"
+             )

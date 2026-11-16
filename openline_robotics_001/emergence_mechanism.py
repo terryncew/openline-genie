@@ -32,7 +32,6 @@ import time
 from typing import Any, Mapping, Sequence
 
 import numpy as np
-import onnxruntime as ort
 
 RECOVERED_ROOT = Path(__file__).resolve().parent / "vendor_009"
 if str(RECOVERED_ROOT) not in sys.path:
@@ -148,7 +147,7 @@ def simulate_open_duck_episode(
     capsule: ActuatorBusReflexCapsule | None = None,
     target_distance_m: float = 0.58,
     duration_s: float = 4.0,
-    onnx_session: ort.InferenceSession | None = None,
+    onnx_session: Any | None = None,
     emergency_stop_at_s: float | None = None,
 ) -> dict[str, Any]:
     """Executes a continuous-time Lagrangian + viscoelastic ground-contact walking simulation

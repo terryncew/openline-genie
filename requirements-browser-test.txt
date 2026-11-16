@@ -1,0 +1,3 @@
+# Optional testing-only dependencies for packaged Playwright-compatible shim.
+# Chromium/chromedriver are system dependencies; not needed for local app use.
+selenium>=4.20,<5

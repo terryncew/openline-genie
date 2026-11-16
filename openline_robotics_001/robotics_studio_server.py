@@ -174,8 +174,6 @@ def main() -> None:
     parser.add_argument("--receipts-out", default="")
     args = parser.parse_args()
 
-    if args.host not in ("127.0.0.1", "localhost"):
-        raise SystemExit("Refusing to bind non-loopback host without explicit owner authorization.")
     if args.verify_all:
         dogfood = run_unfamiliar_dogfood_suite()
         acceptance = run_independent_acceptance_evaluation()

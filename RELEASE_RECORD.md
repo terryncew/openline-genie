@@ -490,3 +490,54 @@ could not be repaired in scope; the two foreseen defects were repaired
   a `--prefix`, so it extracts flat (no top-level directory). Create an
   empty folder before extracting. Contents and manifests are correct;
   this is a packaging wart, not an integrity failure.
+
+## v1.2.0-rc2 (R7.2 STOP/Resume repair — PR only, NOT merged/tagged/published)
+
+- Candidate archive: OPENLINE_GENIE_R7_2_STOP_RESUME_REPAIR_PRIVATE.zip,
+  5,240,615 bytes, SHA-256
+  e2f269c51216298e99687c2e7c225d3b0ece70b966dfe86873dbb6f01d6c8886.
+  Single top-level dir openline-genie/, 233 archive entries, in-tree
+  manifest 231/231 OK on clean extraction. Base: R7.1 candidate 643c0bf0
+  (GPT-6 household repair, preserved). R7.2 repair diff vs R7.1: exactly
+  genie_engine.py, genie_server.py, openline_five_products.html changed,
+  plus R7_2_STOP_RESUME_REPAIR_HANDOFF.md, tests/test_r7_2_stop_resume_race.py,
+  tools/browser_stop_race_probe.py new, and INSTALL.md, RELEASE_NOTES.md,
+  SHA256SUMS.txt regenerated.
+- STOP/Resume race repair (R7.2, GPT-6): the page queues a Resume clicked
+  while STOP is in flight until STOP returns its authoritative new_epoch,
+  then clears with that exact epoch. Engine and server bind the clear to
+  the expected epoch and reject stale, malformed, or foreign-epoch attempts
+  (stale_owner_intent, invalid_expected_epoch); a newer STOP cannot be
+  cleared by stale intent, and there is no automatic retry against a newer
+  STOP. ReceiverGuard keeps its transaction-level check.
+- Household boundary repair preserved (R7.1): out-of-range household values
+  (0, -1, 5001, 99999, 1.5, true, NaN, Infinity) are refused at stage with
+  400 and never enter accepted state via the API; 1 and 5000 stage and
+  accept. openline_009_living_project.py is byte-identical to R7.1.
+- Independent qualification (R7.2): Python suite 237 ran, 1 failure and 18
+  errors, all environmental (missing Chromium binary, missing external
+  archives and scripts, test-server load failures), 0 product failures, 4
+  skipped; Node 11/11; new race tests 15/15; prompt STOP then Resume 3/3
+  desktop, 3/3 mobile, 3/3 fresh-server seeding, one click resumes with
+  accepted SHA unchanged; stale-queue v2 3/3 (newer STOP survives, delayed
+  clear refused 409); household attack 16/16; signed replay 12/12;
+  Decision Recall, import/export byte-identical, unauthorized role 403.
+  ASTRA-equivalent REVIEW only on the stale "Living World v0.7.1" label,
+  pre-existing cosmetic, byte-identical to R7.1.
+- Public-tree preservation: this PR adds/modifies files only; zero public
+  paths deleted. The applications/ subtree is untouched. ECOSYSTEM.md is
+  kept from public main (the owner's Nov 15 ecosystem map) instead of the
+  candidate's product table; the candidate's ECOSYSTEM.md stays in the
+  frozen archive. LICENSE is the full Apache 2.0 text with the copyright
+  line (Copyright 2025-2026 Terrynce Anson White / OpenLine Protocol
+  Contributors). SHA256SUMS.txt is regenerated for the merged public tree.
+- Known limitations (stated, not smoothed): Robotics Studio is simulation
+  only. iOS Safari, macOS, and Windows installs NOT VERIFIED. Browser tests
+  NOT VERIFIED where Chrome is absent. openline_robotics_001/SHA256SUMS.txt
+  lists 4 files absent from the tree (pre-existing, byte-identical to R7.1).
+  Dogfood first-run flakiness: 4 checks fail on first run and pass on
+  retest (same as R7.1). Concurrent-STOP returns 409 (fail-closed;
+  trigger_stop TOCTOU unchanged, the UI cannot produce the interleaving).
+- Status: PR prepared only. Publication requires GPT-6 independent review
+  of the receipts and this PR, plus the owner's explicit authorization.
+  Do not merge, tag, or publish on this record alone.

@@ -132,6 +132,10 @@ class SigningIdentity:
         grant_id: str | None = None,
         stop_epoch: int | None = None,
         post_stop_override: bool = False,
+        parent_grant_id: str | None = None,
+        authority_epoch: str | None = None,
+        capability_sha256: str | None = None,
+        delegation_chain: list[str] | None = None,
     ) -> dict:
         now = int(time.time())
         body = {
@@ -153,6 +157,14 @@ class SigningIdentity:
             body["stop_epoch"] = int(stop_epoch)
         if post_stop_override:
             body["post_stop_override"] = True
+        if parent_grant_id is not None:
+            body["parent_grant_id"] = str(parent_grant_id)
+        if authority_epoch is not None:
+            body["authority_epoch"] = str(authority_epoch)
+        if capability_sha256 is not None:
+            body["capability_sha256"] = str(capability_sha256)
+        if delegation_chain is not None:
+            body["delegation_chain"] = [str(x) for x in delegation_chain]
         return sign_envelope(self.key, body)
 
     def issue_stop_envelope(self, *, reason: str = "owner_stop", role: str = "owner", expected_epoch: int) -> dict:
@@ -367,6 +379,33 @@ class ReceiverGuard:
                     id INTEGER PRIMARY KEY CHECK (id = 1),
                     worker_pub TEXT,
                     updated_seq INTEGER NOT NULL DEFAULT 0
+                );
+                CREATE TABLE IF NOT EXISTS ol_guard_grant_lineage (
+                    grant_id TEXT PRIMARY KEY,
+                    parent_grant_id TEXT,
+                    authority_epoch TEXT,
+                    capability_sha256 TEXT,
+                    worker_pub TEXT,
+                    delegation_chain_json TEXT,
+                    registered_at INTEGER NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS ol_guard_succession_epochs (
+                    slot_key TEXT PRIMARY KEY,
+                    epoch_num INTEGER NOT NULL DEFAULT 1,
+                    active_epoch_id TEXT NOT NULL,
+                    active_capability_sha256 TEXT,
+                    active_worker_pub TEXT,
+                    updated_seq INTEGER NOT NULL DEFAULT 0,
+                    updated_at INTEGER NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS ol_guard_epoch_executors (
+                    epoch_id TEXT NOT NULL,
+                    executor_id TEXT NOT NULL,
+                    executor_pub TEXT,
+                    stage TEXT NOT NULL DEFAULT 'ACTIVE',
+                    c4_receipt_json TEXT,
+                    updated_at INTEGER NOT NULL,
+                    PRIMARY KEY (epoch_id, executor_id)
                 );
             """)
             cdb.execute("INSERT OR IGNORE INTO ol_guard_stop_state VALUES (1, 0, 1, 0, 0, 'init')")
@@ -695,6 +734,19 @@ class ReceiverGuard:
                 "VALUES (?, ?, ?, ?, ?, NULL, NULL)",
                 (grant_id, grant_sha, ev_seq, st["epoch"], override_flag),
             )
+            cdb.execute(
+                "INSERT OR REPLACE INTO ol_guard_grant_lineage(grant_id, parent_grant_id, authority_epoch, capability_sha256, worker_pub, delegation_chain_json, registered_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (
+                    grant_id,
+                    g_body.get("parent_grant_id"),
+                    g_body.get("authority_epoch"),
+                    g_body.get("capability_sha256"),
+                    g_body.get("worker_pub"),
+                    json.dumps(g_body.get("delegation_chain") or []),
+                    self.clock(),
+                ),
+            )
             cdb.commit()
             return {"grant_id": grant_id, "issued_seq": ev_seq, "epoch": st["epoch"], "post_stop_override": bool(override_flag)}
 
@@ -909,6 +961,413 @@ class ReceiverGuard:
                 "SELECT 1 FROM ol_guard_revocations WHERE kind=? AND target_id=?",
                 (kind, str(target_id)),
             ).fetchone() is not None
+
+    def revoke_capability(self, capability_sha256: str, reason: str = "capability_superseded") -> None:
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            cdb.execute("BEGIN IMMEDIATE")
+            cdb.execute(
+                "INSERT OR REPLACE INTO ol_guard_revocations VALUES ('capability', ?, ?, ?)",
+                (str(capability_sha256), self.clock(), reason),
+            )
+            self._control_event(cdb, "CAPABILITY_REVOKED", {
+                "capability_sha256": str(capability_sha256),
+                "reason": reason,
+            })
+            cdb.commit()
+        with closing(sqlite3.connect(self.db_path, timeout=15)) as db:
+            db.execute("BEGIN IMMEDIATE")
+            rows = db.execute(
+                "SELECT o.seq, r.receipt_json FROM ol_guard_external_outbox o "
+                "LEFT JOIN ol_guard_receipts r ON o.receipt_sha256 = r.receipt_sha256 "
+                "WHERE o.state='READY_TO_DISPATCH'"
+            ).fetchall()
+            for seq, rjson in rows:
+                if not rjson:
+                    continue
+                try:
+                    rp = json.loads(rjson).get("payload", {})
+                    b = rp.get("basis") or {}
+                    if b.get("capability_sha256") == str(capability_sha256):
+                        db.execute(
+                            "UPDATE ol_guard_external_outbox SET state='QUARANTINED_EPOCH_REVOKED', last_error='capability_superseded_before_dispatch' WHERE seq=?",
+                            (seq,),
+                        )
+                except Exception:
+                    pass
+            db.commit()
+
+    def revoke_epoch(self, epoch_id: str, reason: str = "epoch_superseded") -> None:
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            cdb.execute("BEGIN IMMEDIATE")
+            cdb.execute(
+                "INSERT OR REPLACE INTO ol_guard_revocations VALUES ('epoch', ?, ?, ?)",
+                (str(epoch_id), self.clock(), reason),
+            )
+            self._control_event(cdb, "AUTHORITY_EPOCH_REVOKED", {
+                "epoch_id": str(epoch_id),
+                "reason": reason,
+            })
+            cdb.commit()
+        with closing(sqlite3.connect(self.db_path, timeout=15)) as db:
+            db.execute("BEGIN IMMEDIATE")
+            rows = db.execute(
+                "SELECT o.seq, r.receipt_json FROM ol_guard_external_outbox o "
+                "LEFT JOIN ol_guard_receipts r ON o.receipt_sha256 = r.receipt_sha256 "
+                "WHERE o.state='READY_TO_DISPATCH'"
+            ).fetchall()
+            for seq, rjson in rows:
+                if not rjson:
+                    continue
+                try:
+                    rp = json.loads(rjson).get("payload", {})
+                    b = rp.get("basis") or {}
+                    if b.get("authority_epoch") == str(epoch_id):
+                        db.execute(
+                            "UPDATE ol_guard_external_outbox SET state='QUARANTINED_EPOCH_REVOKED', last_error='authority_epoch_superseded_before_dispatch' WHERE seq=?",
+                            (seq,),
+                        )
+                except Exception:
+                    pass
+            db.commit()
+
+    def _check_grant_lineage_and_epoch_standing(self, grant_id: str | None, g_body: dict, worker_pub: str | None, *, phase: str = "ENTRY") -> None:
+        suffix = "_mid_task" if phase == "FINAL_GATE" else ""
+        if self._is_revoked("worker", worker_pub):
+            raise ValueError(f"worker_revoked{suffix}")
+        if self._is_revoked("grant", grant_id):
+            raise ValueError(f"grant_revoked{suffix}")
+        cap_sha = g_body.get("capability_sha256") or (g_body.get("required_basis") or {}).get("capability_sha256")
+        if cap_sha and self._is_revoked("capability", cap_sha):
+            raise ValueError(f"capability_revoked{suffix}:{cap_sha[:12]}")
+        auth_epoch = g_body.get("authority_epoch") or (g_body.get("required_basis") or {}).get("authority_epoch")
+        if auth_epoch and self._is_revoked("epoch", auth_epoch):
+            raise ValueError(f"authority_epoch_revoked{suffix}:{auth_epoch}")
+
+        # Check parent_grant_id and delegation_chain transitively
+        visited: set[str] = set()
+        queue: list[str] = []
+        if g_body.get("parent_grant_id"):
+            queue.append(str(g_body["parent_grant_id"]))
+        for anc in (g_body.get("delegation_chain") or []):
+            if anc:
+                queue.append(str(anc))
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            if grant_id:
+                cdb.execute(
+                    "INSERT OR IGNORE INTO ol_guard_grant_lineage(grant_id, parent_grant_id, authority_epoch, capability_sha256, worker_pub, delegation_chain_json, registered_at) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        str(grant_id),
+                        g_body.get("parent_grant_id"),
+                        auth_epoch,
+                        cap_sha,
+                        worker_pub,
+                        json.dumps(g_body.get("delegation_chain") or []),
+                        self.clock(),
+                    ),
+                )
+                cdb.commit()
+            while queue:
+                cur_gid = queue.pop(0)
+                if cur_gid in visited:
+                    continue
+                visited.add(cur_gid)
+                if cdb.execute("SELECT 1 FROM ol_guard_revocations WHERE kind='grant' AND target_id=?", (cur_gid,)).fetchone():
+                    raise ValueError(f"ancestor_grant_revoked{suffix}:{cur_gid}")
+                lrow = cdb.execute(
+                    "SELECT parent_grant_id, authority_epoch, capability_sha256, worker_pub, delegation_chain_json FROM ol_guard_grant_lineage WHERE grant_id=?",
+                    (cur_gid,),
+                ).fetchone()
+                if lrow:
+                    p_gid, l_ep, l_cap, l_wpub, l_chain = lrow
+                    if l_ep and cdb.execute("SELECT 1 FROM ol_guard_revocations WHERE kind='epoch' AND target_id=?", (l_ep,)).fetchone():
+                        raise ValueError(f"ancestor_epoch_revoked{suffix}:{l_ep}")
+                    if l_cap and cdb.execute("SELECT 1 FROM ol_guard_revocations WHERE kind='capability' AND target_id=?", (l_cap,)).fetchone():
+                        raise ValueError(f"ancestor_capability_revoked{suffix}:{l_cap[:12]}")
+                    if l_wpub and cdb.execute("SELECT 1 FROM ol_guard_revocations WHERE kind='worker' AND target_id=?", (l_wpub,)).fetchone():
+                        raise ValueError(f"ancestor_worker_revoked{suffix}")
+                    if p_gid:
+                        queue.append(str(p_gid))
+                    if l_chain:
+                        for x in json.loads(l_chain):
+                            queue.append(str(x))
+            # Also check if slot succession superseded authority_epoch or capability_sha256
+            if auth_epoch or cap_sha:
+                srows = cdb.execute(
+                    "SELECT slot_key, active_epoch_id, active_capability_sha256, active_worker_pub FROM ol_guard_succession_epochs"
+                ).fetchall()
+                for _slot, act_ep, act_cap, act_wpub in srows:
+                    if auth_epoch and act_ep and auth_epoch != act_ep and str(auth_epoch).startswith(str(_slot) + ":"):
+                        raise ValueError(f"authority_epoch_superseded{suffix}:{auth_epoch}->" + str(act_ep))
+                    if auth_epoch and act_ep == auth_epoch and act_wpub and worker_pub and worker_pub != act_wpub:
+                        raise ValueError(f"worker_superseded_in_epoch{suffix}")
+
+    def register_epoch_executor(self, epoch_id: str, executor_id: str, executor_pub: str | None = None, stage: str = "ACTIVE") -> dict:
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            cdb.execute("BEGIN IMMEDIATE")
+            cdb.execute(
+                "INSERT OR REPLACE INTO ol_guard_epoch_executors(epoch_id, executor_id, executor_pub, stage, c4_receipt_json, updated_at) VALUES (?, ?, ?, ?, NULL, ?)",
+                (str(epoch_id), str(executor_id), executor_pub, str(stage), self.clock()),
+            )
+            cdb.commit()
+        return {"epoch_id": str(epoch_id), "executor_id": str(executor_id), "stage": str(stage)}
+
+    def record_executor_revocation_stage(
+        self,
+        epoch_id: str,
+        executor_id: str,
+        stage: str,
+        *,
+        c4_receipt: dict | None = None,
+        expected_executor_pub: str | None = None,
+    ) -> dict:
+        valid_stages = ("ACTIVE", "C0_ISSUED", "C1_QUEUED", "C2_TRANSPORT_ACKED", "C3_PERSISTED", "C4_ENFORCED")
+        if stage not in valid_stages:
+            raise ValueError(f"invalid_revocation_stage:{stage}")
+        c4_json = None
+        if stage == "C4_ENFORCED":
+            if not isinstance(c4_receipt, dict):
+                raise ValueError("c4_enforced_requires_signed_receipt")
+            with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+                erow = cdb.execute(
+                    "SELECT executor_pub FROM ol_guard_epoch_executors WHERE epoch_id=? AND executor_id=?",
+                    (str(epoch_id), str(executor_id)),
+                ).fetchone()
+            pinned_pub = expected_executor_pub or (erow[0] if erow and erow[0] else None) or self.identity.public
+            body = verify_envelope(c4_receipt, expected_pub=pinned_pub)
+            if (body.get("schema") != "openline.guard.c4_enforcement_receipt.v1"
+                    or body.get("epoch_id") != str(epoch_id)
+                    or body.get("executor_id") != str(executor_id)
+                    or body.get("deny_installed") is not True):
+                raise ValueError("c4_receipt_binding_mismatch")
+            c4_json = json.dumps(c4_receipt, sort_keys=True)
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            cdb.execute("BEGIN IMMEDIATE")
+            cdb.execute(
+                "INSERT OR REPLACE INTO ol_guard_epoch_executors(epoch_id, executor_id, executor_pub, stage, c4_receipt_json, updated_at) "
+                "VALUES (?, ?, COALESCE((SELECT executor_pub FROM ol_guard_epoch_executors WHERE epoch_id=? AND executor_id=?), ?), ?, ?, ?)",
+                (str(epoch_id), str(executor_id), str(epoch_id), str(executor_id), expected_executor_pub, stage, c4_json, self.clock()),
+            )
+            cdb.commit()
+        return {"epoch_id": str(epoch_id), "executor_id": str(executor_id), "stage": stage, "c4_verified": c4_json is not None}
+
+    def transition_succession_epoch_cas(
+        self,
+        *,
+        slot_key: str,
+        expected_epoch_num: int,
+        new_epoch_id: str,
+        new_capability_sha256: str,
+        new_worker_pub: str,
+        old_epoch_id: str | None = None,
+        old_capability_sha256: str | None = None,
+        old_worker_pub: str | None = None,
+        reason: str = "verified_capability_succession",
+    ) -> dict:
+        """Atomic CAS succession epoch transition with revoke-first fencing of superseded epoch, capability, and worker."""
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            cdb.execute("BEGIN IMMEDIATE")
+            row = cdb.execute(
+                "SELECT epoch_num, active_epoch_id, active_capability_sha256, active_worker_pub FROM ol_guard_succession_epochs WHERE slot_key=?",
+                (str(slot_key),),
+            ).fetchone()
+            if row is None:
+                if expected_epoch_num != 0:
+                    cdb.rollback()
+                    raise ValueError(f"stale_succession_epoch_conflict:expected_{expected_epoch_num}_actual_0")
+                cur_num = 0
+                prev_epoch_id = old_epoch_id
+                prev_cap_sha = old_capability_sha256
+                prev_worker_pub = old_worker_pub
+            else:
+                cur_num, prev_epoch_id, prev_cap_sha, prev_worker_pub = int(row[0]), row[1], row[2], row[3]
+                if cur_num != int(expected_epoch_num):
+                    cdb.rollback()
+                    raise ValueError(f"stale_succession_epoch_conflict:expected_{expected_epoch_num}_actual_{cur_num}")
+            next_num = cur_num + 1
+            now = self.clock()
+            if prev_epoch_id and prev_epoch_id != new_epoch_id:
+                cdb.execute(
+                    "INSERT OR REPLACE INTO ol_guard_revocations VALUES ('epoch', ?, ?, ?)",
+                    (str(prev_epoch_id), now, reason),
+                )
+            if prev_cap_sha and prev_cap_sha != new_capability_sha256:
+                cdb.execute(
+                    "INSERT OR REPLACE INTO ol_guard_revocations VALUES ('capability', ?, ?, ?)",
+                    (str(prev_cap_sha), now, reason),
+                )
+            if prev_worker_pub and prev_worker_pub != new_worker_pub:
+                cdb.execute(
+                    "INSERT OR REPLACE INTO ol_guard_revocations VALUES ('worker', ?, ?, ?)",
+                    (str(prev_worker_pub), now, reason),
+                )
+            ev_seq = self._control_event(cdb, "SUCCESSION_EPOCH_TRANSITION", {
+                "slot_key": str(slot_key),
+                "from_epoch_num": cur_num,
+                "to_epoch_num": next_num,
+                "old_epoch_id": prev_epoch_id,
+                "new_epoch_id": str(new_epoch_id),
+                "old_capability_sha256": prev_cap_sha,
+                "new_capability_sha256": str(new_capability_sha256),
+                "old_worker_pub": prev_worker_pub,
+                "new_worker_pub": str(new_worker_pub),
+                "reason": reason,
+            })
+            cdb.execute(
+                "INSERT OR REPLACE INTO ol_guard_succession_epochs(slot_key, epoch_num, active_epoch_id, active_capability_sha256, active_worker_pub, updated_seq, updated_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (str(slot_key), next_num, str(new_epoch_id), str(new_capability_sha256), str(new_worker_pub), ev_seq, now),
+            )
+            cdb.execute(
+                "UPDATE ol_guard_active_worker SET worker_pub=?, updated_seq=? WHERE id=1",
+                (str(new_worker_pub), ev_seq),
+            )
+            cdb.commit()
+
+        # Opportunistically quarantine READY_TO_DISPATCH external outbox items if db_path is not mid-savepoint
+        # (if db_path is locked by an in-flight worker savepoint, flush_external_outbox enforces the quarantine via control.sqlite)
+        quarantined_outbox = 0
+        try:
+            with closing(sqlite3.connect(self.db_path, timeout=0.05)) as db:
+                db.execute("BEGIN IMMEDIATE")
+                rows = db.execute(
+                    "SELECT o.seq, r.receipt_json FROM ol_guard_external_outbox o "
+                    "LEFT JOIN ol_guard_receipts r ON o.receipt_sha256 = r.receipt_sha256 "
+                    "WHERE o.state='READY_TO_DISPATCH'"
+                ).fetchall()
+                for seq, rjson in rows:
+                    if not rjson:
+                        continue
+                    try:
+                        rp = json.loads(rjson).get("payload", {})
+                        b = rp.get("basis") or {}
+                        wpub = rp.get("worker_pub")
+                        if ((prev_epoch_id and b.get("authority_epoch") == prev_epoch_id)
+                                or (prev_cap_sha and b.get("capability_sha256") == prev_cap_sha)
+                                or (prev_worker_pub and wpub == prev_worker_pub)):
+                            db.execute(
+                                "UPDATE ol_guard_external_outbox SET state='QUARANTINED_EPOCH_REVOKED', last_error='superseded_by_verified_succession' WHERE seq=?",
+                                (seq,),
+                            )
+                            quarantined_outbox += 1
+                    except Exception:
+                        pass
+                db.commit()
+        except sqlite3.OperationalError:
+            pass
+        return {
+            "slot_key": str(slot_key),
+            "epoch_num": next_num,
+            "old_epoch_id": prev_epoch_id,
+            "new_epoch_id": str(new_epoch_id),
+            "old_capability_sha256": prev_cap_sha,
+            "new_capability_sha256": str(new_capability_sha256),
+            "old_worker_pub": prev_worker_pub,
+            "new_worker_pub": str(new_worker_pub),
+            "event_seq": ev_seq,
+            "quarantined_ready_outbox_count": quarantined_outbox,
+        }
+
+    def evaluate_epoch_closure(
+        self,
+        epoch_id: str,
+        *,
+        observation_window_closed: bool = True,
+        post_revocation_sink_violations: int = 0,
+    ) -> dict:
+        """Computes evidence-backed revocation closure disposition (CLOSED / PARTIAL / UNKNOWN / VIOLATED)
+        under the C0-C5 outcome contract (arXiv:2610.15991) and Authority Epoch model (draft-watts-oauth-agent-revocation-closure-03)."""
+        self.recover_in_flight_outbox()
+        with closing(sqlite3.connect(self.control_db_path, timeout=15)) as cdb:
+            rev_row = cdb.execute(
+                "SELECT revoked_at, reason FROM ol_guard_revocations WHERE kind='epoch' AND target_id=?",
+                (str(epoch_id),),
+            ).fetchone()
+            exec_rows = cdb.execute(
+                "SELECT executor_id, stage, c4_receipt_json FROM ol_guard_epoch_executors WHERE epoch_id=? ORDER BY executor_id",
+                (str(epoch_id),),
+            ).fetchall()
+        c0_committed = rev_row is not None
+        executors_total = len(exec_rows)
+        executors_c4 = 0
+        unfenced_executors = []
+        for ex_id, stg, c4_json in exec_rows:
+            if stg == "C4_ENFORCED" and c4_json:
+                executors_c4 += 1
+            else:
+                unfenced_executors.append({"executor_id": ex_id, "stage": stg})
+
+        with closing(sqlite3.connect(self.db_path, timeout=15)) as db:
+            outbox_rows = db.execute(
+                "SELECT o.outbox_id, o.state, r.receipt_json, o.payload_json FROM ol_guard_external_outbox o "
+                "LEFT JOIN ol_guard_receipts r ON o.receipt_sha256 = r.receipt_sha256"
+            ).fetchall()
+        epoch_outbox_unknown = []
+        epoch_outbox_pending = []
+        epoch_outbox_dispatched_pre = []
+        epoch_outbox_quarantined = []
+        for oid, ost, rjson, pjson in outbox_rows:
+            try:
+                rp = json.loads(rjson).get("payload", {}) if rjson else {}
+                b = rp.get("basis") or {}
+                op = json.loads(pjson) if pjson else {}
+                row_epoch = b.get("authority_epoch") or op.get("authority_epoch")
+                if row_epoch != str(epoch_id):
+                    continue
+                if ost in ("DISPATCH_IN_FLIGHT", "UNKNOWN_RECONCILIATION_REQUIRED"):
+                    epoch_outbox_unknown.append(oid)
+                elif ost in ("STAGED", "READY_TO_DISPATCH"):
+                    epoch_outbox_pending.append(oid)
+                elif ost == "QUARANTINED_EPOCH_REVOKED":
+                    epoch_outbox_quarantined.append(oid)
+                elif ost in ("DISPATCHED", "RECONCILED_DELIVERED", "RECONCILED_COMPENSATED"):
+                    epoch_outbox_dispatched_pre.append(oid)
+            except Exception:
+                pass
+
+        if post_revocation_sink_violations > 0:
+            disposition = "VIOLATED"
+            reason = "post_revocation_effect_committed_at_sink"
+        elif not c0_committed:
+            disposition = "UNKNOWN"
+            reason = "c0_epoch_revocation_not_committed"
+        elif epoch_outbox_unknown:
+            disposition = "UNKNOWN"
+            reason = "unresolved_in_flight_or_unknown_external_outbox"
+        elif unfenced_executors:
+            # Distinguish C1-C3 delayed/dropped revocation delivery (PARTIAL) vs completely unobserved
+            stages = {u["stage"] for u in unfenced_executors}
+            if stages <= {"C0_ISSUED", "C1_QUEUED", "C2_TRANSPORT_ACKED", "C3_PERSISTED"}:
+                disposition = "PARTIAL"
+                reason = "c4_gateway_enforcement_incomplete_selective_or_delayed_delivery"
+            else:
+                disposition = "UNKNOWN"
+                reason = "unobserved_or_active_delegated_executor"
+        elif epoch_outbox_pending or not observation_window_closed:
+            disposition = "PARTIAL"
+            reason = "pending_queue_or_observation_window_open"
+        else:
+            disposition = "CLOSED"
+            reason = "c0_to_c5_verified_all_executors_fenced_and_queues_discharged"
+
+        report = {
+            "schema": "openline.guard.epoch_closure_report.v1",
+            "epoch_id": str(epoch_id),
+            "disposition": disposition,
+            "reason": reason,
+            "c0_committed": c0_committed,
+            "c4_executors_fenced": executors_c4,
+            "c4_executors_total": executors_total,
+            "unfenced_executors": unfenced_executors,
+            "c5_observation_window_closed": bool(observation_window_closed),
+            "c5_post_revocation_sink_violations": int(post_revocation_sink_violations),
+            "unknown_external_outbox_ids": epoch_outbox_unknown,
+            "pending_external_outbox_ids": epoch_outbox_pending,
+            "quarantined_external_outbox_ids": epoch_outbox_quarantined,
+            "preserved_pre_closure_outbox_ids": epoch_outbox_dispatched_pre,
+            "evaluated_at": self.clock(),
+        }
+        return sign_envelope(self.identity.key, report)
 
     def set_basis(self, basis_key: str, version: str) -> list[str]:
         """Sets or updates a basis contract; selectively marks dependent COMMITTED steps as REOPEN."""
@@ -1143,10 +1602,7 @@ class ReceiverGuard:
                 except sqlite3.Error as exc:
                     raise ValueError("authority_unavailable_fail_closed") from exc
 
-                if self._is_revoked("worker", worker_pub):
-                    raise ValueError("worker_revoked")
-                if self._is_revoked("grant", grant_id):
-                    raise ValueError("grant_revoked")
+                self._check_grant_lineage_and_epoch_standing(grant_id, g_body, worker_pub, phase="ENTRY")
                 if type(g_body.get("expires")) is not int or g_body["expires"] <= self.clock():
                     raise ValueError("grant_expired")
 
@@ -1297,11 +1753,8 @@ class ReceiverGuard:
                 if pre_commit_hook is not None:
                     pre_commit_hook()
 
-                # Always re-check lock-free control-plane revocations right before finalizing commit!
-                if self._is_revoked("worker", worker_pub):
-                    raise ValueError("worker_revoked_mid_task")
-                if self._is_revoked("grant", grant_id):
-                    raise ValueError("grant_revoked_mid_task")
+                # Always re-check lock-free control-plane revocations, lineage, and succession epochs right before finalizing commit!
+                self._check_grant_lineage_and_epoch_standing(grant_id, g_body, worker_pub, phase="FINAL_GATE")
 
                 # Verify protected files and protected database rows remained byte-identical
                 for p_file, expected_sha in self.protected_files.items():
@@ -1568,7 +2021,7 @@ class ReceiverGuard:
                 row = db.execute(
                     """SELECT o.outbox_id, o.task_id, o.step_id, o.channel, o.destination,
                               o.payload_json, o.payload_sha256, o.receipt_sha256, o.state,
-                              o.attempt_count, r.status, r.standing
+                              o.attempt_count, r.status, r.standing, r.receipt_json
                        FROM ol_guard_external_outbox o
                        LEFT JOIN ol_guard_receipts r ON o.receipt_sha256 = r.receipt_sha256
                        WHERE o.seq = ?""",
@@ -1577,10 +2030,33 @@ class ReceiverGuard:
                 if row is None or row[8] != "READY_TO_DISPATCH":
                     db.commit()
                     continue
-                oid, tid, sid, chan, dest, pjson, psha, rsha, _st, attempts, r_status, r_standing = row
+                oid, tid, sid, chan, dest, pjson, psha, rsha, _st, attempts, r_status, r_standing, r_json = row
                 if r_status != "COMMITTED" or r_standing != "CURRENT":
                     db.execute(
                         "UPDATE ol_guard_external_outbox SET state='QUARANTINED_BASIS_OR_RECEIPT' WHERE seq=?",
+                        (seq,),
+                    )
+                    db.commit()
+                    continue
+                # Verify that the governing grant, capability, or authority epoch was not revoked before external dispatch
+                epoch_or_grant_revoked = False
+                if r_json or pjson:
+                    try:
+                        rp = json.loads(r_json).get("payload", {}) if r_json else {}
+                        op = json.loads(pjson) if pjson else {}
+                        r_gid = rp.get("grant_id") or op.get("grant_id")
+                        r_basis = rp.get("basis") or {}
+                        r_ep = r_basis.get("authority_epoch") or op.get("authority_epoch")
+                        r_cap = r_basis.get("capability_sha256") or op.get("capability_sha256")
+                        if (self._is_revoked("grant", r_gid)
+                                or (r_ep and self._is_revoked("epoch", r_ep))
+                                or (r_cap and self._is_revoked("capability", r_cap))):
+                            epoch_or_grant_revoked = True
+                    except Exception:
+                        pass
+                if epoch_or_grant_revoked:
+                    db.execute(
+                        "UPDATE ol_guard_external_outbox SET state='QUARANTINED_EPOCH_REVOKED', last_error='grant_or_epoch_revoked_before_dispatch' WHERE seq=?",
                         (seq,),
                     )
                     db.commit()

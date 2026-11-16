@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpenLine Advocate Case Packet — Fictional Case 4 — Housing Lease Adverse Notice with Contested Delivery &amp; Cure Timeline</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background: #F8FAFC; color: #0F172A; line-height: 1.45; }
+  .card { background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 16px; max-width: 1200px; margin: 0 auto 16px; }
+  h1 { font-size: 20px; margin: 4px 0 8px; }
+  h2 { font-size: 15px; margin: 0 0 10px; color: #1E3A8A; text-transform: uppercase; letter-spacing: 0.03em; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { border: 1px solid #CBD5E1; padding: 8px; text-align: left; vertical-align: top; }
+  th { background: #F1F5F9; font-weight: 700; }
+  blockquote { margin: 4px 0; padding: 6px 8px; background: #F8FAFC; border-left: 3px solid #3B82F6; font-family: monospace; font-size: 11.5px; }
+  pre.excerpt { margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 11px; max-height: 140px; overflow: auto; background: #F8FAFC; padding: 6px; border: 1px solid #E2E8F0; }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 999px; background: #EFF6FF; color: #1D4ED8; font-weight: 700; font-size: 11px; }
+  .disclosure { background: #FEF3C7; border-left: 4px solid #D97706; padding: 10px 12px; font-size: 12px; margin-top: 8px; border-radius: 4px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <span class="badge">PORTABLE VERIFIABLE CASE PACKET • READABLE IN ANY BROWSER</span>
+    <h1>Fictional Case 4 — Housing Lease Adverse Notice with Contested Delivery &amp; Cure Timeline (<code>CASE-004-HOUSING-CONTESTED-TIMELINE</code>, v1)</h1>
+    <p><strong>Institution:</strong> Cedar Creek Property Management LLC (Fictional) &middot; <strong>Decision Date:</strong> <code>2026-11-01</code> &middot; <strong>Packet Status:</strong> <span class="badge">HOLD_INCOMPLETE_OR_CITATION_ERROR</span></p>
+    <p><strong>Adverse Determination Summary:</strong> Adverse Lease Termination &amp; Forfeiture Notice #LSE-2026-309 claiming tenant failed to cure a disputed $185 utility submeter billing balance within a 3-day window measured from the typed date on the letter (2026-11-01) despite delayed mailing.</p>
+    <p><strong>Payload SHA-256:</strong> <code>58b61cb3e63154d4013bb1d94c1a3a0d74a88c7c24cde2c4460681f26598cc77</code> &middot; <strong>Signer Public Key:</strong> <code>g-76pOFA530OYHP0a64tRYhh9yjrIwFlN2EpeaSSMYo</code></p>
+    <div class="disclosure">
+      <strong>NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • THE INSTITUTION CONTROLS ITS DECISION; THE PERSON CONTROLS THEIR RECORD.</strong><br/>
+      CRYPTOGRAPHIC SIGNATURE DISCLOSURE: Ed25519 signatures and SHA-256 digests in this Case Packet prove record integrity, document provenance, and human approval history only. They do NOT certify the legal validity of any claim, constitute legal advice, create an attorney-client relationship, or guarantee an institutional outcome.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>1. Deadline &amp; Jurisdictional Window Audit (Never Invented)</h2>
+    <p>
+      <strong>Status:</strong> <span class="badge">UNCERTAIN_EARLIEST_CONSERVATIVE_BOUND</span> &middot;
+      <strong>Jurisdiction:</strong> California Residential Tenancy / Lease § 14.2 &middot;
+      <strong>Authority:</strong> <code>Residential Lease Agreement § 14.2</code> &middot;
+      <strong>Earliest Conservative Deadline:</strong> <code>2026-11-04</code> &middot;
+      <strong>Receipt-Based Deadline:</strong> <code>2026-11-04</code>
+    </p>
+    <p><small><strong>Uncertainties &amp; Assumptions:</strong> envelope_postmark_date_missing_using_decision_date_as_conservative_bound; actual_delivery_receipt_date_unverified; trigger_depends_on_service_or_receipt_date_which_is_contested_or_incomplete; holiday_and_weekend_exclusion_rule_requires_local_court_calendar_check</small></p>
+  </div>
+
+  <div class="card">
+    <h2>2. Discrepancy Analysis Matrix (Institution Claim vs. Cited Rule vs. Governing Authority vs. Evidence)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Disputed Issue &amp; Standing</th>
+          <th>What the Institution Claimed</th>
+          <th>Institution's Cited Rule vs. Governing Authority</th>
+          <th>What Supporting Evidence Shows (Exact Citations)</th>
+          <th>Discrepancy Analysis</th>
+          <th>What Remains Disputed, Uncertain, or Missing</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><strong>ISSUE-CONTESTED-SERVICE-TIMELINE</strong><br/>Contested 3-Day Cure Window Measured from Typed Date Instead of Service/Delivery Date<br/><span class='badge'>OPEN_INCOMPLETE</span></td><td>Property management claims the 3-day cure period expired on 2026-11-04 based on the 2026-11-01 typed notice date.<br/><small>Source: <code>DOC-004-LEASE-ADVERSE-NOTICE</code></small><blockquote>“Claim: Tenant failed to pay $185.00 disputed water submeter adjustment within 3 days of 2026-11-01 (asserted deadline: 2026-11-04).”</blockquote></td><td><strong>Residential Lease Agreement §§ 14.2–14.3 (Service Anchor &amp; Weekend Exclusion)</strong><br/><span class='badge'>VERIFIED_AUTHORITY</span><br/><small>verified_in_governing_document_and_effective_on_decision_date</small><hr/><strong>Residential Lease Agreement §§ 14.2–14.3 (Service Anchor &amp; Weekend Exclusion)</strong> (<code>VERIFIED_AUTHORITY</code>)<br/><blockquote>“Any 3-day cure period begins only upon actual physical service or verified certified-mail postmark/delivery, and excludes Saturdays, Sundays, and judicial holidays.”</blockquote></td><td><ul><li><strong>Portal Receipt #PMT-88210 proves the $185.00 balance was paid in full at 2026-11-06T10:12:00Z.</strong><br/><small>Source: <code>DOC-004-PAYMENT-RECEIPT</code> (lines 2–2, chars 47–122, SHA-256 <code>cc6ad7279085…</code>)</small><br/><blockquote>“Timestamp: 2026-11-06T10:12:00Z | Amount Paid: $185.00 (Paid Under Protest)”</blockquote></li></ul></td><td><strong>FACTUAL_EVIDENCE_DISCREPANCY_DOCUMENTED</strong><p>Tenant paid $185.00 on 2026-11-06 (#PMT-88210), but proving the payment was timely under Lease § 14.2 requires the missing USPS Certified Mail postmark/delivery scan (`UNK-403-ENVELOPE-POSTMARK`).</p></td><td><ul><li>USPS Certified Mail envelope postmark and delivery scan are missing from initial packet; needed to prove when the 3-day window legally began.</li></ul></td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>3. Separation of Evidence Facts, Institution Claims, User Assertions, AI Drafts &amp; Unknowns</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th><th>Epistemic Category</th><th>Statement</th><th>Source &amp; Span Location</th><th>Verbatim Quote</th><th>Span Verified?</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><code>CLM-401-MGMT-EXPIRED-CURE</code></td><td><span class='badge'>INSTITUTION_CLAIM</span></td><td>Property management claims the 3-day cure period expired on 2026-11-04 based on the 2026-11-01 typed notice date.</td><td><code>DOC-004-LEASE-ADVERSE-NOTICE (L3–L3, C150–C281)</code></td><td>Claim: Tenant failed to pay $185.00 disputed water submeter adjustment within 3 days of 2026-11-01 (asserted deadline: 2026-11-04).</td><td>YES</td></tr><tr><td><code>FACT-402-PAYMENT-NOV-06</code></td><td><span class='badge'>VERIFIED_EVIDENCE_FACT</span></td><td>Portal Receipt #PMT-88210 proves the $185.00 balance was paid in full at 2026-11-06T10:12:00Z.</td><td><code>DOC-004-PAYMENT-RECEIPT (L2–L2, C47–C122)</code></td><td>Timestamp: 2026-11-06T10:12:00Z | Amount Paid: $185.00 (Paid Under Protest)</td><td>YES</td></tr><tr><td><code>UNK-403-ENVELOPE-POSTMARK</code></td><td><span class='badge'>DISPUTED_OR_UNKNOWN</span></td><td>USPS Certified Mail envelope postmark and delivery scan are missing from initial packet; needed to prove when the 3-day window legally began.</td><td><code>No source document</code></td><td>—</td><td>NO</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>4. Immutable Original Source Documents (Byte-Preserved with SHA-256 Provenance)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Doc ID</th><th>Filename</th><th>Role</th><th>SHA-256 Digest</th><th>Size</th><th>Verbatim Original Text</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><code>DOC-004-LEASE-ADVERSE-NOTICE</code></td><td><code>housing_adverse_notice_309.txt</code></td><td><span class='badge'>INSTITUTIONAL_DECISION_NOTICE</span></td><td><code>018dd69d7cfac44858f3…</code></td><td>369 bytes</td><td><pre class='excerpt'>CEDAR CREEK PROPERTY MANAGEMENT — NOTICE OF DEFAULT #LSE-2026-309
+Typed Notice Date: 2026-11-01 | Unit: APT-309 | Tenant Email: tenant309@example.org
+Claim: Tenant failed to pay $185.00 disputed water submeter adjustment within 3 days of 2026-11-01 (asserted deadline: 2026-11-04).
+Action: Lease renewal privilege revoked and $150 default administrative fee assessed.</pre></td></tr><tr><td><code>DOC-004-LEASE-AND-STATUTE</code></td><td><code>lease_sec14_and_ccp_1161_service_rules.txt</code></td><td><span class='badge'>GOVERNING_RULE_TEXT</span></td><td><code>261fb1c115154bf698a3…</code></td><td>441 bytes</td><td><pre class='excerpt'>RESIDENTIAL LEASE AGREEMENT SECTION 14.2 &amp; STATUTORY NOTICE COUNTING RULES (Effective 2025-01-01 to 2028-12-31)
+Section 14.2 (Cure Period Anchor): Any 3-day cure period begins only upon actual physical service or verified certified-mail postmark/delivery, and excludes Saturdays, Sundays, and judicial holidays.
+Section 14.3: No default fee may be assessed if payment is tendered before the expiration of the properly calculated cure window.</pre></td></tr><tr><td><code>DOC-004-PAYMENT-RECEIPT</code></td><td><code>tenant_portal_payment_2026_11_06.txt</code></td><td><span class='badge'>CLAIMANT_SUPPORTING_EXHIBIT</span></td><td><code>cc6ad72790853d9b420f…</code></td><td>160 bytes</td><td><pre class='excerpt'>CEDAR CREEK RESIDENT PORTAL RECEIPT #PMT-88210
+Timestamp: 2026-11-06T10:12:00Z | Amount Paid: $185.00 (Paid Under Protest)
+Status: Cleared and posted to ledger.</pre></td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>5. Append-Only Correction, Decision Recall &amp; Human Approval History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ver</th><th>Worker / Installation</th><th>Action</th><th>Packet Status</th><th>Conclusions Snapshot</th><th>Record SHA-256</th>
+        </tr>
+      </thead>
+      <tbody><tr><td>v1</td><td><code>worker-a</code> (g-76pOFA530O)</td><td>Build Case Packet v1</td><td><span class='badge'>HOLD_INCOMPLETE_OR_CITATION_ERROR</span></td><td><small>ISSUE-CONTESTED-SERVICE-TIMELINE=OPEN_INCOMPLETE(FACTUAL_EVIDENCE_DISCREPANCY_DOCUMENTED)</small></td><td><code>58b61cb3e63154d4…</code></td></tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

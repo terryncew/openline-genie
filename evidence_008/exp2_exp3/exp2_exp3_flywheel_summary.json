@@ -1,0 +1,205 @@
+{
+  "experiment_2_part_a_generation_2": {
+    "capability_id": "coupled-portfolio-allocator",
+    "compressed_g2_built_on_g1": {
+      "accuracy": 1.0,
+      "cpu_ms_per_use": 3.492,
+      "domain_evaluations_per_use": 124.32,
+      "quality_retention": 1.0,
+      "reasoning_tokens_per_use": 64.0,
+      "speedup_ratio_cpu_ms": 6.98,
+      "speedup_ratio_evals": 7.84,
+      "total_cpu_ms": 174.62,
+      "total_domain_evaluations": 6216,
+      "verified_accepted": 50
+    },
+    "cross_task_transfer_from_g1": {
+      "creation_evals_speedup_from_g1": 7.75,
+      "creation_ms_speedup_from_g1": 6.16,
+      "g2_dev_creation_evals_with_g1": 3772,
+      "g2_dev_creation_evals_without_g1": 29250,
+      "g2_dev_creation_ms_with_g1": 116.05,
+      "g2_dev_creation_ms_without_g1": 715.06
+    },
+    "economics_g2": {
+      "break_even_uses_cpu_ms": 8,
+      "break_even_uses_evals": 5,
+      "break_even_uses_tokens": 1,
+      "creation_cpu_ms": 151.05,
+      "creation_evals": 3772,
+      "creation_tokens": 3200,
+      "net_savings_N_1": {
+        "cpu_ms": -130.16,
+        "evals": -2921.3,
+        "tokens": 1086.0
+      },
+      "net_savings_N_10": {
+        "cpu_ms": 57.89,
+        "evals": 4734.8,
+        "tokens": 39660.0
+      },
+      "net_savings_N_100": {
+        "cpu_ms": 1938.35,
+        "evals": 81296.0,
+        "tokens": 425400.0
+      },
+      "per_use_cpu_ms_saved": 20.894,
+      "per_use_evals_saved": 850.68,
+      "per_use_tokens_saved": 4286.0
+    },
+    "holdout_n": 50,
+    "source_sha256": "a59042b973a8374207f7d48fd96fc6f2467ff1f35fc847753573c620d66d2814",
+    "strong_uncompressed_afresh": {
+      "accuracy": 1.0,
+      "cpu_ms_per_use": 24.386,
+      "domain_evaluations_per_use": 975.0,
+      "reasoning_tokens_per_use": 4350.0,
+      "total_cpu_ms": 1219.28,
+      "total_domain_evaluations": 48750,
+      "verified_accepted": 50
+    }
+  },
+  "experiment_2_part_b_generation_3": {
+    "capability_id": "distilled-artifact-gate",
+    "compressed_g3_chaining_g2_g1": {
+      "accuracy": 1.0,
+      "cpu_ms_per_use": 3.668,
+      "domain_evaluations_per_use": 89.75,
+      "onnx_calls_per_use": 0.117,
+      "onnx_escalation_rate": 0.1167,
+      "quality_retention": 1.0,
+      "reasoning_tokens_per_use": 158.2,
+      "speedup_ratio_cpu_ms": 10.11,
+      "speedup_ratio_evals": 7.71,
+      "speedup_ratio_onnx_calls": 25.64,
+      "total_cpu_ms": 220.09,
+      "total_domain_evaluations": 5385,
+      "total_onnx_calls": 7,
+      "verified_accepted": 60
+    },
+    "economics_g3": {
+      "break_even_uses_cpu_ms": 5,
+      "break_even_uses_evals": 4,
+      "break_even_uses_onnx": 2,
+      "break_even_uses_tokens": 1,
+      "creation_cpu_ms": 138.43,
+      "creation_evals": 2313,
+      "creation_onnx_calls": 3,
+      "creation_tokens": 2800,
+      "net_savings_N_1": {
+        "cpu_ms": -105.02,
+        "evals": -1710.7,
+        "onnx_calls": -0.12,
+        "tokens": 975.9
+      },
+      "net_savings_N_10": {
+        "cpu_ms": 195.65,
+        "evals": 3710.0,
+        "onnx_calls": 25.83,
+        "tokens": 34959.0
+      },
+      "net_savings_N_100": {
+        "cpu_ms": 3202.37,
+        "evals": 57917.0,
+        "onnx_calls": 285.3,
+        "tokens": 374790.0
+      },
+      "per_use_cpu_ms_saved": 33.408,
+      "per_use_evals_saved": 602.3,
+      "per_use_onnx_saved": 2.883,
+      "per_use_tokens_saved": 3775.9
+    },
+    "holdout_n": 60,
+    "source_sha256": "e3ad39dd1d4771d9f115650f8ff95f170af72cb93ec7a6370cc53868166e5f61",
+    "strong_uncompressed_onnx_and_portfolio": {
+      "accuracy": 1.0,
+      "cpu_ms_per_use": 37.076,
+      "domain_evaluations_per_use": 692.05,
+      "onnx_calls_per_use": 3.0,
+      "reasoning_tokens_per_use": 3934.1,
+      "total_cpu_ms": 2224.56,
+      "total_domain_evaluations": 41523,
+      "total_onnx_calls": 180,
+      "verified_accepted": 60
+    }
+  },
+  "experiment_3_frontier_model_leverage": {
+    "argon_direct_scratch": {
+      "accepted_outcomes": "48/48 (100.0%)",
+      "manual_interventions_required_per_12_tasks": 12,
+      "total_cpu_ms": 1079.34,
+      "total_domain_evaluations": 32954,
+      "total_onnx_calls": 36,
+      "total_reasoning_token_equivalents": 142108
+    },
+    "argon_with_inherited_flywheel_capabilities": {
+      "accepted_outcomes": "48/48 (100.0%)",
+      "leverage_speedup_cpu_ms": 10.23,
+      "leverage_speedup_domain_evals": 10.57,
+      "leverage_speedup_onnx_calls": 36.0,
+      "leverage_speedup_tokens": 44.49,
+      "manual_interventions_required_per_12_tasks": 0,
+      "total_cpu_ms": 105.55,
+      "total_domain_evaluations": 3117,
+      "total_onnx_calls": 1,
+      "total_reasoning_token_equivalents": 3194
+    },
+    "conventional_single_domain_parity_boundary": {
+      "finding": "On a single known static domain without cross-domain AST discovery or cryptographic receipt verification, direct conventional Python ties accuracy (30/30) with lower dispatch overhead. The flywheel advantage is strictly on multi-domain transfer, coupled multi-stage composition (G1->G2->G3), and amortized reuse beyond N_BE >= 2..5 uses.",
+      "single_domain_30_garden_trajectories_direct_python_ms": 5.71
+    },
+    "fixed_budget_compounding_test_50k_evals": {
+      "fixed_budget_domain_evaluations": 50000,
+      "g0_uncompressed_tasks_completed": 72,
+      "g3_flywheel_tasks_completed_net_of_all_creation_costs": 467,
+      "net_compounding_work_multiplier": 6.49
+    },
+    "frontier_suite_tasks_n": 48
+  },
+  "sample_g2_receipts": [
+    {
+      "capability_id": "coupled-portfolio-allocator",
+      "elapsed_us": 4136.62,
+      "input_sha256": "15a7c319c34ff7b67fa7cd15c92a43b9fc4793dddb9d446d9d1573d275ccb7ec",
+      "output_sha256": "6774f53502cd929ef9c9d559acdbe27f76ac90571de7d519a5b184688d9e6c76",
+      "source_sha256": "a59042b973a8374207f7d48fd96fc6f2467ff1f35fc847753573c620d66d2814"
+    },
+    {
+      "capability_id": "coupled-portfolio-allocator",
+      "elapsed_us": 1906.75,
+      "input_sha256": "cd903d6f437a66a420b484f62728fbcf20bc4958f7384c2c0e3a29b908fb17d0",
+      "output_sha256": "755aa0cb7dd82d5f999a52d089c006f4cec1c5e1a8518e0b63acc6f4f9824c59",
+      "source_sha256": "a59042b973a8374207f7d48fd96fc6f2467ff1f35fc847753573c620d66d2814"
+    },
+    {
+      "capability_id": "coupled-portfolio-allocator",
+      "elapsed_us": 3848.79,
+      "input_sha256": "d62076b6ef725682526c973587bb5caf75c86bc60bd28f383e48391a97a21b4a",
+      "output_sha256": "054da45615448f4c5024c5f6efc8595a25f9b23b6828a06c9f3647d2547c77e5",
+      "source_sha256": "a59042b973a8374207f7d48fd96fc6f2467ff1f35fc847753573c620d66d2814"
+    }
+  ],
+  "sample_g3_receipts": [
+    {
+      "capability_id": "distilled-artifact-gate",
+      "elapsed_us": 4240.7,
+      "input_sha256": "dae6c01219745e3c95e3ee808b129aeb956801d1581039fbc10ee467141e17da",
+      "output_sha256": "907078030d10b2247c54d44fa96ed35f5273aa41e09fa950efcf4504edf023df",
+      "source_sha256": "e3ad39dd1d4771d9f115650f8ff95f170af72cb93ec7a6370cc53868166e5f61"
+    },
+    {
+      "capability_id": "distilled-artifact-gate",
+      "elapsed_us": 1975.22,
+      "input_sha256": "d91eb92d15a0e98c177713e26501aac17a57b44da53fd7c34a6d0dae97894fc2",
+      "output_sha256": "aa0e93406831597631b15e68b47695a9563e909ba10dc787af5cbd934f6ff2f7",
+      "source_sha256": "e3ad39dd1d4771d9f115650f8ff95f170af72cb93ec7a6370cc53868166e5f61"
+    },
+    {
+      "capability_id": "distilled-artifact-gate",
+      "elapsed_us": 3964.29,
+      "input_sha256": "d6a2b7cabd274a8d20912a0853bbf6607d1d532237c0a25cc8399a5a4dedd242",
+      "output_sha256": "8380919e6a95c60c41058ada548a5b7372dc61a3ab7305db14e5d7e2e0024684",
+      "source_sha256": "e3ad39dd1d4771d9f115650f8ff95f170af72cb93ec7a6370cc53868166e5f61"
+    }
+  ]
+}

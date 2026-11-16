@@ -220,4 +220,12 @@ def recompute_garden_state(state: dict[str, Any]) -> dict[str, Any]:
 
 def is_garden_prompt(prompt: str) -> bool:
     low = prompt.lower()
-    return any(k in low for k in ("garden", "crop rotation", "harvest", "plot assignment", "compost", "volunteer"))
+    if any(w in low for w in ("biosand", "ceramic filter", "drinking water", "potable", "uv-led", "chlorin", "diarrhea")):
+        return False
+    return any(
+        k in low
+        for k in ("garden", "crop rotation", "plot assignment", "compost", "raised bed")
+    ) or (
+        ("cistern" in low or "harvest" in low)
+        and any(w in low for w in ("plot", "crop", "bed", "volunteer", "garden", "mulch", "produce", "vegetable"))
+    )
