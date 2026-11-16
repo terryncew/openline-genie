@@ -1,0 +1,147 @@
+{
+  "schema": "openline.ratchet003.source_bound_repair_round004.v1",
+  "source": "OPENLINE_CIVILIZATION_RATCHET_003_COMPLETE_PACKAGE.zip",
+  "purpose": "Feasibility repair: avoid false whole-interposer elimination, separate signal layer from backside thermal/power layer",
+  "comparison": "same author model with changed arm specifications, not independently calibrated physics",
+  "candidate_arms": [
+    {
+      "id": "A0_CONV_COWOS_COLDPLATE",
+      "description": "A0 \u2014 Strongest Conventional (4nm KGD Chiplets on CoWoS-L Interposer + Lidded Split-Flow Cold Plate + CDU Reserve)",
+      "model_tflops_per_5yr_usd": 1.554,
+      "model_cost_5yr_usd": 11011.44,
+      "model_holdout_survival": 33.33,
+      "model_peak_tj_c": 108.21,
+      "model_pdn_joule_loss_w": 181.13,
+      "model_yield": 0.865,
+      "label": "diagnostic scenario; not physical signoff"
+    },
+    {
+      "id": "R04_A_MATCHED_CHANNEL_CONVENTIONAL",
+      "description": "matched-conventional-0.75mm",
+      "model_tflops_per_5yr_usd": 1.8637,
+      "model_cost_5yr_usd": 10509.14,
+      "model_holdout_survival": 100.0,
+      "model_peak_tj_c": 82.42,
+      "model_pdn_joule_loss_w": 181.13,
+      "model_yield": 0.865,
+      "label": "diagnostic scenario; not physical signoff"
+    },
+    {
+      "id": "R04_B_SPLIT_PLANE",
+      "description": "retained-signal-interposer + backside integrated cooling only",
+      "model_tflops_per_5yr_usd": 1.8142,
+      "model_cost_5yr_usd": 10819.2,
+      "model_holdout_survival": 100.0,
+      "model_peak_tj_c": 67.46,
+      "model_pdn_joule_loss_w": 181.13,
+      "model_yield": 0.865,
+      "label": "diagnostic scenario; not physical signoff"
+    },
+    {
+      "id": "R04_C_SPLIT_PLANE_OPTIMISTIC_PDN",
+      "description": "signal interposer retained, integrated thermal+power; optimistic electrical parameters",
+      "model_tflops_per_5yr_usd": 1.9148,
+      "model_cost_5yr_usd": 10344.08,
+      "model_holdout_survival": 100.0,
+      "model_peak_tj_c": 62.44,
+      "model_pdn_joule_loss_w": 6.67,
+      "model_yield": 0.865,
+      "label": "diagnostic scenario; not physical signoff"
+    },
+    {
+      "id": "R04_D_SPLIT_PLANE_ASSUMED_HARVEST",
+      "description": "split-plane with assumed post-metrology die harvest",
+      "model_tflops_per_5yr_usd": 2.2019,
+      "model_cost_5yr_usd": 8995.22,
+      "model_holdout_survival": 100.0,
+      "model_peak_tj_c": 60.33,
+      "model_pdn_joule_loss_w": 6.67,
+      "model_yield": 0.91,
+      "label": "diagnostic scenario; not physical signoff"
+    },
+    {
+      "id": "G2_V2_REPAIRED_MIF_PWS",
+      "description": "G2 (v2 Winner: MIF-PWS) \u2014 Coaxial-Grounded Passivated Cu-Mo-Cu Micro-Interleaved Fluidic-Power Wafer Substrate + Post-Metrology RDL",
+      "model_tflops_per_5yr_usd": 3.0571,
+      "model_cost_5yr_usd": 6479.03,
+      "model_holdout_survival": 100.0,
+      "model_peak_tj_c": 60.33,
+      "model_pdn_joule_loss_w": 6.67,
+      "model_yield": 0.945,
+      "label": "diagnostic scenario; not physical signoff"
+    }
+  ],
+  "necessary_routing_bounds": [
+    {
+      "independent_nets_crossing_cut": 1024,
+      "one_metal_layer_pitch_um": 8,
+      "lower_bound_cut_span_mm": 8.192,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 1024,
+      "one_metal_layer_pitch_um": 4,
+      "lower_bound_cut_span_mm": 4.096,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 1024,
+      "one_metal_layer_pitch_um": 1,
+      "lower_bound_cut_span_mm": 1.024,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 4096,
+      "one_metal_layer_pitch_um": 8,
+      "lower_bound_cut_span_mm": 32.768,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 4096,
+      "one_metal_layer_pitch_um": 4,
+      "lower_bound_cut_span_mm": 16.384,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 4096,
+      "one_metal_layer_pitch_um": 1,
+      "lower_bound_cut_span_mm": 4.096,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 8192,
+      "one_metal_layer_pitch_um": 8,
+      "lower_bound_cut_span_mm": 65.536,
+      "necessary_condition_for_45mm_cut": false,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 8192,
+      "one_metal_layer_pitch_um": 4,
+      "lower_bound_cut_span_mm": 32.768,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    },
+    {
+      "independent_nets_crossing_cut": 8192,
+      "one_metal_layer_pitch_um": 1,
+      "lower_bound_cut_span_mm": 8.192,
+      "necessary_condition_for_45mm_cut": true,
+      "assumptions": "all nets cross same 45mm cut; one independent planar track each; no vias/escapes/guards"
+    }
+  ],
+  "kill_gates": [
+    "No realistic 4nm chiplet/HBM netlist+fanout or verified \u22654\u00b5m/submicron bridge means G2 all-interposer-deletion remains HOLD",
+    "Pdn resistance must be calculated from 3D metal cross sections, vias, return path, and insulation; assigned 0.014 milliohm cannot be accepted",
+    "Wafer/package yield must derive from inspectable manufacturing defect distributions; assigned 94.5% cannot be accepted",
+    "Direct-cooling structural+fluidic test and full coolant-side heat balance are mandatory before hardware claims",
+    "No chiller-free, water-positive or 2.82 L/kWh credit without exergy/temperature/pressure/heat-input model"
+  ],
+  "status": "HOLD on big claims; conditional split-plane architecture survives as a physically coherent research direction only"
+}

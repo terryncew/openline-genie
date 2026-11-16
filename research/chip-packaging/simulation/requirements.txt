@@ -1,0 +1,8 @@
+# Pinned dependencies for the reproduction scripts in this directory.
+# Install into a virtual environment: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# Versions pinned to the ones used for the verification run on 2026-11-16 (Python 3.12.3).
+numpy==2.5.5
+scipy==1.18.1
+matplotlib==3.11.2
+Pillow==13.0.0
+cryptography==50.0.2

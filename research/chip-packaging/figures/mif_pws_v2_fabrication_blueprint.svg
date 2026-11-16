@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="720" viewBox="0 0 1100 720">
+  <rect width="1100" height="720" fill="#0f172a"/>
+  <rect x="18" y="18" width="1064" height="684" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <text x="40" y="54" fill="#f8fafc" font-family="monospace" font-size="20" font-weight="bold">
+    MIF-PWS v2 HYBRID PHYSICAL COUPON &amp; STAGED SURROGATE TEST BLUEPRINT (REV A - GD&amp;T)
+  </text>
+  <text x="40" y="78" fill="#94a3b8" font-family="monospace" font-size="13">
+    Scale: Dimensioned mm | Cold Plate: 45.0x45.0x6.0mm C10100 OFHC Cu | 60 Channels (0.75mm Pitch, 0.35x2.50mm Wire-EDM) | Kerf Bridge: 8x8 @ 5.625mm
+  </text>
+
+  <!-- Left View: Top Plan View of 45x45mm Coupon -->
+  <rect x="45" y="105" width="460" height="460" fill="#0f172a" stroke="#64748b" stroke-width="1.5"/>
+  <text x="60" y="128" fill="#38bdf8" font-family="monospace" font-size="14" font-weight="bold">
+    A. TOP PLAN VIEW: 60 INTERLEAVED CHANNELS + 8x8 CMC KERF GRID + 16 COAXIAL POSTS
+  </text>
+  <rect x="95" y="155" width="360" height="360" fill="#b45309" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2.5"/>
+  <line x1="105" y1="161" x2="445" y2="161" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="173" x2="445" y2="173" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="185" x2="445" y2="185" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="197" x2="445" y2="197" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="209" x2="445" y2="209" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="221" x2="445" y2="221" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="233" x2="445" y2="233" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="245" x2="445" y2="245" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="257" x2="445" y2="257" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="269" x2="445" y2="269" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="281" x2="445" y2="281" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="293" x2="445" y2="293" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="305" x2="445" y2="305" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="317" x2="445" y2="317" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="329" x2="445" y2="329" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="341" x2="445" y2="341" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="353" x2="445" y2="353" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="365" x2="445" y2="365" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="377" x2="445" y2="377" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="389" x2="445" y2="389" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="401" x2="445" y2="401" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="413" x2="445" y2="413" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="425" x2="445" y2="425" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="437" x2="445" y2="437" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="449" x2="445" y2="449" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="461" x2="445" y2="461" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="473" x2="445" y2="473" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="485" x2="445" y2="485" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="497" x2="445" y2="497" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="105" y1="509" x2="445" y2="509" stroke="#f43f5e" stroke-width="1.5" stroke-opacity="0.75"/>
+  <line x1="140" y1="155" x2="140" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="200" x2="455" y2="200" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="185" y1="155" x2="185" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="245" x2="455" y2="245" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="230" y1="155" x2="230" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="290" x2="455" y2="290" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="275" y1="155" x2="275" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="335" x2="455" y2="335" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="320" y1="155" x2="320" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="380" x2="455" y2="380" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="365" y1="155" x2="365" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="425" x2="455" y2="425" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="410" y1="155" x2="410" y2="515" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="95" y1="470" x2="455" y2="470" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="140" cy="200" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="140" cy="200" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="230" cy="200" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="230" cy="200" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="320" cy="200" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="320" cy="200" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="410" cy="200" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="410" cy="200" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="140" cy="290" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="140" cy="290" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="230" cy="290" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="230" cy="290" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="320" cy="290" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="320" cy="290" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="410" cy="290" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="410" cy="290" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="140" cy="380" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="140" cy="380" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="230" cy="380" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="230" cy="380" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="320" cy="380" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="320" cy="380" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="410" cy="380" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="410" cy="380" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="140" cy="470" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="140" cy="470" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="230" cy="470" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="230" cy="470" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="320" cy="470" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="320" cy="470" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <circle cx="410" cy="470" r="11" fill="#0f172a" stroke="#22c55e" stroke-width="2"/>
+  <circle cx="410" cy="470" r="5" fill="#eab308" stroke="#fef08a" stroke-width="1.2"/>
+  <text x="95" y="540" fill="#e2e8f0" font-family="monospace" font-size="12">
+    |&lt;--- 45.00 +/- 0.05 mm (8x 5.625mm Sub-Tiles, 0.20mm Wire-EDM Kerf) ---&gt;|
+  </text>
+
+  <!-- Right Top View: Cross-Section Stackup -->
+  <rect x="530" y="105" width="530" height="250" fill="#0f172a" stroke="#64748b" stroke-width="1.5"/>
+  <text x="545" y="128" fill="#38bdf8" font-family="monospace" font-size="14" font-weight="bold">
+    B. CROSS-SECTION STACKUP (APPROACH 2: HYBRID CNC + CMC + PARYLENE-C)
+  </text>
+  <rect x="560" y="148" width="470" height="26" fill="#a855f7" fill-opacity="0.35" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="572" y="166" fill="#f8fafc" font-family="monospace" font-size="12">
+    Layer 4: 4x4 Vishay LTO100 TO-247 Heater Array + 16x Vishay PTS0603 Pt100 RTDs
+  </text>
+  <rect x="560" y="180" width="470" height="32" fill="#64748b" fill-opacity="0.45" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="572" y="201" fill="#f8fafc" font-family="monospace" font-size="12">
+    Layer 3: 1.50mm Plansee/Ametek Cu-Mo-Cu Bridge (CTE 6.0 ppm/K, 5.625mm Kerfs)
+  </text>
+  <rect x="560" y="218" width="470" height="22" fill="#22c55e" fill-opacity="0.30" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="572" y="234" fill="#f8fafc" font-family="monospace" font-size="12">
+    Layer 2: 15 um SCS Vapor-Deposited Parylene-C Shroud (4,065 V Breakdown, 0.0V Wall)
+  </text>
+  <rect x="560" y="246" width="470" height="88" fill="#ea580c" fill-opacity="0.30" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="572" y="272" fill="#f8fafc" font-family="monospace" font-size="12">
+    Layer 1: 6.00mm C10100 OFHC Copper Cold Plate (60 Ch @ 0.75mm Pitch, 0.35x2.50mm)
+  </text>
+  <text x="572" y="295" fill="#38bdf8" font-family="monospace" font-size="12">
+    Header A (+X, 30 Ch) &amp; Header B (-X, 30 Ch) + 16 Coaxial Vertical Vdd/GND Posts
+  </text>
+  <text x="572" y="318" fill="#fde047" font-family="monospace" font-size="12">
+    3D Laplace R_PDN = 0.0132 mOhm (21.6W @ 1,280A; 0.03W @ 50A Surrogate)
+  </text>
+
+  <!-- Right Bottom View: Staged Safety & Falsification Protocol -->
+  <rect x="530" y="370" width="530" height="195" fill="#0f172a" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="545" y="394" fill="#f87171" font-family="monospace" font-size="14" font-weight="bold">
+    C. CRITICAL SAFETY BOUNDARY &amp; STAGED SURROGATE TEST LADDER
+  </text>
+  <text x="545" y="418" fill="#e2e8f0" font-family="monospace" font-size="12">
+    STAGE 1 (APPROVAL-FREE BENCH SURROGATE S0 - $689.10 Total BOM):
+  </text>
+  <text x="545" y="438" fill="#94a3b8" font-family="monospace" font-size="11">
+    - Thermal: 50.0 W @ 24.0 V DC (2.08 A SELV), 0.25 L/min -&gt; dT = 4.22 K (SNR &gt; 100:1)
+  </text>
+  <text x="545" y="456" fill="#94a3b8" font-family="monospace" font-size="11">
+    - Kelvin PDN: 50.0 A @ 1.0 V DC current-limited bench supply -&gt; V_drop = 660 uV +/- 0.15 uV
+  </text>
+  <text x="545" y="474" fill="#94a3b8" font-family="monospace" font-size="11">
+    - Dielectric/Corrosion: 5.0 V DC via 10 kOhm limiter (0.5 mA max) for 168h in 150 uS/cm loop
+  </text>
+  <text x="545" y="502" fill="#fca5a5" font-family="monospace" font-size="12" font-weight="bold">
+    STAGE 2 (1,000 W / 1,280 A FULL POWER - HOLD UNTIL PE / EHS SAFETY SIGNOFF):
+  </text>
+  <text x="545" y="522" fill="#e2e8f0" font-family="monospace" font-size="11">
+    - Requires NFPA 70E arc-flash enclosure, 350 kPa PRV, hardware PROCHOT# trip @ 90.0 C
+  </text>
+  <text x="545" y="542" fill="#fde047" font-family="monospace" font-size="11">
+    - Kill Gates: T_blk90 &gt; 75.0 C | dP &gt; 45.0 kPa | R_PDN &gt; 0.025 mOhm | I_leak &gt; 10.0 uA
+  </text>
+
+  <!-- Footer -->
+  <rect x="45" y="580" width="1015" height="100" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="60" y="604" fill="#38bdf8" font-family="monospace" font-size="13" font-weight="bold">
+    DISPOSITION: BUILDABLE WITH CUSTOM FABRICATION (Approach 2 Hybrid M2 = $1,422.60; Stage-1 Surrogate S0 = $689.10)
+  </text>
+  <text x="60" y="626" fill="#cbd5e1" font-family="monospace" font-size="12">
+    Preserved Negative Result: Single-layer 8 um maskless RDL escapes only 19.6% (343/1,750) of HBM3e nets (CANNOT replace CoWoS-L for HBM3e);
+  </text>
+  <text x="60" y="646" fill="#cbd5e1" font-family="monospace" font-size="12">
+    routes 100% (64/64) of power-delivery, Kelvin sense, and SiC module nets. MED distillate strictly 0.00 L/kWh below 65.0 C motive threshold.
+  </text>
+</svg>

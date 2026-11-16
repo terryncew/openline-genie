@@ -80,6 +80,10 @@ Then open `http://127.0.0.1:8796/robotics`. It is also linked from the applicati
 - **No guaranteed savings or outcomes.** Energy Commons compares costs; it does not promise savings. Science verifies computational reproducibility on recorded datasets; it does not validate a finding in the physical world. Civic compares proposals; it does not decide which one a community should choose.
 - **Not tested:** macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls. Browser tests need Chrome or Chromium.
 
+## Chip-package research (computational only, hardware on HOLD)
+
+**[Chip-package research: a proposed cooling and power-delivery design, independently challenged](research/chip-packaging/README.md).** A one-person AI-assisted team generated and independently challenged a chip-package research hypothesis: consolidating power delivery, liquid cooling, signal wiring, and structural support into one metal package. The nearly twofold modeled advantage collapses to +0.332% parity when the assigned yield, cost, and power-delivery values are equalized with a matched conventional design. The proposed design cannot route high-bandwidth memory on a single 8 µm wiring layer (343 of 1,750 connections). The independent audit found the electrical test design would draw 614.4 W instead of the stated 50 W, the transistor packages do not fit the stated 45 mm face, and the STEP files are not manufacturable solids. No hardware has been built. The step-by-step manufacturing instructions are withheld; what is published is a read-only computational snapshot with a one-command reproduction. **The freshwater-production claim is not established.**
+
 ## For AI coding agents
 
 See `AGENTS.md` in this repository. It documents the layout, entry points, interfaces, how to run the tests, the safety boundaries, and what is implemented versus what is only proposed.

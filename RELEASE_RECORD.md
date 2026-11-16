@@ -490,3 +490,7 @@ could not be repaired in scope; the two foreseen defects were repaired
   a `--prefix`, so it extracts flat (no top-level directory). Create an
   empty folder before extracting. Contents and manifests are correct;
   this is a packaging wart, not an integrity failure.
+
+## 2026-11-16 — Chip-package research published (computational only, hardware on HOLD)
+
+research/chip-packaging/ publishes the MIF-PWS v2 chip-package research and its independent falsification (closes #3). Tournament model, independent ablation (+0.332% parity under equal assumptions), split-plane repair round, first-principles gates, MIF004 screening package, and the eight feasibility findings (F1-F8). One-command reproduction: research/chip-packaging/simulation/run_reproduction.py. Hardware on HOLD; the 50 W electrical test design would draw 614.4 W; step-by-step manufacturing instructions withheld; freshwater-production claim not established.
