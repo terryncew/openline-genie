@@ -2177,6 +2177,7 @@ function populateProjectDropdown(projects){
 
 let session=null,mode='world',playback=true,selected=null,t=0,lastTick=0,frame=0,positions=new Map(),starfield=[],W=1,H=1,dpr=1,toastTimer=null,focusPage=0,visibleNodes=[],assemblyPhase='separated',cadAnim={active:false,nodeId:null,branchId:null,startTime:0,summary:''};
 let liveBundle=null,bakeryPaths=null,pinnedReceiverKey=null,currentProjectId=null,proposalByBranch=new Map(),apiBusy=false;
+let ownerStopEpoch=null; // Epoch acknowledged by the owner, never overwritten during a queued Resume
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const COLOR={intent:'#c9d7f4',data:'#74eff5',resource:'#a9acff',logic:'#a99bff',interface:'#88caff',artifact:'#d3a4ff',research:'#9effdc',other:'#92a9e6'};
 const statusColor=s=>({accepted:'#d8cfff',reopened:'#b69cff',ready:'#70f7dd',tentative:'#70f7dd',building:'#bc91ff',planned:'#8ba5c9',rejected:'#ff8181',blocked:'#ff8787',stopped:'#b69cff',unknown_external_effect:'#b59cff'})[s]||'#7c9ab7';
@@ -4178,11 +4179,20 @@ $('stopBtn').addEventListener('click',async()=>{
     const engage=!fresh.stopped;
     if(engage){
       playback=false;$('play').textContent='▶ Play';
-      await apiPost('/api/stop',{reason:'owner_stop'});
+      const stopReceipt=await apiPost('/api/stop',{reason:'owner_stop'});
+      ownerStopEpoch=Number.isInteger(stopReceipt.new_epoch)?stopReceipt.new_epoch:null;
       if(liveBundle)liveBundle.stopped=true;
       notice('Emergency STOP active; mutations frozen.');
     }else{
-      await apiPost('/api/clear_stop',{reason:'owner_clear'});
+      if(!Number.isInteger(ownerStopEpoch)||ownerStopEpoch<1){
+        const observed=await apiGet('/api/status');
+        if(!observed.stopped||!Number.isInteger(observed.stop_epoch)||observed.stop_epoch<1){
+          throw new Error('Cannot confirm an active STOP epoch. Reload before resuming.');
+        }
+        ownerStopEpoch=observed.stop_epoch;
+      }
+      await apiPost('/api/clear_stop',{reason:'owner_clear',expected_epoch:ownerStopEpoch});
+      ownerStopEpoch=null;
       if(liveBundle)liveBundle.stopped=false;
       notice('STOP cleared; mutations live again.');
     }
