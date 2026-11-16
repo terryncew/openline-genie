@@ -90,8 +90,10 @@ class TestR5FormDefaults(TestFinalReleaseBoundaries):
         for t in threads: t.start()
         import time as _time; _time.sleep(1)
         # STOP during first-use seeding, then Resume — the R7 D2 browser flow.
-        self.assertEqual(self.request('/api/stop',method='POST',body={"reason":"user_paused_changes"})[0],200)
-        self.assertEqual(self.request('/api/clear_stop',method='POST',body={"reason":"user_resumed_editing"})[0],200)
+        _st_code, _st_raw = self.request('/api/stop',method='POST',body={"reason":"user_paused_changes"})
+        self.assertEqual(_st_code,200)
+        _stop_epoch = _json.loads(_st_raw)['new_epoch']
+        self.assertEqual(self.request('/api/clear_stop',method='POST',body={"reason":"user_resumed_editing","expected_epoch":_stop_epoch})[0],200)
         for t in threads: t.join()
         # Closure fix: the in-flight state GETs are incidental concurrency noise,
         # not part of the product contract. Each may return 200 (init already done)

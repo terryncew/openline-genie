@@ -469,7 +469,7 @@ console.log("UNFAMILIAR_PROJECTS_NODE_PROJECTION_OK");
         )
         prop_c_id = [x["proposal_id"] for x in p_c["exploratory"] if x["summary"] == "Prop C pre-stop"][0]
 
-        c_stop, _ = _http_post(self.base_url, "/api/stop", {"reason": "security_test_stop"})
+        c_stop, b_stop = _http_post(self.base_url, "/api/stop", {"reason": "security_test_stop"})
         self.assertEqual(c_stop, 200)
 
         # While stopped, propose, accept, add_record, and recall all fail closed
@@ -478,8 +478,8 @@ console.log("UNFAMILIAR_PROJECTS_NODE_PROJECTION_OK");
         self.assertIn(_http_post(self.base_url, "/api/synth/add_record", {"project_id": pid, "record": {"item_title": "Blocked"}})[0], (400, 403, 409))
         self.assertIn(_http_post(self.base_url, "/api/recall", {"project_id": pid, "node_id": "inputs"})[0], (400, 403, 409))
 
-        # Clear STOP -> pre-STOP proposal Prop C is revoked by stop epoch
-        c_clr, _ = _http_post(self.base_url, "/api/clear_stop", {"reason": "resume"})
+        # Clear STOP (epoch-bound, per the GPT-6 repair) -> pre-STOP proposal Prop C is revoked by stop epoch
+        c_clr, _ = _http_post(self.base_url, "/api/clear_stop", {"reason": "resume", "expected_epoch": b_stop["new_epoch"]})
         self.assertEqual(c_clr, 200)
         c_rev, res_rev = _http_post(self.base_url, "/api/accept", {"project_id": pid, "proposal_id": prop_c_id})
         self.assertEqual(c_rev, 409)

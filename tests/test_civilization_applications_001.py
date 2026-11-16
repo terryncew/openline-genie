@@ -173,13 +173,13 @@ class TestCivilizationApplications001(unittest.TestCase):
                 prop_id = b_prop["exploratory"][0]["proposal_id"]
 
                 # Trigger STOP -> verify HTTP 409 on mutation
-                st_stop, _ = _post("/api/stop", {"reason": "HTTP stop test"})
+                st_stop, b_stop = _post("/api/stop", {"reason": "HTTP stop test"})
                 self.assertEqual(st_stop, 200)
                 st_blocked, _ = _post("/api/propose", {"project_id": pid_a, "summary": "Blocked while stopped", "patch": {}})
                 self.assertEqual(st_blocked, 409)
 
-                # Clear STOP and stage fresh proposal -> accept
-                st_clr, _ = _post("/api/clear_stop", {"reason": "Resume"})
+                # Clear STOP (epoch-bound, per the GPT-6 repair) and stage fresh proposal -> accept
+                st_clr, _ = _post("/api/clear_stop", {"reason": "Resume", "expected_epoch": b_stop["new_epoch"]})
                 self.assertEqual(st_clr, 200)
                 st_p2, b_prop2 = _post("/api/propose", {"project_id": pid_a, "summary": "Post-stop valid proposal", "patch": {"notes": "http_v2_valid"}})
                 self.assertEqual(st_p2, 200)
