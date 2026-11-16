@@ -591,7 +591,7 @@ class GenieRequestHandler(BaseHTTPRequestHandler):
                 return
             if parsed.path == "/api/clear_stop":
                 requested_epoch = body.get("expected_epoch")
-                if requested_epoch is not None and (type(requested_epoch) is not int or requested_epoch < 1):
+                if type(requested_epoch) is not int or requested_epoch < 1:
                     raise ValueError("invalid_expected_epoch")
                 self._send_json(200, self.engine.clear_stop(
                     str(body.get("reason", "owner_clear")), expected_epoch=requested_epoch
