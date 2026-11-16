@@ -2308,11 +2308,30 @@ class OpenLineGenieEngine:
 
         with sqlite3.connect(self.db_path) as db:
             row = db.execute(
-                "SELECT candidate_sha256, candidate_state_json FROM genie_exploratory WHERE proposal_id=? AND project_id=?",
+                "SELECT candidate_sha256, candidate_state_json, status FROM genie_exploratory WHERE proposal_id=? AND project_id=?",
                 (proposal_id, project_id),
             ).fetchone()
             if not row:
                 raise ValueError(f"unknown_proposal_id:{proposal_id}")
+            # Mirror accept, except for revocations: only a pending or
+            # authority-revoked proposal may be rejected. Reject is the
+            # owner's safety action and stays available under STOP, so a
+            # proposal revoked by a STOP (REVOKED_BY_STOP_EPOCH) or a worker
+            # swap must still be rejectable -- both tests
+            # test_stop_blocks_propose_and_accept_but_not_reject assert it.
+            # A revoked proposal was never promoted, so recording its
+            # exploratory SHA in genie_rejected cannot trip the integrity
+            # check. What must stay refused is an already-ACCEPTED proposal:
+            # rejecting it records the accepted SHA in genie_rejected, and
+            # verify_persistence_integrity then 400s every later call
+            # (rejected_candidate_promoted_to_accepted) -- the state dir is
+            # bricked by one stale drawer click.
+            if str(row[2]) not in (
+                "EXPLORATORY_PENDING",
+                "REVOKED_BY_STOP_EPOCH",
+                "REVOKED_BY_WORKER_SWAP",
+            ):
+                raise PermissionError(f"proposal_not_pending:{row[2]}")
             cand_sha, cand_json = row[0], row[1]
             db.execute(
                 "UPDATE genie_exploratory SET status='REJECTED' WHERE proposal_id=?",
@@ -2738,9 +2757,24 @@ class OpenLineGenieEngine:
     # Owner Authority Controls: STOP, Worker Succession & External Outbox
     # -----------------------------------------------------------------------
     def trigger_stop(self, reason: str = "owner_emergency_stop") -> dict[str, Any]:
-        cur_epoch = self.guard.read_stop_state()["epoch"]
-        env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
-        receipt = self.guard.issue_stop(env)
+        # One bounded retry on stale_owner_intent only. Two concurrent STOPs can
+        # both read the same epoch; the loser's envelope is refused because the
+        # winner already advanced the epoch (guard issue_stop verifies the
+        # envelope epoch under BEGIN IMMEDIATE). A STOP is an owner intent to
+        # stop, so re-issuing it against the freshly read epoch honours that
+        # intent. The CLEAR path never retries: a newer STOP must never be
+        # cleared by an older Resume. Any other verification failure (e.g.
+        # stop_authority_owner_only) propagates immediately, unretried.
+        try:
+            cur_epoch = self.guard.read_stop_state()["epoch"]
+            env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
+            receipt = self.guard.issue_stop(env)
+        except VerificationError as exc:
+            if "stale_owner_intent" not in str(exc):
+                raise
+            cur_epoch = self.guard.read_stop_state()["epoch"]
+            env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
+            receipt = self.guard.issue_stop(env)
         new_epoch = int(self.guard.read_stop_state()["epoch"])
         with sqlite3.connect(self.db_path) as db:
             cur = db.execute(
@@ -2758,6 +2792,165 @@ class OpenLineGenieEngine:
             "stop_receipt": receipt,
             "new_epoch": new_epoch,
             "revoked_pending_proposals": revoked_count,
+        }
+
+
+    def propose_visual_artifact_repair(
+        self,
+        project_id: str,
+        candidate_html: str | None = None,
+        *,
+        source_html: str | None = None,
+        accepted_assumptions_override: dict[str, Any] | None = None,
+        summary: str = "Visual-geometric counterfactual diagnosis and structural repair",
+        artifact_family: str = "responsive_ui",
+        viewport: dict[str, int] | None = None,
+        browser_page: Any | None = None,
+        require_real_browser: bool = False,
+        attempt_direct_commit: bool = False,
+        bypass_receiver: bool = False,
+        caller_supplied_receipt: Any | None = None,
+        reset_spend_limit: bool = False,
+        spend_delta_override_usd: float | None = None,
+        disable_stop: bool = False,
+        proposer_worker: str | None = None,
+    ) -> dict[str, Any]:
+        """Inspects and stages a visual repair proposal under strict ReceiverGuard,
+        SpendLedger, and fail-closed visual inspection boundaries (`Blocker 2.D Closed`).
+
+        Enforced Authority & Security Invariants:
+        1. Cannot disable STOP (`disable_stop=True` or active STOP state fails closed).
+        2. Cannot bypass receiver-controlled acceptance (`attempt_direct_commit=True` or
+           `bypass_receiver=True` fails closed; only stages into `genie_exploratory` and
+           never mutates `genie_accepted`).
+        3. Cannot forge receipts (`caller_supplied_receipt` fails closed).
+        4. Cannot reset or lower spending limits (`reset_spend_limit=True`, negative spend
+           deltas, or tampered `SpendLedger` files fail closed).
+        5. Failed visual inspection NEVER silently becomes approval (`obs.inspection_failed`
+           or `not precheck['candidate_self_check_passed']` raises `PermissionError`).
+        """
+        if disable_stop:
+            raise PermissionError("VISUAL_REPAIR_CANNOT_DISABLE_STOP")
+        self._require_open(project_id)
+        self._require_not_stopped(operation="propose_visual_artifact_repair", target_id=project_id)
+
+        if attempt_direct_commit or bypass_receiver:
+            raise PermissionError(
+                "VISUAL_REPAIR_CANNOT_BYPASS_RECEIVER_ACCEPTANCE:must_stage_exploratory_proposal"
+            )
+        if caller_supplied_receipt is not None:
+            raise PermissionError("VISUAL_REPAIR_FORGED_OR_CALLER_RECEIPT_REJECTED")
+        if reset_spend_limit or (spend_delta_override_usd is not None and float(spend_delta_override_usd) < 0.0):
+            raise PermissionError("VISUAL_REPAIR_SPEND_LIMIT_RESET_FORBIDDEN")
+
+        if self.model_adapter is not None and hasattr(self.model_adapter, "ledger"):
+            # Verify SpendLedger integrity on disk before allowing any visual harness operation
+            self.model_adapter.ledger._read_disk_strict()
+
+        worker_label = proposer_worker or self.active_worker_id
+        worker_ident = self._worker_identity_by_label(worker_label)
+        if self.guard.is_worker_revoked(worker_ident.public):
+            raise PermissionError(f"proposer_worker_revoked:{worker_label}")
+
+        bundle_before = self.get_project_bundle(project_id)
+        accepted_sha_before = str(bundle_before["accepted"]["state_sha256"])
+        accepted_ver_before = int(bundle_before["accepted"]["version"])
+        accepted_state = bundle_before["accepted"]["state"]
+        current_html = (
+            source_html
+            if source_html is not None
+            else str((bundle_before.get("app") or {}).get("content") or "")
+        )
+
+        accepted_assumptions: dict[str, Any] = {}
+        if accepted_assumptions_override is not None:
+            accepted_assumptions = dict(accepted_assumptions_override)
+        elif isinstance(accepted_state.get("civilization_app"), dict):
+            accepted_assumptions = dict(accepted_state["civilization_app"].get("assumptions") or {})
+        elif isinstance(accepted_state.get("bakery"), dict):
+            accepted_assumptions = dict(accepted_state["bakery"].get("assumptions") or {})
+        elif isinstance(accepted_state.get("garden"), dict):
+            accepted_assumptions = dict(accepted_state["garden"].get("assumptions") or {})
+        elif isinstance(accepted_state.get("operations_model"), dict):
+            accepted_assumptions = dict(accepted_state["operations_model"].get("assumptions") or {})
+
+        from core.visual_intelligence_harness import (
+            check_candidate_visual_and_functional_invariants,
+            diagnose_visual_causal_bottleneck,
+            observe_rendered_artifact,
+            repair_visual_artifact,
+        )
+
+        obs_before = observe_rendered_artifact(
+            f"{project_id}:before",
+            current_html,
+            artifact_family=artifact_family,
+            viewport=viewport,
+            accepted_state=accepted_assumptions,
+            browser_page=browser_page,
+            require_real_browser=require_real_browser,
+        )
+        if obs_before.inspection_failed:
+            raise PermissionError(
+                f"VISUAL_INSPECTION_FAILED_BEFORE_REPAIR:{obs_before.inspection_errors}"
+            )
+
+        diag_before = diagnose_visual_causal_bottleneck(
+            obs_before,
+            accepted_state=accepted_assumptions,
+            mode="D_HYBRID_EMERGENCE",
+        )
+        repaired_html = (
+            candidate_html
+            if candidate_html is not None
+            else repair_visual_artifact(current_html, diag_before, accepted_state=accepted_assumptions)
+        )
+
+        obs_after = observe_rendered_artifact(
+            f"{project_id}:after",
+            repaired_html,
+            artifact_family=artifact_family,
+            viewport=viewport,
+            accepted_state=accepted_assumptions,
+            browser_page=browser_page,
+            require_real_browser=require_real_browser,
+        )
+        precheck = check_candidate_visual_and_functional_invariants(
+            obs_before,
+            obs_after,
+            accepted_state=accepted_assumptions,
+        )
+        if obs_after.inspection_failed or not precheck["candidate_self_check_passed"]:
+            # Ensure accepted state remains 100% untouched on failed visual inspection
+            verify_after = self.get_project_bundle(project_id)
+            assert verify_after["accepted"]["state_sha256"] == accepted_sha_before
+            raise PermissionError(
+                f"VISUAL_INSPECTION_FAILED_CANNOT_BECOME_APPROVAL:{precheck['rejection_reason']}"
+            )
+
+        staged_bundle = self.propose_exploratory_change(
+            project_id,
+            summary,
+            {
+                "app_content": repaired_html,
+                "app_filename": (bundle_before.get("app") or {}).get("filename") or f"{project_id}.html",
+            },
+            proposer_worker=worker_label,
+        )
+        if (
+            staged_bundle["accepted"]["state_sha256"] != accepted_sha_before
+            or int(staged_bundle["accepted"]["version"]) != accepted_ver_before
+        ):
+            raise RuntimeError("critical_invariant_violation:visual_repair_mutated_accepted_state_without_receiver")
+
+        return {
+            "status": "STAGED_EXPLORATORY_AWAITING_RECEIVER_ACCEPTANCE",
+            "project_id": project_id,
+            "proposal": staged_bundle["exploratory"][0],
+            "accepted_sha256_preserved": staged_bundle["accepted"]["state_sha256"] == accepted_sha_before,
+            "accepted_version_preserved": int(staged_bundle["accepted"]["version"]) == accepted_ver_before,
+            "visual_precheck": precheck,
+            "diagnosed_faults_before": [d["fault_class"] for d in diag_before["defects"]],
         }
 
     def clear_stop(self, reason: str = "owner_resume", *, expected_epoch: int | None = None) -> dict[str, Any]:

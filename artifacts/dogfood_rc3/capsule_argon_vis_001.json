@@ -1,0 +1,129 @@
+{
+  "capability_id": "cap-visual-geometric-stabilizer-v1",
+  "capsule_digest_sha256": "78a457437c0dd3e778257f290c88fc89dffff87074ea1489f313b3cb144a1110",
+  "capsule_id": "CAPSULE-ARGON-VIS-001",
+  "domain": "visual_geometric_counterfactual_engineering",
+  "executable_source": "def execute_visual_geometric_stabilizer(vec, params):\n    if not vec.get(\"ref_ok\", False):\n        return {\"status\": \"ABSTAIN_UNVERIFIED\", \"reason\": \"missing_render_observation\"}\n    ctrl_before = float(vec.get(\"functional_controls_before\", 1.0))\n    ctrl_after = float(vec.get(\"functional_controls_after\", 1.0))\n    if ctrl_after < ctrl_before:\n        return {\"status\": \"REJECTED_FUNCTIONAL_DEGRADATION\", \"remaining_defects\": 1, \"geometric_margin\": 0.0}\n    hdr_res = max(0.0, float(vec.get(\"fixed_header_overlap_px\", 0.0)) * (1.0 - float(params.get(\"header_reflow_gain\", 1.0))))\n    svg_res = max(0.0, float(vec.get(\"svg_overflow_px\", 0.0)) * (1.0 - float(params.get(\"viewbox_pad_gain\", 1.0))))\n    iou_res = max(0.0, float(vec.get(\"room_overlap_iou\", 0.0)) * (1.0 - float(params.get(\"floorplan_partition_gain\", 1.0))))\n    door_res = max(0.0, float(vec.get(\"landlocked_rooms\", 0.0)) * (1.0 - float(params.get(\"egress_door_gain\", 1.0))))\n    sync_res = max(0.0, float(vec.get(\"state_desync_count\", 0.0)) * (1.0 - float(params.get(\"state_sync_gain\", 1.0))))\n    rem = round(hdr_res + svg_res + iou_res + door_res + sync_res, 4)\n    geom_margin = round(math.exp(-0.05 * rem) * float(params.get(\"scale_guard_margin\", 0.98)), 4)\n    return {\n        \"status\": \"COMMIT_VALID\",\n        \"remaining_defects\": 0 if rem <= 0.001 else 1,\n        \"geometric_margin\": geom_margin,\n    }\n",
+  "operating_envelope": {
+    "min_nominal_coverage": 0.8,
+    "supported_families": [
+      "responsive_ui",
+      "svg_diagram",
+      "floor_plan",
+      "stateful_app"
+    ],
+    "supported_viewports": [
+      "390x844",
+      "1280x800"
+    ]
+  },
+  "parameters": {
+    "egress_door_gain": 1.0,
+    "floorplan_partition_gain": 1.0,
+    "header_reflow_gain": 1.0,
+    "scale_guard_margin": 0.98,
+    "state_sync_gain": 1.0,
+    "viewbox_pad_gain": 1.0
+  },
+  "rollback_triggers": [
+    "data_version_mismatch",
+    "calibration_expired",
+    "reference_sensor_degraded",
+    "source_sha256_mismatch",
+    "policy_pin_sha256_mismatch",
+    "authority_epoch_revoked"
+  ],
+  "source_sha256": "010ef56ab2932e830abab0197de5abed65ed267fcd0295af78f2f87ac8e6ed20",
+  "supporting_assumptions": {
+    "authority_epoch": 1,
+    "calibration_epoch": 1,
+    "calibration_expiry_utc": 1893456000,
+    "data_version": "dataset-v1.0",
+    "policy_pin_sha256": "policy-pin-v1-a8f4c2",
+    "reference_sensor_health": "HEALTHY_DUAL_REF"
+  },
+  "test_suite_manifest": [
+    {
+      "category": "nominal_competence",
+      "obligation_id": "OB-VIS-NOMINAL-GEOMETRIC-AND-STATE-STABILIZATION",
+      "vectors": [
+        {
+          "fixed_header_overlap_px": 42.0,
+          "functional_controls_after": 2,
+          "functional_controls_before": 2,
+          "landlocked_rooms": 0,
+          "ref_ok": true,
+          "room_overlap_iou": 0.0,
+          "state_desync_count": 1,
+          "svg_overflow_px": 56.0
+        },
+        {
+          "fixed_header_overlap_px": 0.0,
+          "functional_controls_after": 1,
+          "functional_controls_before": 1,
+          "landlocked_rooms": 1,
+          "ref_ok": true,
+          "room_overlap_iou": 0.18,
+          "state_desync_count": 0,
+          "svg_overflow_px": 0.0
+        }
+      ]
+    },
+    {
+      "category": "boundary_invariant",
+      "obligation_id": "OB-VIS-BOUNDARY-NONDEGRADATION-AND-REF-LOSS",
+      "vectors": [
+        {
+          "fixed_header_overlap_px": 0.0,
+          "functional_controls_after": 1,
+          "functional_controls_before": 3,
+          "landlocked_rooms": 0,
+          "ref_ok": true,
+          "room_overlap_iou": 0.0,
+          "state_desync_count": 0,
+          "svg_overflow_px": 0.0
+        },
+        {
+          "fixed_header_overlap_px": 24.0,
+          "functional_controls_after": 2,
+          "functional_controls_before": 2,
+          "landlocked_rooms": 0,
+          "ref_ok": false,
+          "room_overlap_iou": 0.0,
+          "state_desync_count": 0,
+          "svg_overflow_px": 0.0
+        }
+      ]
+    }
+  ],
+  "test_suite_sha256": "9f5ee9940e410a2b31b55c9f1aa7b01c0dad615a798998ae525ee9e456c8e9c8",
+  "version": 1,
+  "worker_a_receipt": {
+    "authority_epoch": 1,
+    "capability_id": "cap-visual-geometric-stabilizer-v1",
+    "capsule_digest_sha256": "78a457437c0dd3e778257f290c88fc89dffff87074ea1489f313b3cb144a1110",
+    "capsule_id": "CAPSULE-ARGON-VIS-001",
+    "issuer_receiver_public": "nqON7Jw83vcRAo3cLbIAsjBXF1Dvq5tMQ6yHXHb6_-E",
+    "obligation_report_sha256": "47a8f8589652fb84b50e6ac5976160bdfe19d4d677be7473c10c94700ac43c94",
+    "schema": "openline.portable_capsule_receipt.v2",
+    "signature_sha256": "fe2de186fc45a2faa5c6ffddf3299ea68d432f8a24e6254b324101cc7a58f68a",
+    "signed_envelope": {
+      "payload": {
+        "authority_epoch": 1,
+        "capability_id": "cap-visual-geometric-stabilizer-v1",
+        "capsule_digest_sha256": "78a457437c0dd3e778257f290c88fc89dffff87074ea1489f313b3cb144a1110",
+        "capsule_id": "CAPSULE-ARGON-VIS-001",
+        "issuer_receiver_public": "nqON7Jw83vcRAo3cLbIAsjBXF1Dvq5tMQ6yHXHb6_-E",
+        "obligation_report_sha256": "47a8f8589652fb84b50e6ac5976160bdfe19d4d677be7473c10c94700ac43c94",
+        "schema": "openline.portable_capsule_receipt.v2",
+        "source_sha256": "010ef56ab2932e830abab0197de5abed65ed267fcd0295af78f2f87ac8e6ed20",
+        "test_suite_sha256": "9f5ee9940e410a2b31b55c9f1aa7b01c0dad615a798998ae525ee9e456c8e9c8"
+      },
+      "payload_sha256": "c838bf83bf992f3dca6b652607fc8be77387c57e0f160eb625fc805a4d8dafdc",
+      "signature": "tExg933SdZC9-0wzmaDOk6fcFyEvXvKWFcng1XbpP0ONXP6yJJii_tCByuVajVRpXSmGb3bbchGJcmxZ0sGDAw",
+      "signer_pub": "nqON7Jw83vcRAo3cLbIAsjBXF1Dvq5tMQ6yHXHb6_-E"
+    },
+    "source_sha256": "010ef56ab2932e830abab0197de5abed65ed267fcd0295af78f2f87ac8e6ed20",
+    "test_suite_sha256": "9f5ee9940e410a2b31b55c9f1aa7b01c0dad615a798998ae525ee9e456c8e9c8"
+  }
+}

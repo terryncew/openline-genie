@@ -1,0 +1,65 @@
+{
+  "source_sha256": "f1d1f28bddef0071cd7abd041b16b5e757a89210359b1daef11bd8bec2257464",
+  "heater_netlist": {
+    "count": 16,
+    "resistance_each_ohm": [
+      15.0
+    ],
+    "supply_voltage_v": 24.0,
+    "calculated_heater_power_w": 614.4,
+    "claimed_surrogate_w": 50,
+    "factor_over_claim": 12.288,
+    "source_formula": "sum V^2/R across R_HEATER_Q* in supplied .sp"
+  },
+  "heater_geometric_fit": {
+    "datasheet_package_width_mm": 15.76,
+    "package_body_height_mm": 20.7,
+    "grid_pitch_mm": 11.25,
+    "minimum_4_across_width_mm": 63.04,
+    "available_active_zone_width_mm": 45.0,
+    "direct_mount_as_drawn_geometrically_possible": false
+  },
+  "cad_STEP": {
+    "has_manifold_solid_brep_or_advanced_face_or_closed_shell": false,
+    "cartesian_point_count": 139,
+    "source_claim": "AP214 3D solid model; actual text is geometric reference points lacking faces/shell"
+  },
+  "pdn_solver": {
+    "grid_x_nodes": 16,
+    "grid_y_nodes": 16,
+    "grid_z_nodes_defined": false,
+    "lumped_geometry_resistance_and_topology_dependent_constants": true
+  },
+  "signature": {
+    "embedded_seed_reconstructs_advertised_public_key": true,
+    "altered_evidence_signature_validates_as_advertised_public_key": true,
+    "independent_witness_authority": false
+  },
+  "pin_escape": [
+    "NEGATIVE RESULT 1 (HBM3e Pin-Escape Falsification): A single-layer 8 um pitch maskless RDL escapes only 343 of 1,750 JEDEC HBM3e pins (19.6% routed, 1,407 unrouted) along a 5.5 mm die edge. MIF-PWS v2 with coarse maskless RDL CANNOT replace TSMC CoWoS-L (0.8 um) or 6-layer CoWoS-R (2 um) for high-bandwidth HBM3e-to-GPU die-to-die links; its valid domain is coaxial vertical power delivery, thermal fault tolerance, and coarse tile/SiC power module interconnects (64/64 nets, 100% routed).",
+    "NEGATIVE RESULT 2 (Matched-Pitch Conventional Control Parity on Pure Thermal Survival): Giving a conventional lidded cold plate the same 60-channel 0.75 mm interleaved counter-flow geometry (M0_MATCHED_075_CONTROL) allows it to survive 90% single-header blockage at 71.88 C. Thus fault-tolerant thermal survival comes specifically from the 0.75 mm counter-flow interleaving (MIFCS-CP), while MIF-PWS v2's incremental physical contribution is coaxial vertical PDN Joule reduction (21.60 W in M2 / 7.21 W in M3 vs 105.10 W in M0_MATCHED_075_CONTROL) and TIM1+Lid deletion."
+  ],
+  "hydraulics": {
+    "modeled_n_passes_per_header": 60,
+    "physical_n_channels_per_header": 30,
+    "model_assigned_channel_length_mm": 22.5,
+    "CAD_channel_length_mm": 42.0,
+    "modeled_nominal_velocity_m_s": 0.397,
+    "continuity_nominal_velocity_m_s": 0.794,
+    "note": "Each 30-channel manifold is incorrectly divided by total 60 channels and the code halves 45mm channel length despite drawn 42mm run"
+  },
+  "med_replay_text": {
+    "claimed_69C_l_per_kwh": 2.753,
+    "calculated_69C_l_per_kwh": 5.803,
+    "claimed_85C_l_per_kwh": 6.809,
+    "calculated_85C_l_per_kwh": 8.459,
+    "falsifier_label_is_stale": true
+  },
+  "med_model": {
+    "40_C_l_per_kwh": 0.0,
+    "55_C_l_per_kwh": 0.0,
+    "69_C_l_per_kwh": 5.803,
+    "gor_is_fixed_from_effect_count": true,
+    "water_plant_field_validated": false
+  }
+}

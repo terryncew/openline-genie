@@ -263,6 +263,17 @@ class TestOpenLineFiveProductsReleaseAcceptance(unittest.TestCase):
                 page.wait_for_timeout(500)
                 self.assertEqual(page.locator("#kpi-accepted-sha").evaluate("el => el.textContent"), sha_v3)
 
+                # Gate 4: the v3 accept reopened energy's decision basis
+                # (Decision Recall); authorize_* requires CURRENT standing,
+                # so revalidate the accepted basis before authorizing.
+                _, st_now = self._http_get(base, "/api/five_products/state")
+                sha_now = st_now["products"]["energy"]["accepted_sha256"]
+                c_rv, _ = self._http_post(base, "/api/five_products/action", {
+                    "product_key": "energy", "action": "revalidate_accepted_basis",
+                    "payload": {"human_reviewed": True, "expected_accepted_sha256": sha_now},
+                })
+                self.assertEqual(c_rv, 200)
+
                 # Test human procurement gate (unchecked -> blocked, checked -> authorized v4)
                 page.locator("#btn-authorize-energy-procurement").click()
                 page.wait_for_timeout(400)

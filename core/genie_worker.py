@@ -5,8 +5,9 @@ Invoked ONLY from `OpenLineGenieEngine.build_from_prompt()`. Pipeline:
   (a) understand — one model call producing a JSON spec;
   (b) build — one model call producing ONE self-contained single-file
       HTML app (no external deps, real working JS, localStorage persistence);
-  (c) test — Playwright headless: loads with zero console errors, key
-      controls exist and respond, data persists across a reload;
+  (c) test — Playwright headless + VGC-CDRI visual inspection: loads with
+      zero console/page errors, key controls exist and respond without
+      occlusion/clipping, data persists across a reload;
   (d) repair — on test failure, one more model call with the failure text,
       max 3 repair attempts;
   (e) present — commit through the engine's existing
@@ -15,9 +16,10 @@ Invoked ONLY from `OpenLineGenieEngine.build_from_prompt()`. Pipeline:
       `MODEL_WORKER:<model_id>`, recording model id, prompt hash, and
       output hash per stage.
 
-The generated app is a REAL working app, not a snapshot. No model call
-ever happens outside the adapter, so spend logging and cap enforcement
-are the adapter's job, not this file's.
+Security & Fail-Closed Visual Inspection (v1.2.0-rc3):
+- Failed visual inspection NEVER silently becomes approval (`except Exception: pass`
+  eliminated). Any visual/geometric/hit-target/coherence defect or inspection
+  exception is recorded in `errors` so `passed` is `False`.
 """
 from __future__ import annotations
 
@@ -160,8 +162,7 @@ def _extract_html(text: str) -> str:
 
 def _launch_chromium(pw):
     """Launch headless Chromium: default Playwright path first, then any
-    locally installed Playwright Chromium build (this sandbox has them
-    under ~/.cache/ms-playwright)."""
+    locally installed Playwright Chromium build."""
     try:
         return pw.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
     except Exception:
@@ -177,7 +178,7 @@ def _launch_chromium(pw):
                     executable_path=str(exe),
                     args=["--no-sandbox", "--disable-dev-shm-usage"],
                 )
-            except Exception as exc:  # noqa: BLE001 - try next build
+            except Exception as exc:  # noqa: BLE001
                 last_exc = exc
         raise ImportError(f"playwright_chromium_unavailable:{last_exc}") from None
 
@@ -228,6 +229,7 @@ class GenieWorker:
             purpose="build",
         )
         app_html: str | None = None
+        build_error: str | None = None
         try:
             app_html = _extract_html(app_resp["text"])
         except ModelError as exc:
@@ -241,8 +243,6 @@ class GenieWorker:
             )
             test_report = self._test_app(app_html, title)
         else:
-            # Truncated or malformed build output: the repair loop below gets
-            # a chance to ask for a shorter complete file.
             app_hash = ""
             test_report = {"passed": False, "checks_run": 0, "errors": [build_error or "worker_build_no_html"]}
             self._log(
@@ -289,7 +289,7 @@ class GenieWorker:
             f"passed={test_report['passed']} checks_run={test_report['checks_run']} "
             f"errors={test_report['errors']} app_sha256={app_hash}",
         )
-        if not test_report["passed"]:
+        if not test_report["passed"] or app_html is None:
             raise ModelError(f"worker_app_failed_tests:{'; '.join(test_report['errors'])}")
 
         # (e) present: store artifact version, verify, commit, promote.
@@ -331,14 +331,7 @@ class GenieWorker:
     def revise(self, prompt: str, current_app_html: str, change_request: str,
                project_id: str, title: str, max_repairs: int = 2,
                max_tokens: int = 8000) -> dict[str, Any]:
-        """Revises an already-accepted app for a change request.
-
-        One model call produces the full revised file; it is browser-tested
-        the same way as a fresh build, with up to `max_repairs` repair calls.
-        Returns {"app_html", "app_sha256", "bytes", "model", "repairs"}.
-        The caller decides whether to propose/accept it through the engine;
-        this method commits nothing.
-        """
+        """Revises an already-accepted app for a change request."""
         resp = self.adapter.complete(
             REVISE_SYSTEM,
             f"Requested change: {change_request}\n\nCurrent app:\n{current_app_html}",
@@ -414,7 +407,7 @@ class GenieWorker:
                 elif itype == "url":
                     inp.fill("https://example.invalid")
                     filled = True
-            except Exception:  # noqa: BLE001 - one bad input must not fail the test
+            except Exception:  # noqa: BLE001
                 continue
         return filled
 
@@ -454,8 +447,45 @@ class GenieWorker:
         btn.click()
         return None
 
+    def _run_vgc_cdri_visual_inspection(self, app_html: str) -> list[str]:
+        """Runs fail-closed VGC-CDRI visual-geometric counterfactual inspection.
+
+        Never swallows exceptions: if visual inspection raises or detects a defect,
+        returns non-empty error strings so the candidate cannot be approved.
+        """
+        vis_errors: list[str] = []
+        try:
+            from core.visual_intelligence_harness import (
+                diagnose_visual_causal_bottleneck,
+                observe_rendered_artifact,
+            )
+            obs = observe_rendered_artifact("worker-vgc-cdri-check", app_html, artifact_family="responsive_ui")
+            if obs.inspection_failed:
+                vis_errors.append(f"visual_inspection_failed:{obs.inspection_errors}")
+                return vis_errors
+            diag = diagnose_visual_causal_bottleneck(obs, mode="D_HYBRID_EMERGENCE")
+            for d in diag.get("defects", []):
+                fc = d.get("fault_class", "")
+                if fc in (
+                    "VISUAL_INSPECTION_EXECUTION_FAILED",
+                    "FIXED_HEADER_HIT_OCCLUSION",
+                    "TRANSPARENT_OVERLAY_INTERCEPT",
+                    "ANCESTOR_OVERFLOW_CLIPPING",
+                    "SVG_VIEWBOX_TRUNCATION",
+                    "FLOORPLAN_ROOM_OVERLAP",
+                    "FLOORPLAN_LANDLOCKED_ROOM",
+                    "FLOORPLAN_AREA_NONCONSERVATION",
+                    "SCALE_INDUCED_VISUAL_INJECTION_TRAP",
+                    "EXTERNAL_CDN_RUNTIME_ERROR",
+                    "RUNTIME_PAGE_ERROR",
+                ):
+                    vis_errors.append(f"vgc_cdri_{fc.lower()}:{d.get('target_id')}")
+        except Exception as exc:  # noqa: BLE001
+            vis_errors.append(f"visual_inspection_exception_fail_closed:{type(exc).__name__}:{exc}")
+        return vis_errors
+
     def _test_app_fallback_dom(self, app_html: str, title: str) -> dict[str, Any]:
-        """Deterministic HTML/JS + Node DOM verification when Playwright is unavailable in container."""
+        """Deterministic HTML/JS + VGC-CDRI verification when Playwright is unavailable."""
         errors: list[str] = []
         checks_run = 0
         low = app_html.lower()
@@ -475,11 +505,13 @@ class GenieWorker:
             errors.append("missing_localstorage_persistence")
         if "type=\"submit\"" in low:
             errors.append("native_submit_button_forbidden_in_sandbox")
+        checks_run += 1
+        errors.extend(self._run_vgc_cdri_visual_inspection(app_html))
         return {"passed": len(errors) == 0, "checks_run": checks_run, "errors": errors}
 
     def _test_app(self, app_html: str, title: str) -> dict[str, Any]:
-        """Headless Playwright: loads with zero console errors, key controls
-        exist and respond, data persists across a reload."""
+        """Headless Playwright + VGC-CDRI visual inspection: loads with zero console
+        errors, key controls exist and respond without occlusion, data persists across reload."""
         try:
             from playwright.sync_api import sync_playwright
         except ImportError:
@@ -487,6 +519,11 @@ class GenieWorker:
 
         errors: list[str] = []
         checks_run = 0
+
+        # Run fail-closed VGC-CDRI visual-geometric check first
+        checks_run += 1
+        errors.extend(self._run_vgc_cdri_visual_inspection(app_html))
+
         with tempfile.TemporaryDirectory(prefix="genie-worker-test-") as td:
             app_path = Path(td) / "app.html"
             app_path.write_text(app_html, encoding="utf-8")
@@ -494,8 +531,10 @@ class GenieWorker:
                 pw_ctx = sync_playwright()
                 pw = pw_ctx.__enter__()
                 browser = _launch_chromium(pw)
-            except Exception:
-                return self._test_app_fallback_dom(app_html, title)
+            except Exception as exc:  # noqa: BLE001
+                fb = self._test_app_fallback_dom(app_html, title)
+                fb["browser_fallback_reason"] = f"{type(exc).__name__}:{exc}"
+                return fb
             try:
                 page = browser.new_page(viewport={"width": 390, "height": 844})
                 console_errors: list[str] = []
@@ -503,7 +542,7 @@ class GenieWorker:
                 page.on("console", lambda msg: console_errors.append(msg.text) if msg.type == "error" else None)
                 page.on("pageerror", lambda exc: page_errors.append(str(exc)))
                 page.goto(app_path.as_uri())
-                page.wait_for_timeout(400)
+                page.wait_for_timeout(350)
                 checks_run += 1
                 if console_errors or page_errors:
                     errors.append(f"console_or_page_errors:{(console_errors + page_errors)[:2]}")
@@ -518,7 +557,6 @@ class GenieWorker:
                     errors.append("no_form_inputs")
                 if not buttons:
                     errors.append("no_buttons")
-                # Interact: fill the add form and submit it.
                 if inputs and buttons and not errors:
                     checks_run += 1
                     try:
@@ -526,7 +564,7 @@ class GenieWorker:
                         if err:
                             errors.append(err)
                         else:
-                            page.wait_for_timeout(300)
+                            page.wait_for_timeout(250)
                             after = page.evaluate("document.body ? document.body.innerText : ''")
                             stored = page.evaluate("() => JSON.stringify(window.localStorage)")
                             if "Test Entry" not in after and "Test Entry" not in stored:
@@ -535,29 +573,22 @@ class GenieWorker:
                                     f"inputs={len(inputs)} buttons={len(buttons)} "
                                     f"body_chars={len(after)} stored_chars={len(stored)}; "
                                     "the add button's click handler must append the entered "
-                                    "record to the list AND persist it (in-memory fallback "
-                                    "counts as stored only if it is also rendered)")
+                                    "record to the list AND persist it")
                             elif "Test Entry" not in after:
                                 errors.append(
                                     "added_record_stored_but_not_rendered:"
                                     "the record reached storage but the list did not "
                                     "re-render it; call the render function after adding")
                             else:
-                                # Persistence across reload.
                                 checks_run += 1
                                 page.reload()
-                                page.wait_for_timeout(400)
+                                page.wait_for_timeout(300)
                                 reloaded = page.evaluate("document.body ? document.body.innerText : ''")
                                 reloaded_store = page.evaluate("() => JSON.stringify(window.localStorage)")
                                 if "Test Entry" not in reloaded and "Test Entry" not in reloaded_store:
                                     errors.append("added_record_did_not_persist_across_reload")
-                    except Exception as exc:  # noqa: BLE001 - test failure, reported not raised
+                    except Exception as exc:  # noqa: BLE001
                         errors.append(f"interaction_failed:{exc}")
-                # Sandboxed-srcdoc pass: the UI shows the app in an
-                # <iframe sandbox="allow-scripts" srcdoc=...>. Native
-                # form submission is blocked there and the submit event
-                # never fires, so the add button must work by click
-                # alone. file:// cannot catch this; srcdoc can.
                 if not errors:
                     checks_run += 1
                     try:
@@ -568,7 +599,7 @@ class GenieWorker:
                         spage.on("pageerror", lambda exc: s_pageerr.append(str(exc)))
                         spage.set_content('<iframe id="genie-sandbox-probe" sandbox="allow-scripts" style="width:390px;height:800px;border:0"></iframe>')
                         spage.evaluate("([h]) => { document.getElementById('genie-sandbox-probe').srcdoc = h; }", [app_html])
-                        spage.wait_for_timeout(600)
+                        spage.wait_for_timeout(450)
                         frames = [f for f in spage.frames if f is not spage.main_frame]
                         if not frames:
                             errors.append("srcdoc_sandbox_no_frame_loaded")
@@ -581,7 +612,7 @@ class GenieWorker:
                                 if serr:
                                     errors.append(f"srcdoc_sandbox_interaction_failed:{serr}")
                                 else:
-                                    spage.wait_for_timeout(400)
+                                    spage.wait_for_timeout(300)
                                     sbody = sframe.evaluate("() => document.body ? document.body.innerText : ''")
                                     if "Test Entry" not in sbody:
                                         errors.append(
@@ -591,7 +622,7 @@ class GenieWorker:
                                             " the add button must be type=button with a click handler "
                                             "that appends the record and re-renders the list")
                         spage.close()
-                    except Exception as exc:  # noqa: BLE001 - test failure, reported not raised
+                    except Exception as exc:  # noqa: BLE001
                         errors.append(f"srcdoc_sandbox_check_failed:{exc}")
             finally:
                 try:

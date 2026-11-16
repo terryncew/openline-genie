@@ -106,6 +106,13 @@ class TestAdvocateCasePacket001(unittest.TestCase):
                 self.assertTrue(page.locator("#advocate-case-packet-workbench").is_visible())
 
                 # Case 1 initially has a missing clinic document ("Some supporting information is missing")
+                # Gate 4: the pill only renders once the case-packets fetch
+                # lands (after ~60s first-use seeding); the test's fixed
+                # 500ms wait after the tab click races it. Wait for the text.
+                page.wait_for_function(
+                    "() => document.getElementById('cp-status-pill').textContent.includes('Some supporting information is missing')",
+                    timeout=120000,
+                )
                 self.assertIn(
                     "Some supporting information is missing",
                     page.locator("#cp-status-pill").evaluate("el => el.textContent"),
@@ -116,6 +123,12 @@ class TestAdvocateCasePacket001(unittest.TestCase):
                 page.locator("#shared-proposal-drawer").wait_for(state="visible", timeout=10000)
                 page.locator("#btn-accept-staged-proposal").click()
                 page.wait_for_timeout(600)
+                # Gate 4: the pill refreshes only after accept + state +
+                # case-packets refetch (~2s); the fixed 600ms wait races it.
+                page.wait_for_function(
+                    "() => document.getElementById('cp-status-pill').textContent.includes('Ready to Share')",
+                    timeout=60000,
+                )
                 self.assertIn(
                     "Ready to Share",
                     page.locator("#cp-status-pill").evaluate("el => el.textContent"),

@@ -1,55 +1,82 @@
-# R7.2 private STOP/Resume concurrency repair — HOLD FOR MUSE REACCEPTANCE
+# OpenLine Genie `v1.2.0-rc3` — Release Notes
 
-- Receives the exact R7.1 candidate SHA-256 643c0bf012a676dc8e6449b825b76382b222dba2ac01d54cb2acf766cf5e06b8 unchanged as its parent. Muse independently identified a prompt STOP/Resume race on five-products UI.
-- Browser now queues a prompt explicit Resume click until the preceding STOP receipt is acknowledged, and pins the Resume request to that stop epoch. A newer independent STOP remains authoritative; no blind retries.
-- Engine and HTTP routes accept an optional integer expected_epoch and fail closed with conflict if stale. Existing legacy clients without expected_epoch continue to work.
-- New API regression tests and optional Chromium inline-API race probe (tools/browser_stop_race_probe.py) cover normal, intervening STOP, and failed STOP cases. Mocked browser tests are NOT full live HTTP acceptance.
-- Original R7.1 household bound remains unchanged. No launch, PR, merge, or publication is authorized by creating this private repair candidate.
+## Summary
 
-# R7.1 independent validation hotfix — private candidate; NOT PUBLISHED
+v1.2.0-rc3 is the single release candidate produced by merging two lines:
 
-- Corrected a receiver-side domain mismatch identified by GPT-6 while verifying R7 exact SHA `cd2a5ce2…`: a local API caller could stage **and accept** `households=99999` although the browser declares `max=5000`. The Energy `household_units` route now requires a finite integer in `[1, 5000]`; booleans, NaN and infinity fail closed. A new test covers both rejection and the permitted upper bound.
-- Replaced obsolete `INSTALL.md` instructions for v0.7.1 with the actual seven-app rc2 installation and the unresolved complete-suite, network/CDN, and platform limitations.
-- This is a new candidate with a new archive SHA. It cannot inherit R7's exact-hash owner approval. Prior R7 had 214 Python tests run (0 failures, 16 errors, 4 skips) and eleven Node passes; independent R7.1 targeted tests must be recorded separately. No public merge, tag or release is authorized by creating this patch.
+- **R7.2 (authority line, base):** the STOP/Resume epoch-binding repair and the
+  household 1..5000 server-side validation, both independently qualified.
+- **RC3 (additive line):** the visual-intelligence harness, independent
+  evaluation boundary, real-browser functional runner, and offline hardening
+  of the Robotics and Ratchet pages.
 
-# OpenLine Genie `v1.2.0-rc2` — Release Notes
+RC3 on its own regressed all three R7-line authority fixes, so it could not
+ship as-is. The merge keeps R7.2's authority paths verbatim and adds RC3's
+work around them. Full per-file record: `MERGE_LOG.md` (in the closure
+package) and the acceptance report.
 
-## Summary of Changes in `v1.2.0-rc2`
+## Repairs in this candidate
 
-1. **Cryptographic Capsule Receipt Verification (`core/portable_verified_inheritance.py`)**:
-   - Enforces trusted issuer membership (`TRUSTED_CAPSULE_ISSUERS`) and Ed25519 signature verification (`sign_envelope` / `verify_envelope`) over `capsule_digest_sha256`, `source_sha256`, and `test_suite_sha256` before any capsule import or execution. Forged issuers (`UNTRUSTED-ISSUER`) and tampered signatures fail closed (`PermissionError`).
-2. **Elimination of Arbitrary Python `exec()` During Capsule Import**:
-   - Removed dynamic `exec()` from `core/portable_verified_inheritance.py`. Capsules are checked via `ast.parse()` and resolved strictly against audited allowlisted kernels (`ALLOWLISTED_CAPSULE_KERNELS`). Tampered or unallowlisted source strings fail closed without ever executing.
-3. **Mandatory Assumption & Revocation Enforcement at Consequential Effect Boundaries**:
-   - `WorkerBPortableInheritanceRuntime.execute_on_unseen_task()` and `OpenLineRoboticsProductEngine.test_hardware_safety_dispatch()` automatically verify live `ReceiverGuard` STOP/epoch state, `RecallLedger` DNF standing, and supporting assumptions before executing any effect, even when the caller never invokes a manual recall checker.
-4. **Clean-Install Dependencies & Launcher/Version Alignment**:
-   - Added `onnxruntime>=1.16.0` to root `requirements.txt` and `pyproject.toml` (`version = "1.2.0rc2"`), plus a deterministic pure-NumPy fallback in `openline_robotics_001/robotics_studio_engine.py` so `python3 launch_genie.py --verify-only` succeeds even in minimal offline environments.
-   - Updated `launch_genie.py` console banner and application listing to `OPENLINE GENIE — SEVEN-APPLICATION LOCAL SUITE (v1.2.0-rc2)` while preserving 5-application backward compatibility (`applications_ready` and `/api/five_products/state`).
-5. **Measured Trial Counters & Honest Evidence Labeling**:
-   - Replaced static comparison literals in `core/portable_verified_inheritance.py` with measured trial evaluation counters and retired the `6.0x` real-agent performance multiplier claim (explicitly labeled `CONSTRUCTED_DETERMINISTIC_PARAMETER_SEARCH_NOT_REAL_LLM_AGENT_BENCHMARK`).
+- **STOP/Resume race (R7.2, GPT-6):** the page queues a Resume clicked while
+  STOP is in flight until STOP returns its authoritative new epoch, then
+  clears with that exact epoch. Engine and server bind the clear to the
+  expected epoch and reject stale, malformed, or foreign-epoch attempts
+  (`stale_owner_intent`, `invalid_expected_epoch`); a newer STOP cannot be
+  cleared by stale intent, and there is no automatic retry against a newer
+  STOP. ReceiverGuard keeps its transaction-level check. Accepting a proposal
+  staged before a STOP is refused: STOP revokes pending proposals at once
+  (`REVOKED_BY_STOP_EPOCH`), and the accept path additionally rejects any
+  proposal whose epoch no longer matches (`proposal_epoch_expired`).
+- **Household boundary (R7.1, GPT-6, preserved):** Energy household counts are
+  limited to whole numbers from 1 to 5000, matching the published UI. Boolean,
+  non-numeric, non-finite, and negative values are refused before staging and
+  cannot enter accepted state through the API.
+- **Form defaults (R7, preserved):** accepted values survive reloads and
+  one-field edits across Energy, Advocate, Civic, and Science.
+- **Visual artifact repair (RC3, additive):** `propose_visual_artifact_repair`
+  stages a visual/geometric repair into exploratory state under strict
+  ReceiverGuard, SpendLedger, and fail-closed visual inspection boundaries.
+  It cannot disable STOP, bypass receiver acceptance, forge receipts, or reset
+  spending limits; failed inspection never becomes approval; accepted state is
+  asserted unchanged on failure and after staging.
+- **Evaluation boundary (RC3, additive):** the visual harness carries no
+  evaluation authority; the 16 visual cases are regression tests only, not a
+  sealed holdout and not a claim of unseen generalization.
+- **Real-browser functional runner (RC3, additive):** the mock selenium shim
+  is removed; the runner executes real selenium + Headless Chromium suites
+  and fails closed on skipped tests.
+- **Offline hardening (RC3, additive):** the Robotics Studio and Ratchet
+  Workbench pages no longer depend on tailwind/chart.js CDNs.
+- **Robotics manifest (closure repair):** `openline_robotics_001/SHA256SUMS.txt`
+  was regenerated over the 17 files actually present (17/17 verified). Three
+  stale entries referencing files never shipped in this tree (two external
+  download archives, one generated HTML) were removed, not fabricated.
 
+## Qualification
 
-## GPT-6 independent repair pass (private candidate; **NOT PUBLISHED**)
+Independent qualification of the exact frozen candidate ran on Linux with
+headless Chromium. Per-gate results, logs, and browser evidence are in the
+acceptance report accompanying this release (closure `REPORT.md`). Pre-merge
+baseline (R7.2, for reference): Python suite 237 ran, 1 failure + 18 errors,
+all environmental, 0 product failures, 4 skipped; Node 11/11; new race tests
+15/15; prompt STOP→Resume 3/3 desktop, 3/3 mobile, 3/3 fresh-server seeding.
 
-This review corrected live security regressions observed by Muse against the
-actual SHA `5f3d95df…` Argon RC2 candidate. This is a new source snapshot with a
-new archive hash, **not** that original RC2 archive.
+## Known limitations (stated, not smoothed)
 
-- Loopback HTTP bind and Host validation now cover all GET and POST routes.
-- Neighborhood browser role/board authorization cannot be self-declared; the
-  local server selects one owner persona and hides other workspaces.
-- Accepting changed assumptions produces signed Decision Recall and blocks
-  stale downstream authorizations. Explicit local basis review can reopen local
-  computations after evidence matches; external revocations cannot be erased.
-- Import uses explicit destination version/SHA compare-and-swap, with clear
-  refusal of stale files and verified cross-install import tested.
-- First-run UI displays preparation state and keeps STOP/Resume accessible.
-- Semantic research no longer recomputes on request cache miss; research-only
-  runners now take configurable paths rather than private absolute directories.
-- User-facing ClearCovenant removes the 'Be Neighborly' sub-brand.
-- An additional security regression suite covers GET, role spoofing, evidence
-  revalidation, STOP before seeding, and portability. See GPT6_RELEASE_ACCEPTANCE.
+- Robotics Studio is simulation only. No hardware validation is claimed.
+- iOS Safari, macOS, and Windows installs NOT VERIFIED.
+- OS-identity security NOT VERIFIED (same-OS-user processes with access to
+  the state directory can bypass the process boundary).
+- Browser tests NOT VERIFIED where a Chromium binary is absent.
+- The static GitHub Pages v0.7.1 preview does not provide the full seven-app
+  local runtime.
+- First-use seeding can take tens of seconds; under load, the first resumed
+  staging action has previously taken up to ~54 seconds. Do not treat a
+  missing response as acceptance.
+- At 390px the page scrolls after an accept, taking STOP out of the viewport
+  until the user scrolls back.
 
-Review status: *back-end focused tests passed; real Chromium UI verification
-blocked by the testing environment's administrator URL policy*. **HOLD PUBLIC
-RELEASE** until exact-hash independent browser + first-user acceptance.
+## Status
+
+Release candidate for independent acceptance (GPT-6) and the owner's
+authorization. Do not treat this candidate as released until both land.

@@ -1,0 +1,367 @@
+{
+  "dogfood_artifacts": {
+    "artifact_1_responsive_interface": {
+      "after_html_file": "dogfood_01_responsive_after.html",
+      "after_html_sha256": "6795854282e624adeeefa03fa6c0430be5bdf2c41c5e207e43f46740f8f2645b",
+      "artifact_family": "responsive_ui",
+      "artifact_id": "DOGFOOD-01-CLEARCOVENANT-RESPONSIVE",
+      "before_html_file": "dogfood_01_responsive_before.html",
+      "before_html_sha256": "9da25ea00f0fe6a2d61c85d7ac5db585d83d0839e8ab8136c68aff3bed8f48cf",
+      "before_screenshot_file": "dogfood_01_responsive_before_390x844.png",
+      "before_screenshot_sha256": "b9623ebe6b6c42b715f598072d8e8d50cb944285574c1474c10e7721efb0c4cd",
+      "failure_trace_before": [
+        "FIXED_HEADER_HIT_OCCLUSION",
+        "FIXED_HEADER_HIT_OCCLUSION",
+        "ANCESTOR_OVERFLOW_CLIPPING"
+      ],
+      "project_id": "genie-synth-clearcovenant-neighborhood-covenant-inspection-r",
+      "receiver_committed_state_sha256": "99c9f597fd3092c72537bec83b0fc6047005d2afcc672374214998c058491a14",
+      "receiver_committed_version": 2,
+      "staged_exploratory_preserved_accepted_sha": true,
+      "viewport_verifications": {
+        "1280x800": {
+          "candidate_self_check_passed": true,
+          "functional_score": 1.0,
+          "geometric_score": 1.0,
+          "interactive_click_status_text": "Inspected:1",
+          "observed_via_real_browser": true,
+          "screenshot_file": "dogfood_01_responsive_after_1280x800.png",
+          "screenshot_sha256": "5e67a0371470bdcbed45ae4f346923442c31a0dc87775e6bf0a0ecd76893e5d3",
+          "total_defects_remaining": 0,
+          "viewport": {
+            "height": 800,
+            "width": 1280
+          }
+        },
+        "320x640": {
+          "candidate_self_check_passed": true,
+          "functional_score": 1.0,
+          "geometric_score": 1.0,
+          "interactive_click_status_text": "Inspected:1",
+          "observed_via_real_browser": true,
+          "screenshot_file": "dogfood_01_responsive_after_320x640.png",
+          "screenshot_sha256": "b3a9e390d0c562f15c0f78b0b395109ece0469577a568698713d5f760c92a49e",
+          "total_defects_remaining": 0,
+          "viewport": {
+            "height": 640,
+            "width": 320
+          }
+        },
+        "390x844": {
+          "candidate_self_check_passed": true,
+          "functional_score": 1.0,
+          "geometric_score": 1.0,
+          "interactive_click_status_text": "Inspected:1",
+          "observed_via_real_browser": true,
+          "screenshot_file": "dogfood_01_responsive_after_390x844.png",
+          "screenshot_sha256": "f5bd9c2e2219737d083322c828be0bd40af25f7e9d85af2c5260d5e32f0492d3",
+          "total_defects_remaining": 0,
+          "viewport": {
+            "height": 844,
+            "width": 390
+          }
+        }
+      }
+    },
+    "artifact_2_stateful_application": {
+      "after_html_file": "dogfood_02_stateful_after.html",
+      "after_html_sha256": "8b6623c455507696c355ef620e3d91d5deedb85c42d96fdc6bc22c36d16c115b",
+      "after_screenshot_file": "dogfood_02_stateful_after.png",
+      "after_screenshot_sha256": "e38c456189f9e06dbe0641c72f4bdf711251246c6d7db3a4cb6c11e5158f0e39",
+      "artifact_family": "stateful_app",
+      "artifact_id": "DOGFOOD-02-STATEFUL-DISPATCH",
+      "before_html_file": "dogfood_02_stateful_before.html",
+      "before_html_sha256": "82807c0d376f2b0446b403a2547155223ecaf62ce960320cfd5c3eaa64b2adb4",
+      "before_screenshot_file": "dogfood_02_stateful_before.png",
+      "before_screenshot_sha256": "2512d5eb3d5d4d38c419324e23b0a44396c7a3216a2756f55b2dedd9d6bad491",
+      "candidate_self_check_passed": true,
+      "corrupted_repair_rejection_trace": "VISUAL_INSPECTION_FAILED_CANNOT_BECOME_APPROVAL:REJECTED_FUNCTIONAL_DEGRADATION",
+      "failure_trace_before": [
+        "EXTERNAL_CDN_RUNTIME_ERROR",
+        "RUNTIME_PAGE_ERROR",
+        "SANDBOX_NATIVE_SUBMIT_TRAP",
+        "STATE_VIEW_DEFAULT_DESYNC",
+        "STATE_VIEW_DEFAULT_DESYNC",
+        "STATE_VIEW_DEFAULT_DESYNC"
+      ],
+      "functional_score_after": 1.0,
+      "functional_score_before": 0.0,
+      "geometric_score_after": 1.0,
+      "observed_via_real_browser": true,
+      "project_id": "genie-synth-custom-coldroom-inventory-shift-dispatch",
+      "stateful_interaction_verification": {
+        "advocate_persisted_inputs": {
+          "appeal_window_days": 45,
+          "filing_date": "2026-11-15"
+        },
+        "dispatch_readout_after_two_clicks": "Committed:2",
+        "dom_bound_values": {
+          "battery_kwh": 280,
+          "reserve_floor_pct": 25,
+          "solar_kw": 145
+        }
+      }
+    },
+    "artifact_3_structured_diagram_and_floorplan": {
+      "after_html_file": "dogfood_03_floorplan_after.html",
+      "after_html_sha256": "e65cab5bf97c8ed888eec04091e84f33e87fd4ce83c4d4e19dfa17bd340e583f",
+      "after_screenshot_file": "dogfood_03_floorplan_after.png",
+      "after_screenshot_sha256": "1aa9db213103fbeac2e64d600e742b71346171f037c33408a5ab589dda8751f1",
+      "artifact_family": "floor_plan_and_svg_diagram",
+      "artifact_id": "DOGFOOD-03-SDD-PCM-HUB-FLOORPLAN",
+      "before_html_file": "dogfood_03_floorplan_before.html",
+      "before_html_sha256": "536f8e55a7b140ea9790a801bae160d8f270f6647ec6d6a340c3f424d6db9ed7",
+      "before_screenshot_file": "dogfood_03_floorplan_before.png",
+      "before_screenshot_sha256": "6180f13ab5efc54dc3722c946614378bb4ec975ac6b7fb763d123a2cf9291e6c",
+      "candidate_self_check_passed": true,
+      "failure_trace_before": [
+        "SVG_VIEWBOX_TRUNCATION",
+        "SVG_VIEWBOX_TRUNCATION",
+        "SVG_VIEWBOX_TRUNCATION",
+        "FLOORPLAN_ROOM_OVERLAP",
+        "FLOORPLAN_ROOM_OVERLAP",
+        "FLOORPLAN_ROOM_OVERLAP",
+        "FLOORPLAN_ROOM_OVERLAP",
+        "FLOORPLAN_ROOM_OVERLAP",
+        "FLOORPLAN_ROOM_OVERLAP",
+        "FLOORPLAN_LANDLOCKED_ROOM",
+        "FLOORPLAN_LANDLOCKED_ROOM",
+        "FLOORPLAN_LANDLOCKED_ROOM",
+        "FLOORPLAN_LANDLOCKED_ROOM",
+        "FLOORPLAN_AREA_NONCONSERVATION"
+      ],
+      "geometric_metrics_after": {
+        "defects": [],
+        "defects_count": 0,
+        "doors_count": 3,
+        "doors_repaired": [
+          {
+            "connects": [
+              "bay-solar",
+              "bay-ro"
+            ],
+            "id": "door-auto-1",
+            "rect": [
+              216.0,
+              48.0,
+              8.0,
+              24.0
+            ]
+          },
+          {
+            "connects": [
+              "bay-solar",
+              "bay-pcm"
+            ],
+            "id": "door-auto-2",
+            "rect": [
+              216.0,
+              128.0,
+              8.0,
+              24.0
+            ]
+          },
+          {
+            "connects": [
+              "bay-solar",
+              "bay-vestibule"
+            ],
+            "id": "door-auto-3",
+            "rect": [
+              216.0,
+              208.0,
+              8.0,
+              24.0
+            ]
+          }
+        ],
+        "rooms_count": 4,
+        "rooms_repaired": [
+          {
+            "connects": [
+              "bay-ro",
+              "bay-pcm",
+              "bay-vestibule"
+            ],
+            "id": "bay-solar",
+            "label": "Solar Rectifier Bay",
+            "rect": [
+              20.0,
+              20.0,
+              200.0,
+              240.0
+            ]
+          },
+          {
+            "connects": [
+              "bay-solar",
+              "bay-pcm",
+              "bay-vestibule"
+            ],
+            "id": "bay-ro",
+            "label": "RO Water Filtration",
+            "rect": [
+              220.0,
+              20.0,
+              200.0,
+              80.0
+            ]
+          },
+          {
+            "connects": [
+              "bay-solar",
+              "bay-ro",
+              "bay-vestibule"
+            ],
+            "id": "bay-pcm",
+            "label": "PCM Cold Chain Vault",
+            "rect": [
+              220.0,
+              100.0,
+              200.0,
+              80.0
+            ]
+          },
+          {
+            "connects": [
+              "bay-solar",
+              "bay-ro",
+              "bay-pcm"
+            ],
+            "id": "bay-vestibule",
+            "label": "Dispatch Vestibule",
+            "rect": [
+              220.0,
+              180.0,
+              200.0,
+              80.0
+            ]
+          }
+        ],
+        "spatial_geometry_passed": true,
+        "svg_clipped_count": 0,
+        "svg_viewbox_repaired": [
+          0.0,
+          0.0,
+          444.0,
+          284.0
+        ]
+      },
+      "geometric_metrics_before": {
+        "defects": [
+          "SVG_VIEWBOX_TRUNCATION",
+          "SVG_VIEWBOX_TRUNCATION",
+          "SVG_VIEWBOX_TRUNCATION",
+          "FLOORPLAN_ROOM_OVERLAP",
+          "FLOORPLAN_ROOM_OVERLAP",
+          "FLOORPLAN_ROOM_OVERLAP",
+          "FLOORPLAN_ROOM_OVERLAP",
+          "FLOORPLAN_ROOM_OVERLAP",
+          "FLOORPLAN_ROOM_OVERLAP",
+          "FLOORPLAN_LANDLOCKED_ROOM",
+          "FLOORPLAN_LANDLOCKED_ROOM",
+          "FLOORPLAN_LANDLOCKED_ROOM",
+          "FLOORPLAN_LANDLOCKED_ROOM",
+          "FLOORPLAN_AREA_NONCONSERVATION"
+        ],
+        "defects_count": 14,
+        "rooms_count": 4,
+        "svg_clipped_count": 3
+      },
+      "observed_via_real_browser": true,
+      "project_id": "genie-synth-clinic-coldchain-water-filtration-facility"
+    }
+  },
+  "elapsed_seconds": 10.045,
+  "output_directory": "artifacts/dogfood_rc3",
+  "reproducible_commands": [
+    "python3 run_rc3_dogfood_and_browser_acceptance.py",
+    "python3 -m unittest -v tests/test_rc3_dogfood_and_inheritance.py",
+    "python3 -m unittest -v tests/test_rc3_final_release_closure.py",
+    "python3 functional_runner.py .",
+    "python3 tests/verify_real_bakery.py"
+  ],
+  "schema": "openline.genie.rc3_dogfood_and_inheritance_evidence.v1",
+  "second_worker_inheritance": {
+    "capsule_file": "capsule_argon_vis_001.json",
+    "capsule_id": "CAPSULE-ARGON-VIS-001",
+    "capsule_sha256": "c28ed26c6daa913efd2f9663ba4454eedadee6c992538c7cc96e5712cc6bd7e8",
+    "clean_room_worker_b_import": {
+      "capability_id": "cap-visual-geometric-stabilizer-v1",
+      "report_sha256": "49e1914acf2f0ff560e3ed2d15d4024b14b2d6d14bb1a2682ac80c4780d3bf54",
+      "standing": "ACCEPTED",
+      "status": "CAPSULE_IMPORTED_AND_VERIFIED",
+      "verification_evaluations_spent": 2
+    },
+    "ten_step_inheritance_regression": {
+      "all_10_steps_passed": true,
+      "capsule_digest_sha256": "78a457437c0dd3e778257f290c88fc89dffff87074ea1489f313b3cb144a1110",
+      "capsule_id": "CAPSULE-ARGON-VIS-001",
+      "source_sha256": "010ef56ab2932e830abab0197de5abed65ed267fcd0295af78f2f87ac8e6ed20",
+      "steps": {
+        "10_succeed_on_transfer_vectors_without_private_context": true,
+        "1_recognize_missing_capability": true,
+        "2_select_or_invent_intervention": true,
+        "3_build_actual_artifact": true,
+        "4_observe_rendered_result": true,
+        "5_diagnose_causal_discrepancy": true,
+        "6_correct_artifact": true,
+        "7_candidate_precheck_passes_without_self_approval": true,
+        "8_preserve_capability_capsule": true,
+        "9_transfer_capability_to_worker_b": true
+      },
+      "worker_b_import_receipt": {
+        "capability_id": "cap-visual-geometric-stabilizer-v1",
+        "report_sha256": "49e1914acf2f0ff560e3ed2d15d4024b14b2d6d14bb1a2682ac80c4780d3bf54",
+        "standing": "ACCEPTED",
+        "status": "CAPSULE_IMPORTED_AND_VERIFIED",
+        "verification_evaluations_spent": 2
+      },
+      "worker_b_unseen_transfer_outputs": [
+        {
+          "geometric_margin": 0.98,
+          "remaining_defects": 0,
+          "status": "COMMIT_VALID"
+        },
+        {
+          "geometric_margin": 0.98,
+          "remaining_defects": 0,
+          "status": "COMMIT_VALID"
+        },
+        {
+          "geometric_margin": 0.0,
+          "remaining_defects": 1,
+          "status": "REJECTED_FUNCTIONAL_DEGRADATION"
+        },
+        {
+          "reason": "missing_render_observation",
+          "status": "ABSTAIN_UNVERIFIED"
+        }
+      ]
+    },
+    "worker_b_all_real_dogfood_passed": true,
+    "worker_b_assumption_drift_reopen_error": "STALE_ASSUMPTION_REOPEN_REQUIRED:ASSUMPTION_DRIFT:data_version_mismatch",
+    "worker_b_real_dogfood_runs": [
+      {
+        "geometric_margin": 0.98,
+        "remaining_defects": 0,
+        "status": "COMMIT_VALID",
+        "task_id": "WB-DOGFOOD-01-RESPONSIVE-OCCLUSION-CLIP"
+      },
+      {
+        "geometric_margin": 0.98,
+        "remaining_defects": 0,
+        "status": "COMMIT_VALID",
+        "task_id": "WB-DOGFOOD-02-STATEFUL-SUBMIT-AND-DESYNC"
+      },
+      {
+        "geometric_margin": 0.98,
+        "remaining_defects": 0,
+        "status": "COMMIT_VALID",
+        "task_id": "WB-DOGFOOD-03-FLOORPLAN-4BAY-AND-SVG"
+      }
+    ],
+    "worker_b_standing_after_assumption_drift": "REOPEN"
+  },
+  "version": "1.2.0-rc3"
+}

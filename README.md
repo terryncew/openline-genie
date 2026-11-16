@@ -1,4 +1,4 @@
-# OpenLine Genie & Living Projects (`v1.2.0-rc2`)
+# OpenLine Genie & Living Projects (`v1.2.0-rc3`)
 
 **Local-First Seven-Application Suite, Custom App Builder & Receiver-Governed Runtime**
 
@@ -23,7 +23,7 @@ python3 launch_genie.py --verify-only
 python3 launch_genie.py
 ```
 
-## 2. Included Applications (`v1.2.0-rc2` Seven-Application Local Suite)
+## 2. Included Applications (`v1.2.0-rc3` Seven-Application Local Suite)
 
 1. **Energy Commons (`/products`)**: Community solar, battery/PCM reserve, and tariff planning.
 2. **Advocate + Case Packet (`/products`, `/api/advocate/case_packets`)**: Evidence organization, missing-document checks, and PII-redacted appeal packets.
@@ -41,7 +41,7 @@ python3 launch_genie.py
 - **Browser & Viewport Scope**: Verified in headless Chromium at desktop (`1280x800`) and mobile width (`390x844`, `0px` horizontal overflow). Physical iOS Safari hardware is marked `UNTESTED_ON_PHYSICAL_IOS_DEVICE`.
 
 
-## Private RC2 release-repair candidate — independent reviewer notes
+## Private RC3 release candidate (`v1.2.0-rc3`) — independent reviewer notes
 
 The source in this archive is a **private post-Argon repair candidate**, not the
 published GitHub main branch. Public release remains **HOLD** until a separate

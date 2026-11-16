@@ -1819,10 +1819,6 @@ class LivingProjectEngine(OpenLineGenieEngine):
 
     def _ensure_project_recall_support_registered(self, project_id: str, state: dict[str, Any]) -> None:
         work_id = f"{project_id}:scenario_plan"
-        with self.recall_ledger._conn() as rconn:
-            wrow = rconn.execute("SELECT 1 FROM work WHERE work_id=?", (work_id,)).fetchone()
-        if wrow is not None:
-            return
         owner_priv = self.owner_identity.key
         owner_pub_hex = recall_public_hex(owner_priv)
         domain_stations = list(dict.fromkeys([
@@ -1837,6 +1833,83 @@ class LivingProjectEngine(OpenLineGenieEngine):
             *list(state.get("civilization_app", {}).get("assumptions", {}).keys()),
             *list(state.get("neighborhood_app", {}).get("assumptions", {}).keys()),
         ]))
+        with self.recall_ledger._conn() as rconn:
+            wrow = rconn.execute(
+                "SELECT support_sets, advisory, complete, signature FROM work WHERE work_id=?", (work_id,)
+            ).fetchone()
+        if wrow is not None:
+            # Work already registered: EXTEND the support group with any
+            # current-state keys that were never registered (e.g. the
+            # advocate/science baseline keys, absent from the v1 synthesized
+            # state the group was built from). Without this, the first accept
+            # that changes such a key recalls an unlinked source, which the
+            # recall path answers with advisory + complete=0 -- permanent
+            # UNRESOLVED, unrepairable because revalidation requires REOPEN.
+            # Extension only ADDS sources and links them; it never touches
+            # advisory or complete, so a poisoned (complete=0) row stays
+            # poisoned and a revoked source keeps its stored revision/digest
+            # (a later recall of an extended key then yields REOPEN, which
+            # the owner can revalidate, instead of UNRESOLVED).
+            if not int(wrow[2]):
+                return
+            from core.recall import b64 as recall_b64, canonical as recall_canonical
+            existing_sets = json.loads(wrow[0])
+            registered = {d["source"] for g in existing_sets for d in g}
+            additions = []
+            added_sources = []
+            for station_key in domain_stations:
+                src_name = f"{project_id}:{station_key}"
+                if src_name in registered:
+                    continue
+                self.recall_ledger.pin_source(src_name, owner_pub_hex)
+                with self.recall_ledger._conn() as rconn:
+                    srow = rconn.execute(
+                        "SELECT revision, digest, state FROM sources WHERE source=?", (src_name,)
+                    ).fetchone()
+                if srow is None:
+                    dig = sha256_hex({"project_id": project_id, "station": station_key, "version": 1})
+                    ev = recall_signed_event(
+                        owner_priv,
+                        source=src_name,
+                        revision=1,
+                        digest=dig,
+                        state="VALID",
+                        expires_at=2_000_000_000,
+                    )
+                    self.recall_ledger.apply_event(ev, now=200)
+                    additions.append({"source": src_name, "revision": 1, "digest": dig})
+                else:
+                    additions.append({"source": src_name, "revision": int(srow[0]), "digest": str(srow[1])})
+                added_sources.append(src_name)
+            if not additions:
+                return
+            new_sets = [list(existing_sets[0]) + additions] + list(existing_sets[1:])
+            manifest = {
+                "work_id": work_id,
+                "support_sets": new_sets,
+                "advisory": json.loads(wrow[1]),
+                "complete": True,
+            }
+            sig = recall_b64(self.recall_ledger._signer.sign(recall_canonical(manifest)))
+            # Optimistic concurrency: only commit if no other writer (e.g. a
+            # recall) changed the row since it was read; a lost race simply
+            # returns and the next _ensure call retries from fresh data.
+            # This must never overwrite a recall's complete=0 with stale data.
+            with self.recall_ledger._conn() as rconn:
+                rconn.execute("BEGIN IMMEDIATE")
+                cur = rconn.execute(
+                    "UPDATE work SET support_sets=?, signature=? WHERE work_id=? AND signature=?",
+                    (recall_canonical(new_sets).decode(), sig, work_id, str(wrow[3])),
+                )
+                if cur.rowcount != 1:
+                    rconn.rollback()
+                    return
+                for src_name in added_sources:
+                    rconn.execute(
+                        "INSERT OR IGNORE INTO links VALUES(?,?)", (src_name, work_id)
+                    )
+                rconn.commit()
+            return
         support_group = []
         for station_key in domain_stations:
             src_name = f"{project_id}:{station_key}"
@@ -1894,7 +1967,19 @@ class LivingProjectEngine(OpenLineGenieEngine):
             new = after.get(app_key, {}).get("assumptions", {})
             if not old or not new:
                 continue  # Initial seed has no earlier calculation to invalidate.
-            changed = [k for k in set(old) | set(new) if old.get(k) != new.get(k)]
+            # Only keys present in BOTH snapshots can have stale support to
+            # invalidate. A key that is NEW in `new` was never part of the
+            # prior decision basis, so recalling it would hit the unlinked-
+            # source branch of recall_living_project_dependency (advisory +
+            # complete=0 -> permanent UNRESOLVED, unrepairable because
+            # revalidation requires REOPEN). That is exactly what poisoned
+            # the advocate/science seed baselines: the v1 synthesized
+            # placeholder assumptions share no keys with the real baseline,
+            # so every baseline key was "changed" and unlinked. (Stage
+            # merges into a copy of the existing assumptions, so keys are
+            # never removed through the UI path; a direct patch that drops
+            # a key no longer recalls it.)
+            changed = [k for k in set(old) & set(new) if old.get(k) != new.get(k)]
             if changed:
                 self._ensure_project_recall_support_registered(project_id, before)
                 # Invalidate each changed support independently; downstream

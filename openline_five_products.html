@@ -1250,6 +1250,11 @@
   // Accepted snapshots, not HTML seed attributes, own editable form values.
   // Sync only when the accepted SHA changes to avoid erasing in-progress edits.
   const lastFormAcceptedSha = Object.create(null);
+  // First-use readiness is shown exactly once, when the five products first
+  // arrive. A flag owns it, not the banner text: a STOP/Resume during seeding
+  // can overwrite "Preparing..." before the products arrive, and the ready
+  // signal must still appear.
+  let readyBannerShown = false;
   function syncAcceptedForms() {
     const products = STATE && STATE.products || {};
     const mappings = {
@@ -1347,10 +1352,11 @@
       return;
     }
     // Clear the first-use loading banner once the products have arrived.
-    // Only the loading text is replaced, so action feedback (export,
-    // import, review) set by other handlers is never clobbered.
-    if (document.getElementById("product-action-banner").textContent.includes("Preparing")) {
+    // The flag fires only on first arrival, so action feedback (export,
+    // import, review) set by other handlers is never clobbered afterwards.
+    if (!readyBannerShown) {
       setBanner("Five project examples ready.", "ok");
+      readyBannerShown = true;
     }
     const workerRaw = String(eng.active_worker || "worker-a");
     document.getElementById("pill-active-worker").textContent =
@@ -1661,7 +1667,12 @@
         renderAll();
       }
       await refreshState();
-      setBanner("Editing resumed. You can now preview and accept changes.", "ok");
+      // If seeding just completed during this Resume, the ready banner is the
+      // correct first-use signal; the STOP pill already shows Active. Never
+      // overwrite it with the resumed message.
+      if (!document.getElementById("product-action-banner").textContent.includes("Five project examples ready")) {
+        setBanner("Editing resumed. You can now preview and accept changes.", "ok");
+      }
     } catch (err) {
       // Failure leaves STOP in place. Refresh from the receiver, not from
       // optimistic UI state or a blind retry with a later epoch.

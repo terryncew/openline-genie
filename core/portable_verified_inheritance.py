@@ -2,7 +2,7 @@
 """OpenLine Convergence Loop C — Portable Verified Inheritance & Automatic Assumption-Change Revalidation
 (`core/portable_verified_inheritance.py`).
 
-Security & Release-Gate Hardening (v1.2.0-rc2):
+Security & Release-Gate Hardening (v1.2.0-rc2 + Visual Breakthrough 001):
 1. Real Ed25519 Cryptographic Authorization (`sign_envelope` / `verify_envelope` via `core.openline_guard`):
    - `verify_and_import_capsule()` verifies that `worker_a_receipt["issuer_receiver_public"]` is registered in
      `TRUSTED_CAPSULE_ISSUERS`, verifies the Ed25519 signature over the canonical receipt payload, and checks
@@ -123,6 +123,76 @@ def _build_capsule_obligations() -> list[ExecutableProofObligation]:
     return [ob_nominal, ob_boundary]
 
 
+def _build_visual_capsule_obligations() -> list[ExecutableProofObligation]:
+    ob_nominal = ExecutableProofObligation(
+        obligation_id="OB-VIS-NOMINAL-GEOMETRIC-AND-STATE-STABILIZATION",
+        category="nominal_competence",
+        description="Resolve fixed-header occlusion, SVG viewBox truncation, floor-plan overlap, and state-default desync",
+        test_vectors=(
+            {
+                "ref_ok": True,
+                "fixed_header_overlap_px": 42.0,
+                "svg_overflow_px": 56.0,
+                "room_overlap_iou": 0.0,
+                "landlocked_rooms": 0,
+                "state_desync_count": 1,
+                "functional_controls_before": 2,
+                "functional_controls_after": 2,
+            },
+            {
+                "ref_ok": True,
+                "fixed_header_overlap_px": 0.0,
+                "svg_overflow_px": 0.0,
+                "room_overlap_iou": 0.18,
+                "landlocked_rooms": 1,
+                "state_desync_count": 0,
+                "functional_controls_before": 1,
+                "functional_controls_after": 1,
+            },
+        ),
+        verifier_fn=lambda vec, out: (
+            out.get("status") == "COMMIT_VALID"
+            and int(out.get("remaining_defects", 99)) == 0
+            and float(out.get("geometric_margin", 0.0)) >= 0.90,
+            "visual_nominal_stabilization_failure",
+        ),
+    )
+    ob_boundary = ExecutableProofObligation(
+        obligation_id="OB-VIS-BOUNDARY-NONDEGRADATION-AND-REF-LOSS",
+        category="boundary_invariant",
+        description="Reject visual repairs that degrade functional controls, and abstain when render reference is lost",
+        test_vectors=(
+            {
+                "ref_ok": True,
+                "fixed_header_overlap_px": 0.0,
+                "svg_overflow_px": 0.0,
+                "room_overlap_iou": 0.0,
+                "landlocked_rooms": 0,
+                "state_desync_count": 0,
+                "functional_controls_before": 3,
+                "functional_controls_after": 1,
+            },
+            {
+                "ref_ok": False,
+                "fixed_header_overlap_px": 24.0,
+                "svg_overflow_px": 0.0,
+                "room_overlap_iou": 0.0,
+                "landlocked_rooms": 0,
+                "state_desync_count": 0,
+                "functional_controls_before": 2,
+                "functional_controls_after": 2,
+            },
+        ),
+        verifier_fn=lambda vec, out: (
+            (out.get("status") == "REJECTED_FUNCTIONAL_DEGRADATION")
+            if vec["ref_ok"]
+            else (out.get("status") == "ABSTAIN_UNVERIFIED"),
+            "visual_boundary_violation_on_degradation_or_ref_loss",
+        ),
+    )
+    return [ob_nominal, ob_boundary]
+
+
 CAPSULE_EXECUTABLE_SOURCE = """def execute_coupled_capability(vec, params):
     if not vec.get("ref_ok", False):
         return {"status": "ABSTAIN_UNVERIFIED", "reason": "missing_reference_sensor"}
@@ -142,6 +212,29 @@ CAPSULE_EXECUTABLE_SOURCE = """def execute_coupled_capability(vec, params):
 """
 
 CAPSULE_EXECUTABLE_SOURCE_SHA256 = sha256_hex(CAPSULE_EXECUTABLE_SOURCE)
+
+CAPSULE_VISUAL_GEOMETRIC_SOURCE = """def execute_visual_geometric_stabilizer(vec, params):
+    if not vec.get("ref_ok", False):
+        return {"status": "ABSTAIN_UNVERIFIED", "reason": "missing_render_observation"}
+    ctrl_before = float(vec.get("functional_controls_before", 1.0))
+    ctrl_after = float(vec.get("functional_controls_after", 1.0))
+    if ctrl_after < ctrl_before:
+        return {"status": "REJECTED_FUNCTIONAL_DEGRADATION", "remaining_defects": 1, "geometric_margin": 0.0}
+    hdr_res = max(0.0, float(vec.get("fixed_header_overlap_px", 0.0)) * (1.0 - float(params.get("header_reflow_gain", 1.0))))
+    svg_res = max(0.0, float(vec.get("svg_overflow_px", 0.0)) * (1.0 - float(params.get("viewbox_pad_gain", 1.0))))
+    iou_res = max(0.0, float(vec.get("room_overlap_iou", 0.0)) * (1.0 - float(params.get("floorplan_partition_gain", 1.0))))
+    door_res = max(0.0, float(vec.get("landlocked_rooms", 0.0)) * (1.0 - float(params.get("egress_door_gain", 1.0))))
+    sync_res = max(0.0, float(vec.get("state_desync_count", 0.0)) * (1.0 - float(params.get("state_sync_gain", 1.0))))
+    rem = round(hdr_res + svg_res + iou_res + door_res + sync_res, 4)
+    geom_margin = round(math.exp(-0.05 * rem) * float(params.get("scale_guard_margin", 0.98)), 4)
+    return {
+        "status": "COMMIT_VALID",
+        "remaining_defects": 0 if rem <= 0.001 else 1,
+        "geometric_margin": geom_margin,
+    }
+"""
+
+CAPSULE_VISUAL_GEOMETRIC_SOURCE_SHA256 = sha256_hex(CAPSULE_VISUAL_GEOMETRIC_SOURCE)
 
 
 def _allowlisted_coupled_capability_kernel(vec: Mapping[str, Any], params: Mapping[str, float]) -> dict[str, Any]:
@@ -163,8 +256,31 @@ def _allowlisted_coupled_capability_kernel(vec: Mapping[str, Any], params: Mappi
     }
 
 
+def _allowlisted_visual_geometric_kernel(vec: Mapping[str, Any], params: Mapping[str, float]) -> dict[str, Any]:
+    """Audited static Python implementation of `execute_visual_geometric_stabilizer` (no dynamic exec)."""
+    if not vec.get("ref_ok", False):
+        return {"status": "ABSTAIN_UNVERIFIED", "reason": "missing_render_observation"}
+    ctrl_before = float(vec.get("functional_controls_before", 1.0))
+    ctrl_after = float(vec.get("functional_controls_after", 1.0))
+    if ctrl_after < ctrl_before:
+        return {"status": "REJECTED_FUNCTIONAL_DEGRADATION", "remaining_defects": 1, "geometric_margin": 0.0}
+    hdr_res = max(0.0, float(vec.get("fixed_header_overlap_px", 0.0)) * (1.0 - float(params.get("header_reflow_gain", 1.0))))
+    svg_res = max(0.0, float(vec.get("svg_overflow_px", 0.0)) * (1.0 - float(params.get("viewbox_pad_gain", 1.0))))
+    iou_res = max(0.0, float(vec.get("room_overlap_iou", 0.0)) * (1.0 - float(params.get("floorplan_partition_gain", 1.0))))
+    door_res = max(0.0, float(vec.get("landlocked_rooms", 0.0)) * (1.0 - float(params.get("egress_door_gain", 1.0))))
+    sync_res = max(0.0, float(vec.get("state_desync_count", 0.0)) * (1.0 - float(params.get("state_sync_gain", 1.0))))
+    rem = round(hdr_res + svg_res + iou_res + door_res + sync_res, 4)
+    geom_margin = round(math.exp(-0.05 * rem) * float(params.get("scale_guard_margin", 0.98)), 4)
+    return {
+        "status": "COMMIT_VALID",
+        "remaining_defects": 0 if rem <= 0.001 else 1,
+        "geometric_margin": geom_margin,
+    }
+
+
 ALLOWLISTED_CAPSULE_KERNELS: dict[str, Callable[[Mapping[str, Any], Mapping[str, float]], dict[str, Any]]] = {
     CAPSULE_EXECUTABLE_SOURCE_SHA256: _allowlisted_coupled_capability_kernel,
+    CAPSULE_VISUAL_GEOMETRIC_SOURCE_SHA256: _allowlisted_visual_geometric_kernel,
 }
 
 _ALLOWED_AST_CALL_NAMES = frozenset({"float", "max", "min", "round"})
@@ -366,6 +482,97 @@ def qualify_and_export_capsule_worker_a(state_dir: Path) -> PortableVerifiedCapa
     )
 
 
+def qualify_and_export_visual_capsule_worker_a(state_dir: Path) -> PortableVerifiedCapabilityCapsule:
+    """Worker A qualifies the VGC-CDRI visual-geometric counterfactual stabilizer capability
+    against the executable obligation gate and exports an Ed25519-signed capsule (`CAPSULE-ARGON-VIS-001`).
+    """
+    eng_a = LivingProjectEngine(state_dir=state_dir)
+    register_trusted_capsule_issuer(eng_a.receiver_identity.public)
+
+    gate = ExecutableProofObligationGate(min_nominal_coverage=0.80)
+    obligations = _build_visual_capsule_obligations()
+    params = {
+        "header_reflow_gain": 1.0,
+        "viewbox_pad_gain": 1.0,
+        "floorplan_partition_gain": 1.0,
+        "egress_door_gain": 1.0,
+        "state_sync_gain": 1.0,
+        "scale_guard_margin": 0.98,
+    }
+    fn = _verify_ast_and_resolve_allowlisted_kernel(CAPSULE_VISUAL_GEOMETRIC_SOURCE, params)
+    rep = gate.evaluate_candidate("VISUAL-TASK-A", "CAP-VISUAL-GEOMETRIC-STABILIZER-V1", fn, obligations)
+    if not rep.independently_accepted:
+        raise RuntimeError(f"Worker A visual capsule qualification failed: {rep.rejection_reason}")
+
+    src_hash = sha256_hex(CAPSULE_VISUAL_GEOMETRIC_SOURCE)
+    suite_manifest = [
+        {"obligation_id": ob.obligation_id, "category": ob.category, "vectors": list(ob.test_vectors)}
+        for ob in obligations
+    ]
+    suite_hash = sha256_hex(suite_manifest)
+    cur_epoch = int(eng_a.guard.read_stop_state()["epoch"])
+    assumptions = asdict(SupportingAssumptions(authority_epoch=cur_epoch))
+    envelope = {
+        "supported_viewports": ["390x844", "1280x800"],
+        "supported_families": ["responsive_ui", "svg_diagram", "floor_plan", "stateful_app"],
+        "min_nominal_coverage": 0.80,
+    }
+    rollback_triggers = [
+        "data_version_mismatch",
+        "calibration_expired",
+        "reference_sensor_degraded",
+        "source_sha256_mismatch",
+        "policy_pin_sha256_mismatch",
+        "authority_epoch_revoked",
+    ]
+    core_payload = {
+        "capsule_id": "CAPSULE-ARGON-VIS-001",
+        "capability_id": "cap-visual-geometric-stabilizer-v1",
+        "domain": "visual_geometric_counterfactual_engineering",
+        "version": 1,
+        "source_sha256": src_hash,
+        "test_suite_sha256": suite_hash,
+        "operating_envelope": envelope,
+        "supporting_assumptions": assumptions,
+        "rollback_triggers": rollback_triggers,
+        "parameters": params,
+    }
+    digest = sha256_hex(core_payload)
+    receipt_payload = {
+        "schema": "openline.portable_capsule_receipt.v2",
+        "capsule_id": "CAPSULE-ARGON-VIS-001",
+        "capability_id": "cap-visual-geometric-stabilizer-v1",
+        "issuer_receiver_public": eng_a.receiver_identity.public,
+        "capsule_digest_sha256": digest,
+        "source_sha256": src_hash,
+        "test_suite_sha256": suite_hash,
+        "obligation_report_sha256": rep.report_sha256,
+        "authority_epoch": cur_epoch,
+    }
+    signed_env = sign_envelope(eng_a.receiver_identity.key, receipt_payload)
+    receipt = {
+        **receipt_payload,
+        "signed_envelope": signed_env,
+        "signature_sha256": sha256_hex(signed_env["signature"]),
+    }
+    return PortableVerifiedCapabilityCapsule(
+        capsule_id="CAPSULE-ARGON-VIS-001",
+        capability_id="cap-visual-geometric-stabilizer-v1",
+        domain="visual_geometric_counterfactual_engineering",
+        version=1,
+        executable_source=CAPSULE_VISUAL_GEOMETRIC_SOURCE,
+        source_sha256=src_hash,
+        test_suite_manifest=suite_manifest,
+        test_suite_sha256=suite_hash,
+        operating_envelope=envelope,
+        supporting_assumptions=assumptions,
+        rollback_triggers=rollback_triggers,
+        parameters=params,
+        worker_a_receipt=receipt,
+        capsule_digest_sha256=digest,
+    )
+
+
 class WorkerBPortableInheritanceRuntime:
     """Clean-room Worker B runtime that verifies Ed25519 capsule authority before import and
     automatically enforces assumption/revocation validity at every consequential effect boundary."""
@@ -392,6 +599,12 @@ class WorkerBPortableInheritanceRuntime:
         self.current_standing: str = "UNINITIALIZED"
         self.reopen_reason: str | None = None
 
+    @staticmethod
+    def _obligations_for_capsule(capsule_dict: Mapping[str, Any]) -> list[ExecutableProofObligation]:
+        if str(capsule_dict.get("capability_id", "")) == "cap-visual-geometric-stabilizer-v1":
+            return _build_visual_capsule_obligations()
+        return _build_capsule_obligations()
+
     def verify_and_import_capsule(
         self,
         capsule_dict: Mapping[str, Any],
@@ -413,7 +626,7 @@ class WorkerBPortableInheritanceRuntime:
         # 4. AST + allowlist verification (never calls exec)
         src = str(capsule_dict["executable_source"])
         fn = _verify_ast_and_resolve_allowlisted_kernel(src, capsule_dict["parameters"])
-        obligations = _build_capsule_obligations()
+        obligations = self._obligations_for_capsule(capsule_dict)
         rep = self.gate.evaluate_candidate(
             "WORKER-B-IMPORT-VERIFY",
             str(capsule_dict["capability_id"]),
@@ -453,8 +666,6 @@ class WorkerBPortableInheritanceRuntime:
         now_utc: int | None = None,
     ) -> dict[str, Any]:
         assert self.active_capsule is not None
-        # Detect in-memory mutations to active_capsule.supporting_assumptions or active_capsule.source_sha256
-        # as well as updates to self.live_environment or explicit override_env/unseen_vec fields.
         eff: dict[str, Any] = dict(self._pinned_assumptions)
         eff["source_sha256"] = self._pinned_source_sha256
         eff["now_utc"] = int(self.live_environment.get("now_utc", 1794787200))
@@ -627,23 +838,25 @@ class WorkerBPortableInheritanceRuntime:
             self.engine.get_project_bundle(self.primary_project_id)["accepted"]["state"],
         )
 
-        fn = _verify_ast_and_resolve_allowlisted_kernel(CAPSULE_EXECUTABLE_SOURCE, repaired_parameters)
+        fn = _verify_ast_and_resolve_allowlisted_kernel(self._pinned_source_for_revalidation(), repaired_parameters)
         rep = self.gate.evaluate_candidate(
             "WORKER-B-REVALIDATION",
             self.active_capsule.capability_id,
             fn,
-            _build_capsule_obligations(),
+            self._obligations_for_capsule(asdict(self.active_capsule)),
         )
         if not rep.independently_accepted:
             raise ValueError(f"REVALIDATION_FAILED:{rep.rejection_reason}")
 
-        self.active_capsule.executable_source = CAPSULE_EXECUTABLE_SOURCE
-        self.active_capsule.source_sha256 = CAPSULE_EXECUTABLE_SOURCE_SHA256
+        canon_src = self._pinned_source_for_revalidation()
+        canon_hash = sha256_hex(canon_src)
+        self.active_capsule.executable_source = canon_src
+        self.active_capsule.source_sha256 = canon_hash
         self.active_capsule.supporting_assumptions = copy.deepcopy(dict(updated_assumptions))
         self.active_capsule.parameters = copy.deepcopy(dict(repaired_parameters))
         self.active_capsule.version += 1
         self._pinned_assumptions = copy.deepcopy(dict(updated_assumptions))
-        self._pinned_source_sha256 = CAPSULE_EXECUTABLE_SOURCE_SHA256
+        self._pinned_source_sha256 = canon_hash
         self.live_environment = {
             **copy.deepcopy(dict(updated_assumptions)),
             "source_sha256": self._pinned_source_sha256,
@@ -656,6 +869,11 @@ class WorkerBPortableInheritanceRuntime:
             "new_capsule_version": self.active_capsule.version,
             "revalidation_report_sha256": rep.report_sha256,
         }
+
+    def _pinned_source_for_revalidation(self) -> str:
+        if self.active_capsule and self.active_capsule.capability_id == "cap-visual-geometric-stabilizer-v1":
+            return CAPSULE_VISUAL_GEOMETRIC_SOURCE
+        return CAPSULE_EXECUTABLE_SOURCE
 
 
 def _measure_constructed_parameter_search_trials(
@@ -787,8 +1005,6 @@ def run_loop_c_portable_inheritance_and_revalidation_experiment() -> dict[str, A
         mutation_receipts = []
         for label, mutated_env in assumption_mutations:
             unrelated_sha_before = worker_b.engine.get_project_bundle(worker_b.unrelated_project_id)["accepted"]["state_sha256"]
-            # Update live environment AND call execute_on_unseen_task() directly WITHOUT calling
-            # check_assumptions_and_auto_recall() first, proving mandatory boundary enforcement!
             worker_b.update_live_environment(**mutated_env)
             blocked_without_manual_recall = False
             try:
@@ -809,7 +1025,6 @@ def run_loop_c_portable_inheritance_and_revalidation_experiment() -> dict[str, A
                 now_utc=1794787200,
             )
             assert reval["standing"] == "ACCEPTED"
-            # Restore baseline pinned assumptions for next mutation check
             worker_b._pinned_assumptions = copy.deepcopy(dict(capsule.supporting_assumptions))
             worker_b.active_capsule.supporting_assumptions = copy.deepcopy(dict(capsule.supporting_assumptions))
             worker_b.live_environment = copy.deepcopy(base_env)

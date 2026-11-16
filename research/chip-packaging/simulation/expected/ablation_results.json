@@ -1,0 +1,119 @@
+{
+  "schema": "openline.civilization_ratchet_003.gpt6_independent_ablation.v1",
+  "claim": "Parametric ablations of authors own model; no hardware validation, no independent constitutive model",
+  "source_zip_sha256": "72802ddb9237cab72b3c219f31b2d3ac38684ed770b629b090b547957c3f8beb",
+  "controls": {
+    "A0_original": {
+      "tflops_per_5yr_dollar_N2500": 1.554,
+      "model_lifecycle_5yr_usd": 11011.44,
+      "survival_percent": 33.33,
+      "mean_peak_tj_c": 108.21,
+      "pdn_loss_w": 181.13,
+      "mfg_yield_model_assigned": 0.865,
+      "heat_conservation_max_relative_error": 0.001009,
+      "ratio_vs_original_A0": 1.0
+    },
+    "A0_same_075_pitch_metal_geometry": {
+      "tflops_per_5yr_dollar_N2500": 1.8671,
+      "model_lifecycle_5yr_usd": 10489.72,
+      "survival_percent": 100.0,
+      "mean_peak_tj_c": 82.42,
+      "pdn_loss_w": 181.13,
+      "mfg_yield_model_assigned": 0.865,
+      "heat_conservation_max_relative_error": 1.161e-07,
+      "ratio_vs_original_A0": 1.2015
+    },
+    "A1_existing_direct_to_Si_075_pitch_control": {
+      "tflops_per_5yr_dollar_N2500": 1.6945,
+      "model_lifecycle_5yr_usd": 11565.21,
+      "survival_percent": 100.0,
+      "mean_peak_tj_c": 81.25,
+      "pdn_loss_w": 181.13,
+      "mfg_yield_model_assigned": 0.805,
+      "heat_conservation_max_relative_error": 4.84e-07,
+      "ratio_vs_original_A0": 1.0904
+    },
+    "G2_original": {
+      "tflops_per_5yr_dollar_N2500": 3.0571,
+      "model_lifecycle_5yr_usd": 6479.03,
+      "survival_percent": 100.0,
+      "mean_peak_tj_c": 60.33,
+      "pdn_loss_w": 6.67,
+      "mfg_yield_model_assigned": 0.945,
+      "heat_conservation_max_relative_error": 4.948e-15,
+      "ratio_vs_original_A0": 1.9672
+    },
+    "G2_if_PDN_is_038_milliohm": {
+      "tflops_per_5yr_dollar_N2500": 2.7099,
+      "model_lifecycle_5yr_usd": 7243.17,
+      "survival_percent": 100.0,
+      "mean_peak_tj_c": 64.98,
+      "pdn_loss_w": 181.13,
+      "mfg_yield_model_assigned": 0.945,
+      "heat_conservation_max_relative_error": 4.583e-15,
+      "ratio_vs_original_A0": 1.7438
+    },
+    "G2_if_die_pkg_cost_equal_A0": {
+      "tflops_per_5yr_dollar_N2500": 2.1733,
+      "model_lifecycle_5yr_usd": 9113.95,
+      "survival_percent": 100.0,
+      "mean_peak_tj_c": 60.33,
+      "pdn_loss_w": 6.67,
+      "mfg_yield_model_assigned": 0.945,
+      "heat_conservation_max_relative_error": 4.948e-15,
+      "ratio_vs_original_A0": 1.3985
+    },
+    "G2_if_both_cost_and_PDN_not_improved": {
+      "tflops_per_5yr_dollar_N2500": 1.9871,
+      "model_lifecycle_5yr_usd": 9878.09,
+      "survival_percent": 100.0,
+      "mean_peak_tj_c": 64.98,
+      "pdn_loss_w": 181.13,
+      "mfg_yield_model_assigned": 0.945,
+      "heat_conservation_max_relative_error": 4.583e-15,
+      "ratio_vs_original_A0": 1.2787
+    }
+  },
+  "severe_case": {
+    "A0_original": {
+      "peak_tj_c": 138.689,
+      "thermal_survived": false,
+      "overall_survived": false,
+      "effective_compute_fraction": 0.0,
+      "relative_energy_error": 0.001009
+    },
+    "A0_same_075_pitch_metal_geometry": {
+      "peak_tj_c": 87.298,
+      "thermal_survived": true,
+      "overall_survived": true,
+      "effective_compute_fraction": 0.8643,
+      "relative_energy_error": 1.161e-07
+    },
+    "A1_existing_direct_to_Si_075_pitch_control": {
+      "peak_tj_c": 86.925,
+      "thermal_survived": true,
+      "overall_survived": true,
+      "effective_compute_fraction": 0.8766,
+      "relative_energy_error": 2.039e-07
+    },
+    "G2_original": {
+      "peak_tj_c": 66.177,
+      "thermal_survived": true,
+      "overall_survived": true,
+      "effective_compute_fraction": 1.0,
+      "relative_energy_error": 4.235e-15
+    }
+  },
+  "null_laws": [
+    "No measured wafer yield. Author assigns 0.945 yield to postmetrology+interposer-deletion flags, otherwise 0.865 for A0.",
+    "PDN R and silicon die price are arm parameters, not outcomes of solved circuit packaging layout.",
+    "Physical 3D coolant/electrical compatibility, fine-pitch HBM links, liquid sealing and industrial process yield unverified."
+  ],
+  "algebraic_assumption_parity": {
+    "equalize_yield_only_score": 1.904003,
+    "equalize_die_pkg_PDN_yield_NRE_score": 1.873302,
+    "matched_channel_conventional_score": 1.8671,
+    "relative_gain_after_parity_percent": 0.332,
+    "note": "Algebraic counterfactual only; equalizing putative benefits does not by itself establish their impossibility."
+  }
+}

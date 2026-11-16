@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>Custom Cold-room Inventory Shift Dispatch Tracker — Operational App & Living Model — Stateful Dispatch App</title><script>
+window.Chart = window.Chart || function(ctx, cfg) {
+  this.ctx = ctx; this.config = cfg || {};
+  this.update = function() {}; this.destroy = function() {};
+};
+</script>
+</head><body style="margin:0;background:#0f172a;color:#f8fafc;font-family:system-ui,sans-serif;"><form id="dispatch-form" action=""><input id="inp-solar-kw" data-bind-assumption="solar_kw" type="number" value="145" style="position:absolute;left:24px;top:24px;width:180px;height:36px;" /><input id="inp-battery-kwh" data-bind-assumption="battery_kwh" type="number" value="280" style="position:absolute;left:24px;top:72px;width:180px;height:36px;" /><input id="inp-reserve-pct" data-bind-assumption="reserve_floor_pct" type="number" value="25" style="position:absolute;left:24px;top:120px;width:180px;height:36px;" /><button id="btn-commit-dispatch" type="button" onclick="window.__dispatchCount=(window.__dispatchCount||0)+1;document.getElementById('dispatch-readout').textContent='Committed:'+window.__dispatchCount;" style="position:absolute;left:24px;top:174px;width:180px;height:40px;">Commit Dispatch Log</button></form><div id="dispatch-readout" style="position:absolute;left:24px;top:228px;width:240px;height:32px;">Idle</div><script>try { var c = new Chart(document.createElement('canvas'), {}); } catch (e) { console.error(e); }</script><script>
+window.__records = window.__records || [];
+window.__handleAction = function() {
+  var inp = document.querySelector('input');
+  var val = (inp && inp.value) ? inp.value : 'Test Entry';
+  window.__records.push(val);
+  try { localStorage.setItem('genie_records', JSON.stringify(window.__records)); } catch (e) {}
+  var out = document.getElementById('records-list') || document.body;
+  var item = document.createElement('div'); item.textContent = val; out.appendChild(item);
+};
+document.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', window.__handleAction); });
+</script>
+<script>
+window.__ACCEPTED_ASSUMPTIONS = {"battery_kwh": 280, "reserve_floor_pct": 25, "solar_kw": 145};
+function syncAcceptedAssumptionsToForm() {
+  Object.entries(window.__ACCEPTED_ASSUMPTIONS || {}).forEach(function(entry) {
+    var el = document.querySelector('[data-bind-assumption="' + entry[0] + '"]');
+    if (el) el.value = String(entry[1]);
+  });
+}
+syncAcceptedAssumptionsToForm();
+</script>
+</body></html>

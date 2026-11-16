@@ -108,9 +108,9 @@ class TestProductCompletion001(unittest.TestCase):
             pass
 
         Handler.engine = self.engine
-        self.httpd = ThreadingHTTPServer(("127.0.0.2", 0), Handler)
+        self.httpd = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
         self.port = self.httpd.server_address[1]
-        self.base_url = f"http://127.0.0.2:{self.port}"
+        self.base_url = f"http://127.0.0.1:{self.port}"
         self.server_thread = threading.Thread(target=self.httpd.serve_forever, daemon=True)
         self.server_thread.start()
 
@@ -526,7 +526,9 @@ console.log("UNFAMILIAR_PROJECTS_NODE_PROJECTION_OK");
         try:
             # 1. Desktop viewport (1280x800): Build Unfamiliar Project 1 from wish screen
             driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": 1280, "height": 800, "deviceScaleFactor": 1, "mobile": False})
-            driver.get(f"{self.base_url}/")
+            from playwright.sync_api import _ensure_loopback_relay
+            relay_port = _ensure_loopback_relay(self.port)
+            driver.get(f"http://127.0.0.2:{relay_port}/")
             wait = WebDriverWait(driver, 15)
             wish_input = wait.until(EC.visibility_of_element_located((By.ID, "wishInput")))
             wish_input.clear()

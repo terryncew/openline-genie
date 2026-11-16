@@ -1,0 +1,128 @@
+{
+  "schema": "openline.independent_necessary_conditions004.v1",
+  "underlying_original_model": "20 PFLOPS nominal, 1000W IT per compute module, 5 years=43800 h, $0.10/kWh",
+  "source_bound_conclusion": "A 10x cost/performance gain is impossible via package savings ALONE under fixed IT-power and compute assumptions",
+  "power_floor": {
+    "five_year_it_electricity_cost_usd": 4380.0,
+    "ideal_physical_ceiling_tflops_per_lifecycle_usd": 4.5662,
+    "matched_conventional_sim_score": 1.8637,
+    "max_advantage_vs_matched_at_zero_hardware_cost_and_100pct_availability": 2.45,
+    "two_times_matched_target_tflops_per_usd": 3.7274,
+    "max_total_cost_at_20pflops_for_2x_usd": 5365.67,
+    "funds_remaining_after_it_electricity_for_2x_usd": 985.67,
+    "ten_times_matched_target_tflops_per_usd": 18.637,
+    "max_total_cost_at_20pflops_for_10x_usd": 1073.13,
+    "max_10x_total_cost_below_it_electricity": true
+  },
+  "power_network": {
+    "current_A": 1282.05,
+    "claimed_original_G2_equivalent_resistance_microohms": 4.06,
+    "claimed_G2_loss_W_computed": 6.67,
+    "max_equivalent_resistance_microohms_for_18W": 10.951,
+    "ideal_4mm_copper_aggregate_cross_section_needed_for_claimed_4_06_microohm_mm2": 16.95,
+    "limitations": "ideal solid copper no vias/contact/ground return/EM/loss from fluid isolation; lower bound is not 3D network validation"
+  },
+  "routing_necessary_conditions": {
+    "source": "TSMC official CoWoS-R 4um minimum RDL pitch, CoWoS-L local multi-layer submicron copper",
+    "hypothetical_benchmark": "8192 parallel required signal crossings over 45mm with only one 8um-pitch layer",
+    "ideal_span_for_8192_mm": 65.536,
+    "note": "conditional cut capacity only, not a proof entire HBM system cannot be routed; real pin-map and multilevel netlist required",
+    "sweep": [
+      {
+        "data_crossings": 1024,
+        "ideal_single_layer_span_mm_at_8um": 8.192,
+        "single_layer_45mm_cut_possible_on_width_alone": true
+      },
+      {
+        "data_crossings": 4096,
+        "ideal_single_layer_span_mm_at_8um": 32.768,
+        "single_layer_45mm_cut_possible_on_width_alone": true
+      },
+      {
+        "data_crossings": 8192,
+        "ideal_single_layer_span_mm_at_8um": 65.536,
+        "single_layer_45mm_cut_possible_on_width_alone": false
+      }
+    ]
+  },
+  "acceptance_requirements": [
+    "minimum viable routed 4nm GPU/HBM connectivity and signal integrity",
+    "extracted PDN 3D resistance, thermals and return path",
+    "foundry/assembler-quoted qualified cost/yield",
+    "heat-and-mass balance for facility water"
+  ],
+  "ratchet_10x_design_thresholds_assumptions_only": [
+    {
+      "hardware_other_5yr_usd": 2000,
+      "relative_IT_power": 1.0,
+      "minimum_compute_multiplier_for_tenfold": 5.945,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 2000,
+      "relative_IT_power": 0.75,
+      "minimum_compute_multiplier_for_tenfold": 4.925,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 2000,
+      "relative_IT_power": 0.5,
+      "minimum_compute_multiplier_for_tenfold": 3.904,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 2000,
+      "relative_IT_power": 0.25,
+      "minimum_compute_multiplier_for_tenfold": 2.884,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 3000,
+      "relative_IT_power": 1.0,
+      "minimum_compute_multiplier_for_tenfold": 6.877,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 3000,
+      "relative_IT_power": 0.75,
+      "minimum_compute_multiplier_for_tenfold": 5.857,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 3000,
+      "relative_IT_power": 0.5,
+      "minimum_compute_multiplier_for_tenfold": 4.836,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 3000,
+      "relative_IT_power": 0.25,
+      "minimum_compute_multiplier_for_tenfold": 3.816,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 5000,
+      "relative_IT_power": 1.0,
+      "minimum_compute_multiplier_for_tenfold": 8.741,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 5000,
+      "relative_IT_power": 0.75,
+      "minimum_compute_multiplier_for_tenfold": 7.72,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 5000,
+      "relative_IT_power": 0.5,
+      "minimum_compute_multiplier_for_tenfold": 6.7,
+      "same_raw_20pflops_required": false
+    },
+    {
+      "hardware_other_5yr_usd": 5000,
+      "relative_IT_power": 0.25,
+      "minimum_compute_multiplier_for_tenfold": 5.68,
+      "same_raw_20pflops_required": false
+    }
+  ]
+}

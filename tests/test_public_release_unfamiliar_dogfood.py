@@ -37,6 +37,27 @@ def _resolve_chrome() -> str | None:
     return None
 
 
+def _revalidate_basis(base: str, product_key: str) -> int:
+    """Gate 4: after an accept changes assumptions, Decision Recall reopens
+    the product's basis; authorize_* requires CURRENT, so revalidate the
+    accepted basis (human-reviewed) and return the HTTP status."""
+    with urllib.request.urlopen(f"{base}/api/five_products/state", timeout=10) as resp:
+        st = json.loads(resp.read().decode("utf-8"))
+    sha = st["products"][product_key]["accepted_sha256"]
+    req = urllib.request.Request(
+        f"{base}/api/five_products/action",
+        data=json.dumps({
+            "product_key": product_key, "action": "revalidate_accepted_basis",
+            "payload": {"human_reviewed": True, "expected_accepted_sha256": sha},
+        }).encode("utf-8"),
+        headers={"Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.status
+    except urllib.error.HTTPError as ex:
+        return ex.code
+
+
 class TestPublicReleaseUnfamiliarDogfood(unittest.TestCase):
     def setUp(self) -> None:
         self.install_1_dir = Path(tempfile.mkdtemp(prefix="genie-dogfood-install1-"))
@@ -143,6 +164,7 @@ class TestPublicReleaseUnfamiliarDogfood(unittest.TestCase):
                 page.locator("#shared-proposal-drawer").wait_for(state="visible", timeout=10000)
                 page.locator("#btn-accept-staged-proposal").click()
                 page.wait_for_timeout(400)
+                self.assertEqual(_revalidate_basis(base, "advocate"), 200)
                 page.locator("#advocate-human-approved").click()
                 page.locator("#btn-authorize-advocate-filing").click()
                 page.wait_for_timeout(400)
@@ -156,6 +178,7 @@ class TestPublicReleaseUnfamiliarDogfood(unittest.TestCase):
                 page.locator("#shared-proposal-drawer").wait_for(state="visible", timeout=10000)
                 page.locator("#btn-accept-staged-proposal").click()
                 page.wait_for_timeout(400)
+                self.assertEqual(_revalidate_basis(base, "advocate"), 200)
                 page.locator("#btn-authorize-advocate-filing").click()
                 page.wait_for_timeout(400)
                 self.assertIn(

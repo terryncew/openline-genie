@@ -4,11 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenLine Argon Robotics Studio — Sim2Real Skill Forge &amp; Verified Reflex Runtime</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+        <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    .flex { display: flex; } .grid { display: grid; } .hidden { display: none; }
+    .items-center { align-items: center; } .justify-between { justify-content: space-between; }
+    .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-4 { gap: 1rem; } .gap-6 { gap: 1.5rem; }
+    .p-3 { padding: 0.75rem; } .p-4 { padding: 1rem; } .p-5 { padding: 1.25rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; } .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .rounded-lg { border-radius: 0.5rem; } .rounded-xl { border-radius: 0.75rem; }
+    .border { border: 1px solid #1e293b; } .w-full { width: 100%; }
+    .text-xs { font-size: 0.75rem; } .text-sm { font-size: 0.875rem; } .text-lg { font-size: 1.125rem; } .text-xl { font-size: 1.25rem; }
+    .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; }
+  </style>
+  <script>
+    window.Chart = window.Chart || function(ctx, cfg) {
+      this.ctx = ctx && ctx.getContext ? ctx.getContext("2d") : ctx;
+      this.config = cfg || {};
+      this.draw = function() {
+        if (!this.ctx || !this.ctx.canvas) return;
+        const c = this.ctx.canvas;
+        const w = c.width || 480, h = c.height || 200;
+        this.ctx.clearRect(0, 0, w, h);
+        this.ctx.fillStyle = "#0f172a";
+        this.ctx.fillRect(0, 0, w, h);
+        const dsList = (this.config.data && this.config.data.datasets) || [];
+        dsList.forEach(ds => {
+          const pts = ds.data || [];
+          if (pts.length < 2) return;
+          const minV = Math.min.apply(null, pts), maxV = Math.max.apply(null, pts);
+          const span = Math.max(1e-6, maxV - minV);
+          this.ctx.strokeStyle = ds.borderColor || "#10b981";
+          this.ctx.lineWidth = ds.borderWidth || 2;
+          this.ctx.beginPath();
+          pts.forEach((v, i) => {
+            const x = 16 + (i / (pts.length - 1)) * (w - 32);
+            const y = (h - 16) - ((v - minV) / span) * (h - 32);
+            if (i === 0) this.ctx.moveTo(x, y); else this.ctx.lineTo(x, y);
+          });
+          this.ctx.stroke();
+        });
+      };
+      this.update = function() { this.draw(); };
+      this.destroy = function() {
+        if (this.ctx && this.ctx.canvas) {
+          this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        }
+      };
+      this.draw();
+    };
+  </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-    body {
+        body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: #0b0f19;
       color: #e2e8f0;

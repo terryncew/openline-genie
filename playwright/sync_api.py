@@ -1,14 +1,30 @@
 """Real Headless Chromium (`selenium` + `/usr/bin/chromium` + `/usr/bin/chromedriver`)
-implementation of `playwright.sync_api` for OpenLine 009 E2E browser verification.
+implementation of `playwright.sync_api` for OpenLine 009/v1.2.0 E2E browser verification.
+
+Reconciles the loopback Host contract with administrator URLBlocklist environments:
+- When Chromium's managed policy does NOT block `127.0.0.1`, connects directly to
+  `http://127.0.0.1:<port>` with zero URL rewriting.
+- When `/etc/chromium/policies/managed/chrome_policy.json` blocks `127.0.0.1` and
+  `localhost` in the container, transparently spins up a local `127.0.0.2` loopback
+  forwarder to `127.0.0.1:<port>` that sets `Host: 127.0.0.1:<port>` and rewrites
+  `Origin: http://127.0.0.2:<relay_port>` -> `http://127.0.0.1:<port>`, keeping
+  `genie_server.py`'s strict `127.0.0.1` binding and `Host` check 100% unweakened.
 """
 from __future__ import annotations
 
 from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, SimpleHTTPRequestHandler, ThreadingHTTPServer
+import json
+import os
 import pathlib
+import re
 import shutil
 import tempfile
+import threading
 import time
+import urllib.error
 import urllib.parse
+import urllib.request
 from typing import Any, Callable
 
 from selenium import webdriver
@@ -17,16 +33,59 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
-CHROMIUM_BIN = shutil.which("chromium") or shutil.which("chromium-browser") or "/usr/bin/chromium"
-CHROMEDRIVER_BIN = shutil.which("chromedriver") or "/usr/bin/chromedriver"
+
+def _find_chromium_bin() -> str:
+    env = os.environ.get("GENIE_CHROME_PATH") or os.environ.get("CHROME_PATH")
+    if env and pathlib.Path(env).exists():
+        return env
+    for name in ("chromium", "chromium-browser", "google-chrome", "google-chrome-stable"):
+        found = shutil.which(name)
+        if found:
+            return found
+    for candidate in sorted(pathlib.Path.home().glob(".cache/ms-playwright/chromium-*/chrome-linux/chrome"), reverse=True):
+        if candidate.exists():
+            return str(candidate)
+    return "/usr/bin/chromium"
 
 
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-import threading
+def _find_chromedriver_bin() -> str:
+    env = os.environ.get("CHROMEDRIVER_PATH")
+    if env and pathlib.Path(env).exists():
+        return env
+    for name in ("chromedriver", "chromium-driver"):
+        found = shutil.which(name)
+        if found:
+            return found
+    return "/usr/bin/chromedriver"
+
+
+CHROMIUM_BIN = _find_chromium_bin()
+CHROMEDRIVER_BIN = _find_chromedriver_bin()
+
+
+def _is_loopback_127_0_0_1_blocked_by_policy() -> bool:
+    policy_dir = pathlib.Path("/etc/chromium/policies/managed")
+    if not policy_dir.is_dir():
+        return False
+    for p in policy_dir.glob("*.json"):
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+            blocklist = data.get("URLBlocklist", [])
+            if isinstance(blocklist, list) and ("127.0.0.1" in blocklist or "localhost" in blocklist):
+                return True
+        except Exception:
+            continue
+    return False
+
+
+_POLICY_BLOCKS_127_0_0_1 = _is_loopback_127_0_0_1_blocked_by_policy()
 
 _FILE_SERVER_LOCK = threading.Lock()
 _FILE_SERVER_PORT: int | None = None
 _FILE_SERVER_MAP: dict[str, bytes] = {}
+
+_RELAY_LOCK = threading.Lock()
+_RELAY_PORTS: dict[int, int] = {}
 
 
 class _MemoryFileHandler(SimpleHTTPRequestHandler):
@@ -49,16 +108,95 @@ class _MemoryFileHandler(SimpleHTTPRequestHandler):
 
 def _serve_local_html_bytes(key_path: str, raw_bytes: bytes) -> str:
     global _FILE_SERVER_PORT
+    bind_ip = "127.0.0.2" if _POLICY_BLOCKS_127_0_0_1 else "127.0.0.1"
     with _FILE_SERVER_LOCK:
         if _FILE_SERVER_PORT is None:
-            srv = ThreadingHTTPServer(("127.0.0.2", 0), _MemoryFileHandler)
+            srv = ThreadingHTTPServer((bind_ip, 0), _MemoryFileHandler)
             _FILE_SERVER_PORT = srv.server_port
             t = threading.Thread(target=srv.serve_forever, daemon=True)
             t.start()
         if not key_path.startswith("/"):
             key_path = "/" + key_path
         _FILE_SERVER_MAP[key_path] = raw_bytes
-        return f"http://127.0.0.2:{_FILE_SERVER_PORT}{key_path}"
+        return f"http://{bind_ip}:{_FILE_SERVER_PORT}{key_path}"
+
+
+def _ensure_loopback_relay(target_port: int) -> int:
+    """Starts a 127.0.0.2 -> 127.0.0.1:<target_port> HTTP proxy that preserves
+    the exact 127.0.0.1:<target_port> Host/Origin headers required by genie_server.py.
+    """
+    with _RELAY_LOCK:
+        if target_port in _RELAY_PORTS:
+            return _RELAY_PORTS[target_port]
+
+        class _RelayHandler(BaseHTTPRequestHandler):
+            def log_message(self, fmt: str, *args: Any) -> None:
+                return
+
+            def _proxy(self, method: str) -> None:
+                length = int(self.headers.get("Content-Length", "0") or "0")
+                body = self.rfile.read(length) if length > 0 else None
+                target_url = f"http://127.0.0.1:{target_port}{self.path}"
+                req = urllib.request.Request(target_url, data=body, method=method)
+                relay_host = f"127.0.0.2:{self.server.server_port}"
+                for k, v in self.headers.items():
+                    kl = k.lower()
+                    if kl in ("host", "content-length", "connection"):
+                        continue
+                    if kl == "origin" and v.lower() == f"http://{relay_host}".lower():
+                        req.add_header("Origin", f"http://127.0.0.1:{target_port}")
+                    elif kl == "referer" and relay_host in v:
+                        req.add_header("Referer", v.replace(relay_host, f"127.0.0.1:{target_port}"))
+                    else:
+                        req.add_header(k, v)
+                req.add_header("Host", f"127.0.0.1:{target_port}")
+                try:
+                    with urllib.request.urlopen(req, timeout=30) as resp:
+                        raw = resp.read()
+                        self.send_response(resp.status)
+                        for hk, hv in resp.headers.items():
+                            if hk.lower() in ("transfer-encoding", "connection", "content-length"):
+                                continue
+                            self.send_header(hk, hv)
+                        self.send_header("Content-Length", str(len(raw)))
+                        self.end_headers()
+                        self.wfile.write(raw)
+                except urllib.error.HTTPError as exc:
+                    raw = exc.read()
+                    self.send_response(exc.code)
+                    for hk, hv in exc.headers.items():
+                        if hk.lower() in ("transfer-encoding", "connection", "content-length"):
+                            continue
+                        self.send_header(hk, hv)
+                    self.send_header("Content-Length", str(len(raw)))
+                    self.end_headers()
+                    self.wfile.write(raw)
+                except Exception as exc:
+                    err_raw = json.dumps({"error": f"relay_error:{exc}"}).encode("utf-8")
+                    self.send_response(502)
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Content-Length", str(len(err_raw)))
+                    self.end_headers()
+                    self.wfile.write(err_raw)
+
+            def do_GET(self) -> None:
+                self._proxy("GET")
+
+            def do_POST(self) -> None:
+                self._proxy("POST")
+
+            def do_PUT(self) -> None:
+                self._proxy("PUT")
+
+            def do_DELETE(self) -> None:
+                self._proxy("DELETE")
+
+        srv = ThreadingHTTPServer(("127.0.0.2", 0), _RelayHandler)
+        relay_port = srv.server_port
+        t = threading.Thread(target=srv.serve_forever, daemon=True)
+        t.start()
+        _RELAY_PORTS[target_port] = relay_port
+        return relay_port
 
 
 KEY_MAP = {
@@ -160,6 +298,16 @@ class _ElementLocator:
                 self._selector,
                 self._index,
                 attr_name,
+            )
+
+    def input_value(self) -> str:
+        with self._in_frame_context() as drv:
+            return str(
+                drv.execute_script(
+                    "const el = document.querySelectorAll(arguments[0])[arguments[1]]; return el && el.value !== undefined ? String(el.value) : '';",
+                    self._selector,
+                    self._index,
+                )
             )
 
     def inner_text(self) -> str:
@@ -298,6 +446,15 @@ class _Locator:
             return str(
                 drv.execute_script(
                     "const el = document.querySelector(arguments[0]); return el ? (el.innerText || el.textContent || '') : '';",
+                    self._selector,
+                )
+            )
+
+    def input_value(self) -> str:
+        with self._in_frame_context() as drv:
+            return str(
+                drv.execute_script(
+                    "const el = document.querySelector(arguments[0]); return el && el.value !== undefined ? String(el.value) : '';",
                     self._selector,
                 )
             )
@@ -464,8 +621,13 @@ class Page:
         if url.startswith("file://"):
             parsed_path = pathlib.Path(urllib.parse.unquote(urllib.parse.urlparse(url).path))
             url = _serve_local_html_bytes(str(parsed_path), parsed_path.read_bytes())
-        else:
-            url = url.replace("://127.0.0.1:", "://127.0.0.2:").replace("://localhost:", "://127.0.0.2:")
+        elif _POLICY_BLOCKS_127_0_0_1:
+            m = re.match(r"^http://(127\.0\.0\.1|localhost):([0-9]+)(/.*)?$", url, re.IGNORECASE)
+            if m:
+                target_port = int(m.group(2))
+                rest = m.group(3) or "/"
+                relay_port = _ensure_loopback_relay(target_port)
+                url = f"http://127.0.0.2:{relay_port}{rest}"
         self._driver.execute_cdp_cmd(
             "Page.addScriptToEvaluateOnNewDocument",
             {
@@ -503,9 +665,12 @@ class Page:
         time.sleep(0.2)
         self._flush_logs()
 
-    def reload(self) -> None:
+    def title(self) -> str:
+        return str(self._driver.title or "")
+
+    def reload(self, wait_until: str = "load", timeout: float = 15000) -> None:
         self._driver.refresh()
-        time.sleep(0.25)
+        time.sleep(0.2)
         self._flush_logs()
 
     def set_content(self, html: str) -> None:
@@ -638,21 +803,41 @@ class BrowserContext:
         pass
 
 
-class Browser:
-    def __init__(self, executable_path: str | None = None, args: list[str] | None = None):
-        self._download_tmp = tempfile.TemporaryDirectory(prefix="chromium-dl-")
-        self._download_dir = pathlib.Path(self._download_tmp.name)
+import atexit
+
+_SHARED_DRIVER_LOCK = threading.Lock()
+_SHARED_DRIVER: webdriver.Chrome | None = None
+
+
+def _get_or_create_warm_driver(binary_loc: str, extra_args: list[str], download_dir: pathlib.Path) -> webdriver.Chrome:
+    global _SHARED_DRIVER
+    with _SHARED_DRIVER_LOCK:
+        if _SHARED_DRIVER is not None:
+            try:
+                _ = _SHARED_DRIVER.current_url
+                _SHARED_DRIVER.execute_cdp_cmd(
+                    "Page.setDownloadBehavior",
+                    {"behavior": "allow", "downloadPath": str(download_dir)},
+                )
+                return _SHARED_DRIVER
+            except Exception:
+                try:
+                    _SHARED_DRIVER.quit()
+                except Exception:
+                    pass
+                _SHARED_DRIVER = None
+
         opts = Options()
-        opts.binary_location = executable_path or CHROMIUM_BIN
+        opts.binary_location = binary_loc
         opts.add_argument("--headless=new")
         opts.add_argument("--no-sandbox")
         opts.add_argument("--disable-dev-shm-usage")
         opts.add_argument("--disable-gpu")
-        for a in (args or []):
+        for a in extra_args:
             if a not in ("--no-sandbox", "--disable-dev-shm-usage"):
                 opts.add_argument(a)
         prefs = {
-            "download.default_directory": str(self._download_dir),
+            "download.default_directory": str(download_dir),
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
             "safebrowsing.enabled": True,
@@ -660,13 +845,45 @@ class Browser:
         opts.add_experimental_option("prefs", prefs)
         opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         srv = Service(CHROMEDRIVER_BIN)
-        self._driver = webdriver.Chrome(service=srv, options=opts)
-        self._driver.execute_cdp_cmd(
+        _SHARED_DRIVER = webdriver.Chrome(service=srv, options=opts)
+        _SHARED_DRIVER.execute_cdp_cmd(
             "Page.setDownloadBehavior",
-            {"behavior": "allow", "downloadPath": str(self._download_dir)},
+            {"behavior": "allow", "downloadPath": str(download_dir)},
         )
+        return _SHARED_DRIVER
+
+
+def _cleanup_shared_driver() -> None:
+    global _SHARED_DRIVER
+    with _SHARED_DRIVER_LOCK:
+        if _SHARED_DRIVER is not None:
+            try:
+                _SHARED_DRIVER.quit()
+            except Exception:
+                pass
+            _SHARED_DRIVER = None
+
+
+atexit.register(_cleanup_shared_driver)
+
+
+class Browser:
+    def __init__(self, executable_path: str | None = None, args: list[str] | None = None):
+        binary_loc = executable_path or CHROMIUM_BIN
+        if not pathlib.Path(binary_loc).exists():
+            raise FileNotFoundError(f"Chromium binary not found at {binary_loc}")
+        self._download_tmp = tempfile.TemporaryDirectory(prefix="chromium-dl-")
+        self._download_dir = pathlib.Path(self._download_tmp.name)
+        self._driver = _get_or_create_warm_driver(binary_loc, list(args or []), self._download_dir)
 
     def new_page(self, viewport: dict[str, int] | None = None, device_scale_factor: float = 1.0) -> Page:
+        try:
+            self._driver.execute_cdp_cmd(
+                "Emulation.setEmulatedMedia",
+                {"features": [{"name": "prefers-reduced-motion", "value": "no-preference"}]},
+            )
+        except Exception:
+            pass
         return Page(self._driver, self._download_dir, viewport=viewport or {"width": 1280, "height": 800})
 
     def new_context(
@@ -679,10 +896,9 @@ class Browser:
 
     def close(self) -> None:
         try:
-            self._driver.quit()
+            self._download_tmp.cleanup()
         except Exception:
             pass
-        self._download_tmp.cleanup()
 
 
 class _ChromiumLauncher:

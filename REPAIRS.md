@@ -35,7 +35,7 @@ independently re-accepted before any merge, tag, release, or publication.
 
 ## 2. Private local path redacted
 - `FOUNDER_CLOSURE_REPORT_001.md` (line 22) — the author's private
-  `/working_dir/c_2eb0812f9e3713b4/final_closure_001/rc_isolated/src_009`
+  `<isolated_workspace>/src_009`
   workspace path replaced with "an isolated local workspace (private
   path redacted for public release)". Claim unchanged.
 
