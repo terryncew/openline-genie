@@ -2605,6 +2605,10 @@ async function loadLiveProject(pid){
   const bundle=await apiGet('/api/project?project_id='+encodeURIComponent(pid));
   if(gen!==liveLoadGen)return null;
   liveBundle=bundle;discoveryDismissed=false;
+  // Pin the STOP generation that was actually displayed, not a newer one fetched at Resume time.
+  if(bundle.stopped && ownerStopEpoch===null && Number.isInteger(bundle.stop_epoch) && bundle.stop_epoch>0){
+    ownerStopEpoch=bundle.stop_epoch;
+  }else if(!bundle.stopped){ownerStopEpoch=null;}
   try{
     const st=bundle.accepted&&bundle.accepted.state;
     if(st&&st.bakery)bakeryPaths=await apiGet('/api/bakery/paths?project_id='+encodeURIComponent(pid));
@@ -4185,11 +4189,7 @@ $('stopBtn').addEventListener('click',async()=>{
       notice('Emergency STOP active; mutations frozen.');
     }else{
       if(!Number.isInteger(ownerStopEpoch)||ownerStopEpoch<1){
-        const observed=await apiGet('/api/status');
-        if(!observed.stopped||!Number.isInteger(observed.stop_epoch)||observed.stop_epoch<1){
-          throw new Error('Cannot confirm an active STOP epoch. Reload before resuming.');
-        }
-        ownerStopEpoch=observed.stop_epoch;
+        throw new Error('STOP epoch unknown. Reload to confirm the current STOP before resuming.');
       }
       await apiPost('/api/clear_stop',{reason:'owner_clear',expected_epoch:ownerStopEpoch});
       ownerStopEpoch=null;
