@@ -242,6 +242,7 @@ let pendingProposal = null;  // {proposal_id, summary, app_content, sha256}
 let stopped = false;         // server STOP state, as last reported by the server
 let connected = false;
 let serverStatus = null;     // /api/status payload
+let stopIntentEpoch = null;   // acknowledged STOP generation; never silently retarget a queued Resume
 let trace = [];
 
 const $ = id => document.getElementById(id);
@@ -336,6 +337,9 @@ function showCachedBundle() {
 async function refreshStatus() {
   try {
     serverStatus = await api("/api/status");
+    if (serverStatus.stopped && stopIntentEpoch === null && Number.isInteger(serverStatus.stop_epoch)) {
+      stopIntentEpoch = serverStatus.stop_epoch;
+    }
     setConnected(true);
     const avail = serverStatus.model_available;
     $("model-pill").textContent = "Model: " + (serverStatus.model_id || "none") +
@@ -509,6 +513,7 @@ async function rejectProposal() {
 async function doStop() {
   try {
     const data = await api("/api/stop", {method: "POST", body: JSON.stringify({reason: "owner_stop"})});
+    stopIntentEpoch = Number.isInteger(data.new_epoch) ? data.new_epoch : null;
     setStoppedUI(true);
     setStatus("STOP is active (server-enforced). Builds and proposals are blocked; accepted work is preserved.");
     logTrace("STOP issued" + (data && data.reason ? ": " + data.reason : ""));
@@ -519,7 +524,11 @@ async function doStop() {
 
 async function clearStop() {
   try {
-    await api("/api/clear_stop", {method: "POST", body: JSON.stringify({reason: "owner_clear"})});
+    if (!Number.isInteger(stopIntentEpoch) || stopIntentEpoch < 1) {
+      throw new Error("STOP epoch unknown. Reload to confirm the current STOP before resuming.");
+    }
+    await api("/api/clear_stop", {method: "POST", body: JSON.stringify({reason: "owner_clear", expected_epoch: stopIntentEpoch})});
+    stopIntentEpoch = null;
     setStoppedUI(false);
     setStatus("STOP cleared by the server. Building is allowed again.");
     logTrace("STOP cleared");
