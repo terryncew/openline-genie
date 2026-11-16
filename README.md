@@ -4,6 +4,8 @@
 
 OpenLine Genie runs on your own computer, in your web browser. Nothing is uploaded anywhere. You see the work take shape, change things, and explore different directions. The AI does the exploring. You decide what stays.
 
+**Find the related public projects and research:** [OpenLine ecosystem map](ECOSYSTEM.md).
+
 This repository holds two things:
 
 1. **OpenLine Genie v0.7.1** — the original product: build an idea in your browser, discover what breaks, explore what works, keep what you approve, with a receiver gate and a signed receipt, so swapping the model mid-task does not lose the work. Free and open source.
