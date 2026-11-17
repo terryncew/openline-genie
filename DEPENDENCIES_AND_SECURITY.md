@@ -5,6 +5,8 @@
 - `cryptography>=41.0.0` — Ed25519 signing and verification (`ReceiverGuard`, `RecallLedger`, portable capability capsules).
 - `numpy>=1.26.0` — Deterministic operational, thermodynamic, and multi-body robotics simulation arrays.
 - `onnxruntime>=1.16.0` — CPU execution provider for 2-layer MLP robot policies in Robotics Studio (with automatic pure-NumPy fallback if the C++ wheel is absent).
+- `Pillow>=10.0.0` — Image handling for rendered artifacts and screenshots.
+- `selenium>=4.8.0` — Browser-test driver (headless Chromium observation in tests only; not needed to run the applications).
 
 ## Security & Containment Boundary
 

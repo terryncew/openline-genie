@@ -1,6 +1,6 @@
-# OpenLine Argon Robotics Studio — Sim2Real Skill Forge & Verified Reflex Runtime (`openline_robotics_001`)
+# OpenLine Robotics Studio — Sim2Real Skill Forge & Verified Reflex Runtime (`openline_robotics_001`)
 
-- **Program**: `ARGON — OPENLINE ROBOTICS BREAKTHROUGH 001`
+- **Program**: `OPENLINE ROBOTICS BREAKTHROUGH 001`
 - **Candidate Version**: `1.0.0-rc1` (Preserved as a separate development candidate; does not modify the frozen six-application Genie release or Advocate Case Packet 001)
 - **License**: `Apache-2.0`
 - **Paid External API / Hardware Lock-In Cost**: `$0.00` (100% local-first Python + C++ `onnxruntime` + browser HTML5 Canvas simulator)
@@ -9,7 +9,7 @@
 
 ## 1. What Was Built (`THE PRODUCT`)
 
-**OpenLine Argon Robotics Studio** is a complete, local-first open-source robotics application and runtime that lets students, researchers, and robotics builders:
+**OpenLine Robotics Studio** is a complete, local-first open-source robotics application and runtime that lets students, researchers, and robotics builders:
 1. **Select or Create a Robot Project**: Out-of-the-box support for two substantially different open-source robots sharing the [Feetech STS3215](https://orobot.io/o/program/BROKER-2/open-duck-mini) 1:345 serial servo bus:
    - **[Open Duck Mini v2](https://github.com/apirrone/Open_Duck_Mini)** ([Runtime](https://github.com/apirrone/Open_Duck_Mini_Runtime), 14-DoF Bipedal BDX Droid: 10 leg servos + 4 neck/head servos, BNO055 I2C IMU, 4 foot switches).
    - **[Hugging Face LeRobot SO-101](https://github.com/huggingface/lerobot)** ([SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100), 6-DoF Articulated Follower Arm: 5 arm joints + 1 gripper).

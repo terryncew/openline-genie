@@ -33,7 +33,7 @@
    - Inside this evaluation sandbox, `--no-model` deterministic mode (`$0.00` API spend) and local loopback server execution are 100% verified, whereas persistent multi-user cloud hosting or live paid LLM API calls remain external host options.
 
 
-## Post-Argon RC2 private security repair — one server-owned persona
+## One server-owned persona
 
 The HTTP server binds to a loopback address and rejects unexpected Host headers
 on every endpoint. The Neighborhood UI may no longer switch between homeowner,

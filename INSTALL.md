@@ -158,7 +158,7 @@ branding and trademarks are governed separately and are not licensed
 under Apache 2.0.
 
 
-### Security and import boundary (private release review)
+### Security and import boundary
 
 Run `python3 launch_genie.py --host 127.0.0.1` on a computer you control.
 Never expose port 8795 to your LAN, Internet, reverse proxy, or shared account.

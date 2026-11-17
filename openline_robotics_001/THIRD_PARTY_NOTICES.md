@@ -1,6 +1,6 @@
 # Third-Party Open-Source Robotics & Software Notices
 
-OpenLine Argon Robotics Studio (`openline_robotics_001`) is licensed under the **Apache License, Version 2.0**.
+OpenLine Robotics Studio (`openline_robotics_001`) is licensed under the **Apache License, Version 2.0**.
 
 It interoperates with and models specifications from the following open-source projects:
 

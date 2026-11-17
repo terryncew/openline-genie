@@ -196,7 +196,7 @@ def main() -> None:
     eng = OpenLineRoboticsProductEngine(args.state_dir)
     html_file = HERE / "openline_robotics_studio.html"
     server = HTTPServer((args.host, args.port), make_handler(eng, html_file))
-    print(f"OpenLine Argon Robotics Studio listening on http://{args.host}:{args.port}/robotics")
+    print(f"OpenLine Robotics Studio listening on http://{args.host}:{args.port}/robotics")
     server.serve_forever()
 
 
