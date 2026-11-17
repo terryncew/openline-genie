@@ -245,7 +245,7 @@ class TestRc7R4LivingWorldProduct(unittest.TestCase):
         self.assertEqual(acc2["accepted"]["state"]["bakery"]["computed"]["bottleneck_id"], "ingredients")
 
         # 6. STOP freezes mutations immediately; Clear STOP resumes
-        code_stop, _ = _http_post(self.base_url, "/api/stop", {"reason": "dogfood_stop_check"})
+        code_stop, b_stop = _http_post(self.base_url, "/api/stop", {"reason": "dogfood_stop_check"})
         self.assertEqual(code_stop, 200)
         code_blocked, blocked_res = _http_post(
             self.base_url,
@@ -258,7 +258,7 @@ class TestRc7R4LivingWorldProduct(unittest.TestCase):
         )
         self.assertIn(code_blocked, (400, 403, 409))
         self.assertIn("stopped", blocked_res.get("error", "").lower())
-        code_clear, _ = _http_post(self.base_url, "/api/clear_stop", {"reason": "dogfood_resume"})
+        code_clear, _ = _http_post(self.base_url, "/api/clear_stop", {"reason": "dogfood_resume", "expected_epoch": b_stop["new_epoch"]})
         self.assertEqual(code_clear, 200)
 
         # 7. Export -> Import -> Replace Worker -> Switch Model -> Restart Persistence

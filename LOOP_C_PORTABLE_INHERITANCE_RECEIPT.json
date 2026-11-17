@@ -1,0 +1,84 @@
+{
+  "experiment_id": "LOOP-C-PORTABLE-VERIFIED-INHERITANCE-AND-REVALIDATION",
+  "evidence_class": "CONSTRUCTED_DETERMINISTIC_PARAMETER_SEARCH_NOT_REAL_LLM_AGENT_BENCHMARK",
+  "real_agent_6x_claim_retired": true,
+  "capsule_id": "CAPSULE-011-COUPLED-001",
+  "capsule_digest_sha256": "a67b400912dc188c6a405eca85f230d145efb3e522a32e472f7c0f0757cbafe9",
+  "worker_a_source_sha256": "f96ccdd6cbabb4e28783fabbf1081f10740f0938a5424498c2d4501b98d36a30",
+  "worker_a_test_suite_sha256": "be5284299a7f43f1f91cf6ef204d55e772aa20b36b2ee3a7e594a03dc9441246",
+  "three_way_worker_comparison": {
+    "evidence_class": "CONSTRUCTED_DETERMINISTIC_PARAMETER_SEARCH_NOT_REAL_LLM_AGENT_BENCHMARK",
+    "real_agent_6x_claim_retired": true,
+    "Competent_Worker_Without_Capsule": {
+      "evaluations_spent_to_converge": 8,
+      "unsafe_trial_commits_during_search": 2,
+      "unseen_tasks_solved_safely": 3,
+      "measured_elapsed_us": 198.07
+    },
+    "Static_Rules_Normal_Test_Suite": {
+      "evaluations_spent_to_converge": 1,
+      "nominal_gate_accepted": true,
+      "false_confident_commit_on_unseen_ref_loss": 1,
+      "unseen_tasks_solved_safely": 2,
+      "measured_elapsed_us": 25.28
+    },
+    "Worker_B_With_Portable_Verified_Capsule": {
+      "evaluations_spent_to_converge": 2,
+      "unsafe_trial_commits_during_search": 0,
+      "false_confident_commit_on_unseen_ref_loss": 0,
+      "unseen_tasks_solved_safely": 3,
+      "measured_elapsed_us": 157810.42
+    }
+  },
+  "mid_stream_assumption_revalidation_matrix": [
+    {
+      "mutation_id": "1_data_version_drift",
+      "standing_after_mutation": "REOPEN",
+      "blocked_at_effect_boundary_without_manual_recall_call": true,
+      "unrelated_project_preserved_exact": true,
+      "standing_after_revalidation": "ACCEPTED",
+      "revalidation_report_sha256": "e7e77cbdd57298fe6704236a398cb824129b7295d57435a955c9107bae81962d"
+    },
+    {
+      "mutation_id": "2_calibration_expired",
+      "standing_after_mutation": "REOPEN",
+      "blocked_at_effect_boundary_without_manual_recall_call": true,
+      "unrelated_project_preserved_exact": true,
+      "standing_after_revalidation": "ACCEPTED",
+      "revalidation_report_sha256": "e7e77cbdd57298fe6704236a398cb824129b7295d57435a955c9107bae81962d"
+    },
+    {
+      "mutation_id": "3_reference_sensor_degraded",
+      "standing_after_mutation": "REOPEN",
+      "blocked_at_effect_boundary_without_manual_recall_call": true,
+      "unrelated_project_preserved_exact": true,
+      "standing_after_revalidation": "ACCEPTED",
+      "revalidation_report_sha256": "e7e77cbdd57298fe6704236a398cb824129b7295d57435a955c9107bae81962d"
+    },
+    {
+      "mutation_id": "4_source_sha256_tamper",
+      "standing_after_mutation": "REOPEN",
+      "blocked_at_effect_boundary_without_manual_recall_call": true,
+      "unrelated_project_preserved_exact": true,
+      "standing_after_revalidation": "ACCEPTED",
+      "revalidation_report_sha256": "e7e77cbdd57298fe6704236a398cb824129b7295d57435a955c9107bae81962d"
+    },
+    {
+      "mutation_id": "5_policy_pin_changed",
+      "standing_after_mutation": "REOPEN",
+      "blocked_at_effect_boundary_without_manual_recall_call": true,
+      "unrelated_project_preserved_exact": true,
+      "standing_after_revalidation": "ACCEPTED",
+      "revalidation_report_sha256": "e7e77cbdd57298fe6704236a398cb824129b7295d57435a955c9107bae81962d"
+    },
+    {
+      "mutation_id": "6_authority_epoch_revoked",
+      "standing_after_mutation": "REOPEN",
+      "blocked_at_effect_boundary_without_manual_recall_call": true,
+      "unrelated_project_preserved_exact": true,
+      "standing_after_revalidation": "ACCEPTED",
+      "revalidation_report_sha256": "e7e77cbdd57298fe6704236a398cb824129b7295d57435a955c9107bae81962d"
+    }
+  ],
+  "all_6_assumption_mutations_reopened_and_blocked_fail_closed": true
+}

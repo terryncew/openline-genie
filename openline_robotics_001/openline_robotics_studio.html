@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenLine Argon Robotics Studio — Sim2Real Skill Forge &amp; Verified Reflex Runtime</title>
+  <title>OpenLine Robotics Studio — Sim2Real Skill Forge &amp; Verified Reflex Runtime</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
   <style>
@@ -40,7 +40,7 @@
         </div>
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">OpenLine Argon Robotics Studio</h1>
+            <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">OpenLine Robotics Studio</h1>
             <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-medium">
               Sim2Real Skill Forge &amp; PR-CRDO Reflex Runtime
             </span>
@@ -72,7 +72,6 @@
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs text-amber-200/90">
         <span>
           <strong>PHYSICAL SAFETY BOUNDARY:</strong> Simulation verification (<code>SIMULATED_VERIFIED</code>) never establishes physical hardware safety. Hardware dispatch requires the STS3215/ROS 2 Safety Adapter, local E-Stop, 150ms watchdog, and signed operator permit.
-          The run in this page is a simplified in-browser visualization of the same idea; the authoritative simulation is the Python engine (use the studio server API or <code>--verify-all</code>).
         </span>
         <span id="badgeHardwareLevel" class="mono text-[11px] px-2 py-0.5 rounded bg-amber-900/60 border border-amber-700/50 text-amber-200">
           Level: SIMULATED_PHYSICS + DRY_RUN_ADAPTER
@@ -458,9 +457,6 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-slate-300">Portable Skill Bundle (<code>openline.robotics.skill_bundle.v1</code>) with SHA-256 &amp; Ed25519 Receipt</span>
             <div class="flex gap-2">
-              <button id="btnServerExportBundle" type="button" class="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium">
-                Get Server-Verified Export
-              </button>
               <button id="btnCopyBundleJson" type="button" class="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-medium">
                 Copy Bundle JSON
               </button>
@@ -469,7 +465,6 @@
               </button>
             </div>
           </div>
-          <p class="text-slate-400">The draft shown here is built in this page; its check value is a browser-side draft hash, not a SHA-256, and the studio server will not import it. Use <strong class="text-slate-200">Get Server-Verified Export</strong> for a bundle the server can import and transfer to another robot.</p>
           <textarea id="txtSkillBundleJson" rows="7" aria-label="Skill Bundle JSON" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 mono text-[11px] text-slate-200"></textarea>
         </div>
 
@@ -987,9 +982,6 @@
     }
 
     function updateTelemetryChart(simRes, isDuck) {
-      // Chart.js loads from a CDN; without network the chart is skipped and the
-      // rest of the workbench keeps working.
-      if (typeof Chart === 'undefined') return;
       const ctx = document.getElementById('telemetryChart').getContext('2d');
       if (telemetryChartInstance) {
         telemetryChartInstance.destroy();
@@ -1415,29 +1407,6 @@
           action: 'SAFE_HOLD_ZERO_VELOCITY'
         }, null, 2);
         out.className = 'bg-slate-950 border border-amber-800 rounded-lg p-3 mono text-[11px] text-amber-300 overflow-x-auto max-h-48';
-      });
-
-      // Server-verified export: the studio server builds the real bundle
-      // (SHA-256 + Ed25519 receipt) that its import endpoint accepts.
-      document.getElementById('btnServerExportBundle').addEventListener('click', async () => {
-        const txt = document.getElementById('txtSkillBundleJson');
-        try {
-          const resp = await fetch('/api/robotics/export', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ project_id: PROJECTS_DB[activeProjectId].project_id })
-          });
-          if (!resp.ok) {
-            const err = await resp.json().catch(() => ({}));
-            showToast('Server export failed: ' + (err.error || resp.status) + '. Is the studio server running?');
-            return;
-          }
-          const bundle = await resp.json();
-          txt.value = JSON.stringify(bundle, null, 2);
-          showToast('Server-verified bundle ready (SHA-256 ' + String(bundle.bundle_sha256 || '').slice(0, 12) + '...).');
-        } catch (err) {
-          showToast('Server export failed: could not reach the studio server.');
-        }
       });
 
       // Copy & Verify JSON bundle

@@ -236,6 +236,23 @@ canvas:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 @media(max-width:768px){.fiveSecStrip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.fiveSecStrip{padding:5px 8px;gap:4px}.fiveSecItem strong{font-size:10px}.assumptionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+.workingAppPanel{border:1px solid rgba(106,182,255,.32);background:linear-gradient(180deg,#081428f2,#071020f5);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.workingAppPanel[hidden]{display:none}
+.workingAppHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.workingAppHead strong{font-size:13px;color:#eaf4ff;display:block}
+.workingAppHead span{font-size:11px;color:#9fb6d6;line-height:1.4;display:block;margin-top:2px}
+.workingAppBadges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.workingAppBadge{font-size:10px;padding:4px 8px;border-radius:999px;background:#0d203b;border:1px solid #3c608c;color:#aef6ec;font-weight:600}
+.workingAppTableWrap{overflow-x:auto;border:1px solid #1e375a;border-radius:10px;background:#060f1f}
+.workingAppTable{width:100%;border-collapse:collapse;font-size:11.5px;color:#dbeafe}
+.workingAppTable th,.workingAppTable td{padding:7px 9px;text-align:left;border-bottom:1px solid #152946}
+.workingAppTable th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#9fb6d6;background:#09172e}
+.workingAppForm{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;align-items:end;padding-top:4px}
+.workingAppForm label{display:flex;flex-direction:column;gap:3px;font-size:10.5px;color:#bdd2eb}
+.workingAppForm input,.workingAppForm select{min-height:44px;padding:7px 10px;border-radius:9px;border:1px solid #3c608c;background:#071326;color:#f0f8ff;font-size:12px;font-weight:600}
+.workingAppFrameWrap{border:1px solid #284b78;border-radius:12px;overflow:hidden;background:#050b17}
+.workingAppFrameWrap[hidden]{display:none}
+.workingAppFrame{width:100%;height:420px;border:0;display:block;background:#070d1f}
 /* Studio finish: appearance only, no changed interaction or positions. */
 .wishCard{border-color:rgba(106,182,255,.32);box-shadow:0 24px 80px rgba(0,0,0,.34),0 0 72px rgba(40,105,195,.07)}
 .wishCard h1{font-weight:730;letter-spacing:-.04em}
@@ -288,6 +305,32 @@ canvas:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 <section class="simWorkbench" id="simPanel" hidden aria-label="Interactive component simulation workbench">
   <div class="simCol"><strong id="simNodeTitle">Inside-Bubble Counterfactual Sim</strong><span class="simTag">SIMULATED PREVIEW</span><span id="simBaselineVsProposed">Accepted: — → Exploratory: —</span><span id="simTradeoffNote">±7% is a stated planning margin, not a measured error. Accepted work is preserved unless you approve a change.</span></div>
   <div class="simCol"><label for="simSlider"><strong id="simSliderLabel">What-If Component Capacity Delta (+0)</strong></label><div class="simControls"><input id="simSlider" type="range" min="-60" max="220" step="10" value="0"><button class="pill" id="simApplyBestCombo" type="button">Test best combination</button><button class="pill" id="simResetBtn" type="button">Discard preview</button><button class="decision" id="backToWorld" type="button">← Back to World</button></div></div>
+</section>
+<section class="workingAppPanel" id="workingAppSection" hidden aria-label="Working Operational Application and Records">
+  <div class="workingAppHead">
+    <div>
+      <strong id="workingAppTitle">Working Operational Application</strong>
+      <span id="workingAppFormula">Deterministic operational model and live records</span>
+    </div>
+    <div class="workingAppBadges">
+      <span class="workingAppBadge" id="workingAppModeBadge">LOCAL DETERMINISTIC SYNTHESIS ($0)</span>
+      <span class="workingAppBadge" id="workingAppCapBadge">42 ops/day</span>
+      <button type="button" class="pill" id="toggleWorkingAppFrameBtn" aria-expanded="false">Open interactive app view ↗</button>
+    </div>
+  </div>
+  <div class="workingAppTableWrap">
+    <table class="workingAppTable" aria-label="Operational records coupled to living model">
+      <thead id="workingAppThead"></thead>
+      <tbody id="workingAppTbody"></tbody>
+    </table>
+  </div>
+  <form class="workingAppForm" id="workingAppAddForm">
+    <div id="workingAppFormFields" style="display:contents"></div>
+    <button type="submit" class="decision upgrade" id="workingAppAddBtn" style="visibility:visible;min-height:44px">+ Log operational record</button>
+  </form>
+  <div class="workingAppFrameWrap" id="workingAppFrameWrap" hidden>
+    <iframe id="workingAppIframe" class="workingAppFrame" title="Synthesized Standalone Application Preview" sandbox="allow-scripts"></iframe>
+  </div>
 </section>
 <section class="detailsPanel" id="detailsPanel" hidden aria-label="Technical details and receiver record">
   <div><strong style="font-size:12px">Details — receiver record</strong><dl id="provList">
@@ -402,6 +445,27 @@ function applyEngineState(sess,bundle){
   const g=sess.graph;
   const extraNodes=(g.nodes||[]).filter(n=>n.id.startsWith('exp_')||n.id.startsWith('rej_'));
   const isStopped=Boolean(bundle&&bundle.stopped);
+  const recalledList=Array.isArray(bundle&&bundle.recalled_decisions)?bundle.recalled_decisions:[];
+  const applyRecalled=()=>{
+    if(!recalledList.length)return;
+    const recalledSet=new Set();
+    for(const r of recalledList){
+      if(r&&r.node_id)recalledSet.add(String(r.node_id));
+    }
+    let changed=true;
+    while(changed){
+      changed=false;
+      for(const e of (g.edges||[])){
+        if(e.kind!=='conflicts_with'&&recalledSet.has(e.from)&&!recalledSet.has(e.to)){
+          recalledSet.add(e.to);
+          changed=true;
+        }
+      }
+    }
+    for(const n of (g.nodes||[])){
+      if(recalledSet.has(n.id)&&n.state==='accepted')n.state='reopened';
+    }
+  };
   const mkNode=(id,label,category,detail,state,extra)=>({id,label,category,detail,state:state||'accepted',...(extra||{})});
   const mkEdge=(from,to,kind)=>({from,to,kind:kind||'depends_on'});
   const bakery=st.bakery;
@@ -440,6 +504,7 @@ function applyEngineState(sess,bundle){
     if(addBaker&&a.bakers>=2)addBaker.label='Add another baker';
     const retarder=(g.paths||[]).find(p=>p.id==='retarder_rack');
     if(retarder&&a.extra_retarder_racks>=1)retarder.label='Add another retarder rack';
+    applyRecalled();
     sess.simOverrides={};
     g.constraint_resonance=computeConstraintResonance(g,{});
     g.counterfactual_intelligence=computeCounterfactualIntelligence(g,{});
@@ -477,6 +542,7 @@ function applyEngineState(sess,bundle){
     paths.push({id:'portable',label:'Keep what I have',detail:'Preserve accepted community garden plan and export standalone planner.',after:'scenario',export:true});
     g.paths=paths;
     g.baseline_metrics={daily_capacity:comp.throughput_lbs_per_week,unit:'lbs/week',margin_per_loaf_usd:a.produce_value_usd_per_lb||3.5,fixed_cost_usd:comp.weekly_operating_cost_usd||45,net_daily_usd:Math.round(comp.net_weekly_community_value_usd||322),uncertainty_pct:a.uncertainty_pct||8};
+    applyRecalled();
     sess.simOverrides={};
     g.constraint_resonance=computeConstraintResonance(g,{});
     g.counterfactual_intelligence=computeCounterfactualIntelligence(g,{});
@@ -517,6 +583,57 @@ function applyEngineState(sess,bundle){
     paths.push({id:'portable',label:'Keep what I have',detail:'Preserve accepted neural checkpoint state and export verified optimization bundle.',after:'scenario',export:true});
     g.paths=paths;
     g.baseline_metrics={daily_capacity:comp.frontier_score_pts,unit:'frontier_pts',margin_per_loaf_usd:2.0,fixed_cost_usd:Math.round(comp.capex_usd||0),net_daily_usd:Math.round((comp.frontier_score_pts||52)*2-(comp.capex_usd||0)),uncertainty_pct:a.uncertainty_pct||5};
+    applyRecalled();
+    sess.simOverrides={};
+    g.constraint_resonance=computeConstraintResonance(g,{});
+    g.counterfactual_intelligence=computeCounterfactualIntelligence(g,{});
+    return;
+  }
+  const ops=st.operations_model;
+  if(ops&&ops.computed&&ops.computed.capacities){
+    g.domainType='generic';
+    g.domain_unit=ops.computed.unit||'ops/day';
+    const caps=ops.computed.capacities,a=ops.assumptions||{},comp=ops.computed,prof=ops.profile||{},sLabels=comp.station_labels||{};
+    const wfLabel=sLabels.workflow||prof.workflow_label||'Primary Resource Pool';
+    const fmLabel=sLabels.formula||prof.formula_label||'Assigned Crew & Shifts';
+    const inLabel=sLabels.inputs||prof.inputs_label||'Request & Record Intake';
+    const dmLabel=sLabels.demand||prof.demand_label||'Daily Operational Demand';
+    const recList=st.records||[];
+    const baseNodes=[
+      mkNode('wish','Your goal','intent',`Request: "${st.prompt||bundle.title||'Custom operational application'}". The number on this node is the project's current output (${g.domain_unit}) — while a preview is active it shows the preview output, not the accepted baseline.`,'accepted',{capacity:caps.wish||120,unit:g.domain_unit}),
+      mkNode('workflow',wfLabel,'interface',`${a.resource_units||3} unit(s) × ${a.cycles_per_unit_per_day||14} cycles/day × ${a.efficiency_multiplier||1.0}x eff${a.reserve_buffer_units?` + ${a.reserve_buffer_units} reserve`:''} = ${caps.workflow} ${g.domain_unit} (${recList.length} active records across ${(st.workflow_states||['ACTIVE','VERIFIED']).join(' → ')}).`,'accepted',{capacity:caps.workflow,unit:g.domain_unit,subparts:recList.slice(0,3).map(r=>`${r.record_id||'REC'}: ${r.item_title||r.item_name||'Record'} ($${r.computed_metric_value??0})`)}),
+      mkNode('formula',fmLabel,'logic',`${a.active_staff_count||4} crew × ${a.hours_per_shift||7}h shift × ${a.cases_per_staff_hour||2} ops/h${a.staggered_handoff_enabled?' + staggered handoffs (+14)':''} = ${caps.formula} ${g.domain_unit}. Formula: ${st.formula_description||'deterministic domain calculation'}.`,'accepted',{capacity:caps.formula,unit:g.domain_unit,subparts:[`${a.active_staff_count||4} Active Crew (${a.hours_per_shift||7}h shift)`,a.staggered_handoff_enabled?'Staggered Shift Handoffs (+14/d)':'Standard Shift Handoffs',st.formula_description||'Deterministic Calculator']}),
+      mkNode('inputs',inLabel,'data',`${a.intake_channels||2} channel(s) × ${a.intake_rate_per_channel||34} ${g.domain_unit}${a.auto_triage_enabled?' + automated intake (+20)':''} = ${caps.inputs} ${g.domain_unit} across ${(st.fields||[]).length||6} validated schema fields.`,'accepted',{capacity:caps.inputs,unit:g.domain_unit,subparts:(st.fields||[]).slice(0,3).map(f=>`${f.label||f.key} (${f.type||'field'})`)}),
+      mkNode('demand',dmLabel,'resource',`Stated daily demand (${caps.demand} ${g.domain_unit}) at $${a.unit_value_usd||15}/op value and $${comp.fixed_cost_usd_per_day||180}/day operating cost.`,'accepted',{capacity:caps.demand,unit:g.domain_unit,subparts:[`Stated Demand (${caps.demand} ${g.domain_unit})`,`Unit Value ($${a.unit_value_usd||15}/op)`,`Fixed Cost ($${comp.fixed_cost_usd_per_day||180}/day)`]}),
+      mkNode('scenario','Portable App & Export','artifact',`Runnable standalone HTML application (${recList.length} records coupled to ${comp.throughput_ops_per_day} ${g.domain_unit} capacity) with Ed25519 ReceiverGuard attestation.`,isStopped?'stopped':'accepted',{capacity:caps.scenario||96,unit:g.domain_unit,subparts:['Runnable Standalone HTML App','Live Coupled Operational Records','Signed Portable Bundle & CSV']})
+    ];
+    g.nodes=[...baseNodes,...extraNodes];
+    g.edges=[
+      mkEdge('wish','inputs'),mkEdge('wish','formula'),mkEdge('wish','demand'),
+      mkEdge('inputs','workflow'),mkEdge('formula','workflow'),mkEdge('demand','workflow'),
+      mkEdge('workflow','scenario'),
+      ...extraNodes.map(x=>mkEdge('workflow',x.id,x.id.startsWith('rej_')?'conflicts_with':'depends_on'))
+    ];
+    const paths=[];
+    const nextResUnits=Number(a.resource_units||3)+1;
+    const nextEff=Math.max(Number(a.efficiency_multiplier||1.0),1.25);
+    const expandedWorkflowCap=Math.round(nextResUnits*Number(a.cycles_per_unit_per_day||14)*nextEff+Number(a.reserve_buffer_units||0));
+    if(expandedWorkflowCap>caps.workflow&&Number(a.resource_units||3)<4){
+      paths.push({id:'expand_resource',label:prof.expand_label||`Expand ${wfLabel} (+1 unit & +25% efficiency)`,detail:`Expands ${wfLabel} from ${caps.workflow} → ${expandedWorkflowCap} ${g.domain_unit} ($360 CapEx, +$15/day; shifts binding limit to ${fmLabel} at ${caps.formula} ${g.domain_unit}).`,after:'workflow',delta:{node:'workflow',capacity_delta:expandedWorkflowCap-caps.workflow,capex_usd:360,fixed_cost_delta_usd:15,summary:prof.expand_label||`Expands ${wfLabel}`}});
+    }
+    if(!a.staggered_handoff_enabled){
+      paths.push({id:'stagger_shifts',label:prof.stagger_label||`Stagger ${fmLabel} handoffs`,detail:`Adds +14 ${g.domain_unit} at ${fmLabel} (${caps.formula} → ${caps.formula+14} ${g.domain_unit}, $80 CapEx, +$12/day; clamped at ${caps.workflow} ${g.domain_unit} until ${wfLabel} is expanded).`,after:'formula',delta:{node:'formula',capacity_delta:14,capex_usd:80,fixed_cost_delta_usd:12,summary:prof.stagger_label||`Staggers ${fmLabel} handoffs`}});
+    }
+    if(Number(a.reserve_buffer_units||0)<14){
+      paths.push({id:'spot_rental_overtime',label:prof.spot_label||'Use spot overtime / rental buffer (Conventional)',detail:`Conventional comparator: adds +14 ${g.domain_unit} buffer at ${wfLabel} ($0 CapEx, +$85/day recurring cost — lower net value than structural expansion).`,after:'workflow',delta:{node:'workflow',capacity_delta:14,capex_usd:0,fixed_cost_delta_usd:85,summary:prof.spot_label||'Conventional spot buffer'}});
+    }
+    if(!a.auto_triage_enabled){
+      paths.push({id:'automate_intake',label:prof.auto_label||`Enable automated pre-check at ${inLabel}`,detail:`Adds +20 ${g.domain_unit} at ${inLabel} (${caps.inputs} → ${caps.inputs+20} ${g.domain_unit}, $220 CapEx, +$8/day).`,after:'inputs',delta:{node:'inputs',capacity_delta:20,capex_usd:220,fixed_cost_delta_usd:8,summary:prof.auto_label||`Automates ${inLabel}`}});
+    }
+    paths.push({id:'portable',label:'Keep what I have',detail:'Preserve accepted project state and export standalone runnable HTML app.',after:'scenario',export:true});
+    g.paths=paths;
+    g.baseline_metrics={daily_capacity:comp.throughput_ops_per_day,unit:g.domain_unit,margin_per_loaf_usd:a.unit_value_usd||15,fixed_cost_usd:comp.fixed_cost_usd_per_day||180,net_daily_usd:Math.round(comp.net_daily_usd||450),uncertainty_pct:comp.uncertainty_pct||7};
+    applyRecalled();
     sess.simOverrides={};
     g.constraint_resonance=computeConstraintResonance(g,{});
     g.counterfactual_intelligence=computeCounterfactualIntelligence(g,{});
@@ -546,6 +663,7 @@ function applyEngineState(sess,bundle){
     {id:'portable',label:'Keep what I have',detail:'Preserve accepted project state and export standalone app.',after:'scenario',export:true}
   ];
   g.baseline_metrics={daily_capacity:24,unit:'ops/day',margin_per_loaf_usd:12,fixed_cost_usd:40,net_daily_usd:248,uncertainty_pct:6};
+  applyRecalled();
   sess.simOverrides={};
   g.constraint_resonance=computeConstraintResonance(g,{});
   g.counterfactual_intelligence=computeCounterfactualIntelligence(g,{});
@@ -609,6 +727,7 @@ function acceptedThroughput(){
   if(st&&st.bakery&&st.bakery.computed&&typeof st.bakery.computed.throughput_loaves_per_day==='number')return st.bakery.computed.throughput_loaves_per_day;
   if(st&&st.garden&&st.garden.computed&&typeof st.garden.computed.throughput_lbs_per_week==='number')return st.garden.computed.throughput_lbs_per_week;
   if(st&&st.neural_model&&st.neural_model.computed&&typeof st.neural_model.computed.frontier_score_pts==='number')return st.neural_model.computed.frontier_score_pts;
+  if(st&&st.operations_model&&st.operations_model.computed&&typeof st.operations_model.computed.throughput_ops_per_day==='number')return st.operations_model.computed.throughput_ops_per_day;
   const res=session&&session.graph&&session.graph.constraint_resonance;
   return res?res.baseline_throughput:null;
 }
@@ -617,6 +736,7 @@ function proposalCandidateThroughput(p){
   if(cs&&cs.bakery&&cs.bakery.computed&&typeof cs.bakery.computed.throughput_loaves_per_day==='number')return cs.bakery.computed.throughput_loaves_per_day;
   if(cs&&cs.garden&&cs.garden.computed&&typeof cs.garden.computed.throughput_lbs_per_week==='number')return cs.garden.computed.throughput_lbs_per_week;
   if(cs&&cs.neural_model&&cs.neural_model.computed&&typeof cs.neural_model.computed.frontier_score_pts==='number')return cs.neural_model.computed.frontier_score_pts;
+  if(cs&&cs.operations_model&&cs.operations_model.computed&&typeof cs.operations_model.computed.throughput_ops_per_day==='number')return cs.operations_model.computed.throughput_ops_per_day;
   return null;
 }
 /* R3B D3 — a pending proposal is stale when accepting it would no longer
@@ -652,6 +772,7 @@ function activeDomainKey(){
   if(st&&st.bakery)return 'bakery';
   if(st&&st.garden)return 'garden';
   if(st&&st.neural_model)return 'neural_model';
+  if(st&&st.operations_model)return 'operations_model';
   return 'generic';
 }
 function activePreviewAssumptions(domKey){
@@ -697,8 +818,10 @@ async function loadLiveProject(pid){
   liveBundle=bundle;discoveryDismissed=false;
   try{
     const st=bundle.accepted&&bundle.accepted.state;
-    if(st&&st.garden)bakeryPaths=await apiGet('/api/garden/paths?project_id='+encodeURIComponent(pid));
+    if(st&&st.bakery)bakeryPaths=await apiGet('/api/bakery/paths?project_id='+encodeURIComponent(pid));
+    else if(st&&st.garden)bakeryPaths=await apiGet('/api/garden/paths?project_id='+encodeURIComponent(pid));
     else if(st&&st.neural_model)bakeryPaths=await apiGet('/api/model_opt/paths?project_id='+encodeURIComponent(pid));
+    else if(st&&st.operations_model)bakeryPaths=await apiGet('/api/operations/paths?project_id='+encodeURIComponent(pid));
     else bakeryPaths=await apiGet('/api/bakery/paths?project_id='+encodeURIComponent(pid));
   }catch(e){}
   if(gen!==liveLoadGen)return null;
@@ -1175,6 +1298,7 @@ function setText(){
   updateFiveSecStrip(n,res,hasPreview);
   renderAssumptionEditor(n,res);
   renderFallbackStations(res);
+  renderWorkingAppPanel(res,hasPreview);
   renderDiscovery();
 }
 
@@ -1195,6 +1319,10 @@ async function applyOpportunity(pathId,revertExploratory=false){
        local branch preview only renders after the engine accepts the
        proposal into genie_exploratory; a refusal (e.g. STOP active)
        shows no preview at all. */
+    if(liveBundle&&liveBundle.stopped){
+      notice('Changes are frozen while STOP is on. Clear STOP to make changes.');
+      return;
+    }
     const alreadyBranched=Boolean(getNode(session,'branch_'+pathId));
     if(!alreadyBranched&&liveBundle&&bakeryPaths&&bakeryPaths.paths){
       const dKey=activeDomainKey();
@@ -1594,7 +1722,7 @@ function renderDiscovery(){
   let d=null;
   if(!neutral){
     const st=liveBundle.accepted&&liveBundle.accepted.state;
-    if(st&&(st.bakery||st.garden||st.neural_model)){
+    if(st&&(st.bakery||st.garden||st.neural_model||st.operations_model)){
       d=describeDiscovery(session);
       if(d&&getNode(session,'branch_'+d.comboId))d=null;
     }
@@ -1641,7 +1769,7 @@ function updateFiveSecStrip(n,res,hasPreview){
   if(!$('fsBuilding')||!session)return;
   const st=liveBundle&&liveBundle.accepted&&liveBundle.accepted.state;
   const dKey=activeDomainKey();
-  const domainTag=dKey==='bakery'?'Neighborhood Bakery':dKey==='garden'?'Community Garden':dKey==='neural_model'?'Neural Checkpoint Optimizer':'Operational Micro-App';
+  const domainTag=dKey==='bakery'?'Neighborhood Bakery':dKey==='garden'?'Community Garden':dKey==='neural_model'?'Neural Checkpoint Optimizer':((st&&st.operations_model&&st.operations_model.profile&&st.operations_model.profile.domain_title)||(st&&st.primary_entity)||'Operational Micro-App');
   $('fsBuilding').textContent=`${session.graph.title||'Project'} (${domainTag})`;
   const impProv=st&&st.imported_provenance;
   /* Phase 2 (#fsCreated, GPT-6 item 3): the strip must be accurate on the
@@ -1756,6 +1884,43 @@ function getEditableFieldsForNode(nodeId){
       return `Stage ceilings: Spectral ${s} · Curriculum ${d} · Calibration ${c} → Frontier ${Math.min(s,d,c,95)} frontier_pts`;
     }};
   }
+  if(dKey==='operations_model'&&st.operations_model){
+    const a=activePreviewAssumptions('operations_model')||st.operations_model.assumptions;
+    const comp=st.operations_model.computed||{};
+    const sLabels=comp.station_labels||{};
+    if(nodeId==='formula'){
+      const lbl=sLabels.formula||'Assigned Crew & Shifts';
+      return {domain:'operations_model',station:lbl,fields:[
+        {key:'active_staff_count',label:'Active crew / coordinators',type:'number',min:1,max:50,step:1,val:a.active_staff_count},
+        {key:'hours_per_shift',label:'Hours per shift',type:'number',min:1,max:24,step:0.5,val:a.hours_per_shift},
+        {key:'cases_per_staff_hour',label:'Ops per crew hour',type:'number',min:0.25,max:50,step:0.25,val:a.cases_per_staff_hour},
+        {key:'staggered_handoff_enabled',label:'Staggered handoffs (+14 ops/d)',type:'boolean',val:Boolean(a.staggered_handoff_enabled)}
+      ],formula:vals=>`${vals.active_staff_count} crew × ${vals.hours_per_shift}h × ${vals.cases_per_staff_hour}/h${vals.staggered_handoff_enabled?' +14 staggered':''} = ${Math.round(Number(vals.active_staff_count)*Number(vals.hours_per_shift)*Number(vals.cases_per_staff_hour)+(vals.staggered_handoff_enabled?14:0))} ops/day crew capacity`};
+    }
+    if(nodeId==='inputs'){
+      const lbl=sLabels.inputs||'Request & Record Intake';
+      return {domain:'operations_model',station:lbl,fields:[
+        {key:'intake_channels',label:'Intake channels / desks',type:'number',min:1,max:20,step:1,val:a.intake_channels},
+        {key:'intake_rate_per_channel',label:'Rate per channel (ops/d)',type:'number',min:1,max:200,step:1,val:a.intake_rate_per_channel},
+        {key:'auto_triage_enabled',label:'Automated intake (+20 ops/d)',type:'boolean',val:Boolean(a.auto_triage_enabled)}
+      ],formula:vals=>`${vals.intake_channels} channel(s) × ${vals.intake_rate_per_channel}/d${vals.auto_triage_enabled?' +20 auto-triage':''} = ${Math.round(Number(vals.intake_channels)*Number(vals.intake_rate_per_channel)+(vals.auto_triage_enabled?20:0))} ops/day intake capacity`};
+    }
+    if(nodeId==='demand'||nodeId==='scenario'){
+      const lbl=sLabels.demand||'Daily Demand & Economics';
+      return {domain:'operations_model',station:lbl,fields:[
+        {key:'stated_daily_demand',label:'Stated daily demand (ops/d)',type:'number',min:5,max:2000,step:5,val:a.stated_daily_demand},
+        {key:'unit_value_usd',label:'Value per fulfilled op ($)',type:'number',min:1,max:1000,step:1,val:a.unit_value_usd},
+        {key:'daily_fixed_cost_usd',label:'Fixed operating cost ($/d)',type:'number',min:0,max:10000,step:10,val:a.daily_fixed_cost_usd}
+      ],formula:vals=>`Demand ceiling: ${vals.stated_daily_demand} ops/day · Value: $${vals.unit_value_usd}/op · Fixed cost: $${vals.daily_fixed_cost_usd}/day`};
+    }
+    const lbl=sLabels.workflow||'Primary Resource Pool';
+    return {domain:'operations_model',station:lbl,fields:[
+      {key:'resource_units',label:'Primary resource units / vans / rigs',type:'number',min:1,max:50,step:1,val:a.resource_units},
+      {key:'cycles_per_unit_per_day',label:'Cycles per unit / day',type:'number',min:1,max:100,step:1,val:a.cycles_per_unit_per_day},
+      {key:'efficiency_multiplier',label:'Efficiency multiplier (x)',type:'number',min:0.25,max:4.0,step:0.05,val:a.efficiency_multiplier},
+      {key:'reserve_buffer_units',label:'Reserve / spot buffer (ops/d)',type:'number',min:0,max:200,step:1,val:a.reserve_buffer_units||0}
+    ],formula:vals=>`${vals.resource_units} unit(s) × ${vals.cycles_per_unit_per_day}/d × ${vals.efficiency_multiplier}x + ${vals.reserve_buffer_units||0} buffer = ${Math.round(Number(vals.resource_units)*Number(vals.cycles_per_unit_per_day)*Number(vals.efficiency_multiplier)+Number(vals.reserve_buffer_units||0))} ops/day resource capacity (updates coupled record metrics)`};
+  }
   return null;
 }
 
@@ -1818,7 +1983,7 @@ function renderAssumptionEditor(n,res){
     if(!liveBundle||!currentProjectId)return;
     const vals=readVals();
     for(const [k,v] of Object.entries(vals)){
-      if(typeof v==='number'&&(!Number.isFinite(v)||v<0||(k!=='extra_retarder_racks'&&k!=='municipal_supp_gallons_per_week'&&v<=0))){
+      if(typeof v==='number'&&(!Number.isFinite(v)||v<0||(k!=='extra_retarder_racks'&&k!=='municipal_supp_gallons_per_week'&&k!=='reserve_buffer_units'&&k!=='daily_fixed_cost_usd'&&v<=0))){
         notice(`Invalid assumption for ${k}: must be a positive number.`);
         return;
       }
@@ -2054,9 +2219,140 @@ $('rejectBtn').addEventListener('click',async()=>{
     setText();renderChoices();notice('Proposal rejected; accepted state preserved untouched.');
   }catch(e){notice(e.message);}
 });
-$('recallBtn').addEventListener('click',()=>{
+let workingAppFrameOpen=false;
+let lastWorkingAppFormSig='';
+function activeOperationalState(){
+  if(!liveBundle||!liveBundle.accepted||!liveBundle.accepted.state)return null;
+  const offer=offerablePending();
+  if(offer.length&&offer[0].candidate_state)return offer[0].candidate_state;
+  return liveBundle.accepted.state;
+}
+function renderWorkingAppPanel(res,hasPreview){
+  const sec=$('workingAppSection');
+  if(!sec)return;
+  const st=activeOperationalState();
+  if(!st||!Array.isArray(st.records)||!st.operations_model){
+    sec.hidden=true;
+    return;
+  }
+  sec.hidden=false;
+  const ops=st.operations_model;
+  const comp=ops.computed||{};
+  const prof=ops.profile||{};
+  const fields=Array.isArray(st.fields)?st.fields:[];
+  const records=st.records||[];
+  const tp=comp.throughput_ops_per_day||res?.system_throughput||42;
+  const unit=comp.unit||'ops/day';
+  $('workingAppTitle').textContent=`${st.title||'Working Application'} — ${hasPreview?'PREVIEWING UNACCEPTED CHANGE':'ACCEPTED WORKING STATE'}`;
+  $('workingAppFormula').textContent=`Formula: ${st.formula_description||'Deterministic solver'} · Active limit: ${comp.bottleneck_label||'—'} (${tp} ${unit}) · Net: $${comp.net_daily_usd??0}/day`;
+  const modelUsed=Boolean(liveBundle&&liveBundle.model&&liveBundle.model.id);
+  $('workingAppModeBadge').textContent=modelUsed?`MODEL: ${liveBundle.model.id}`:'LOCAL DETERMINISTIC SYNTHESIS ($0)';
+  $('workingAppCapBadge').textContent=`${tp} ${unit} (${records.length} records)`;
+  const thead=$('workingAppThead'),tbody=$('workingAppTbody');
+  thead.replaceChildren();tbody.replaceChildren();
+  const htr=document.createElement('tr');
+  const metricColLabel=prof.metric_label||(records[0]&&records[0].computed_metric_label)||'Calculated Metric';
+  for(const col of ['Record ID',...fields.map(f=>f.label||f.key),'Status',metricColLabel,'Capacity Share']){
+    const th=document.createElement('th');th.textContent=col;htr.appendChild(th);
+  }
+  thead.appendChild(htr);
+  for(const rec of records){
+    const tr=document.createElement('tr');
+    const tdId=document.createElement('td');tdId.textContent=rec.record_id||'—';tr.appendChild(tdId);
+    for(const f of fields){
+      const td=document.createElement('td');
+      td.textContent=rec[f.key]!==undefined?String(rec[f.key]):'—';
+      tr.appendChild(td);
+    }
+    const tdSt=document.createElement('td');tdSt.textContent=rec.status||rec.workflow_status||'ACTIVE';tr.appendChild(tdSt);
+    const tdMet=document.createElement('td');
+    tdMet.style.color='#76efb2';tdMet.style.fontWeight='600';
+    tdMet.textContent=rec.computed_metric_value!==undefined?`$${Number(rec.computed_metric_value).toFixed(2)}`:'—';
+    tr.appendChild(tdMet);
+    const tdShare=document.createElement('td');
+    tdShare.textContent=rec.capacity_share_pct!==undefined?`${rec.capacity_share_pct}% of ${tp} ${unit}`:'—';
+    tr.appendChild(tdShare);
+    tbody.appendChild(tr);
+  }
+  const formSig=currentProjectId+'::'+fields.map(f=>f.key).join(',');
+  const formHost=$('workingAppFormFields');
+  if(formHost&&formSig!==lastWorkingAppFormSig){
+    lastWorkingAppFormSig=formSig;
+    formHost.replaceChildren();
+    for(const f of fields){
+      const lbl=document.createElement('label');
+      lbl.textContent=f.label||f.key;
+      const inp=document.createElement('input');
+      inp.name=f.key;
+      if(f.type==='number'){
+        inp.type='number';
+        inp.step=f.step!==undefined?String(f.step):'any';
+        if(f.min!==undefined)inp.min=String(f.min);
+        if(f.max!==undefined)inp.max=String(f.max);
+        inp.value=String(f.default!==undefined?f.default:1);
+      }else{
+        inp.type='text';
+        inp.value=String(f.default!==undefined?f.default:'New operational entry');
+      }
+      lbl.appendChild(inp);
+      formHost.appendChild(lbl);
+    }
+  }
+  const frameWrap=$('workingAppFrameWrap'),frameBtn=$('toggleWorkingAppFrameBtn');
+  if(frameWrap&&frameBtn){
+    frameWrap.hidden=!workingAppFrameOpen;
+    frameBtn.setAttribute('aria-expanded',String(workingAppFrameOpen));
+    frameBtn.textContent=workingAppFrameOpen?'Hide interactive app view':'Open interactive app view ↗';
+    const appHtml=(liveBundle&&liveBundle.app&&liveBundle.app.content)||st.runnable_html||'';
+    if(workingAppFrameOpen&&appHtml){
+      const iframe=$('workingAppIframe');
+      const sig=(liveBundle&&liveBundle.accepted&&liveBundle.accepted.state_sha256)||'loaded';
+      if(iframe&&iframe.dataset.stateHash!==sig){
+        iframe.srcdoc=appHtml;
+        iframe.dataset.stateHash=sig;
+      }
+    }
+  }
+}
+$('toggleWorkingAppFrameBtn').addEventListener('click',()=>{
+  workingAppFrameOpen=!workingAppFrameOpen;
+  setText();
+});
+$('workingAppAddForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  if(!liveBundle||!currentProjectId)return;
+  if(liveBundle.stopped){
+    notice('Changes are frozen while STOP is on. Clear STOP to make changes.');
+    return;
+  }
+  const st=liveBundle.accepted&&liveBundle.accepted.state;
+  const fields=(st&&st.fields)||[];
+  const record={};
+  const formHost=$('workingAppFormFields');
+  for(const f of fields){
+    const el=formHost.querySelector(`[name="${f.key}"]`);
+    if(!el)continue;
+    record[f.key]=f.type==='number'?Number(el.value):el.value;
+  }
+  try{
+    await apiPost('/api/synth/add_record',{project_id:currentProjectId,record});
+    await reloadLiveProject();
+    notice('Logged operational record into accepted project state with signed receiver receipt.');
+  }catch(e){
+    notice('Record refused: '+e.message);
+  }
+});
+$('recallBtn').addEventListener('click',async()=>{
   if(!selected)return;
   try{
+    if(liveBundle&&currentProjectId){
+      const res=await apiPost('/api/recall',{project_id:currentProjectId,node_id:selected,reason:'Owner triggered Decision Recall on upstream node'});
+      await reloadLiveProject();
+      const recEntry=(res.recalled_decisions||[]).slice(-1)[0];
+      const count=recEntry&&recEntry.reopened_nodes?recEntry.reopened_nodes.length:1;
+      notice(`Decision Recall recorded in engine for ${selected} (${count} node(s) marked for re-verification; accepted baseline preserved).`);
+      return;
+    }
     const affected=propagateDecisionRecall(session,selected,'Owner triggered Decision Recall on upstream node');
     setText();renderChoices();
     notice(`Decision Recall propagated to ${affected.length} dependent node(s): ${affected.join(', ')}.`);

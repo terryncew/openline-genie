@@ -1,0 +1,200 @@
+{
+  "experiment_id": "LOOP-B-INDEPENDENT-RGPO-011-QUALIFICATION",
+  "general_invention_claim_disposition": "HOLD_CONSTRUCTED_BENCHMARK_CONTAMINATED",
+  "narrow_practice_disposition": "ADOPT_GUARDED_EXECUTABLE_OBLIGATION_GATE",
+  "static_7_flag_dict_passes_prior_constructed_benchmark": true,
+  "static_7_flag_dict_passes_executable_obligation_gate": false,
+  "always_abstain_passes_executable_obligation_gate": false,
+  "arm_comparison": {
+    "Arm1_Static_7Flag_Shortcut": {
+      "tasks_total": 4,
+      "tasks_independently_accepted": 0,
+      "mean_nominal_coverage_ratio": 0.0,
+      "total_false_acceptances_on_hazards": 0,
+      "task_reports": [
+        {
+          "task_id": "U1_MEMBRANE_VISCOSITY_AND_REFERENCE_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": "REJECTED_NON_EXECUTABLE_STATIC_OBJECT",
+          "report_sha256": "94e9865d500c47e738a16c351599086c20b2d5c6a9b0eb15dd71af5bac9398cc"
+        },
+        {
+          "task_id": "U2_COLD_CHAIN_PRIORITY_SLACK_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": "REJECTED_NON_EXECUTABLE_STATIC_OBJECT",
+          "report_sha256": "8ecf74f23b3a1395196274652107f1e83a0cd197ab31dc718da454e1e76432b2"
+        },
+        {
+          "task_id": "U3_RECEIVER_MANDATE_INTERSECTION_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": "REJECTED_NON_EXECUTABLE_STATIC_OBJECT",
+          "report_sha256": "1774bf5dcac40c8b65d5720328c06c590e11f338bddf3c378431687b822559f3"
+        },
+        {
+          "task_id": "U4_STS3215_DELAY_AND_BROWNOUT_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": "REJECTED_NON_EXECUTABLE_STATIC_OBJECT",
+          "report_sha256": "0a2bf231885d158b660f7b91eb4975d60c5bdc54fedf36c6d68d58811e4ae02f"
+        }
+      ]
+    },
+    "Arm2_Always_Abstain": {
+      "tasks_total": 4,
+      "tasks_independently_accepted": 0,
+      "mean_nominal_coverage_ratio": 0.0,
+      "total_false_acceptances_on_hazards": 0,
+      "task_reports": [
+        {
+          "task_id": "U1_MEMBRANE_VISCOSITY_AND_REFERENCE_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": "REJECTED_VACUOUS_OR_LOW_NOMINAL_COVERAGE:0.00<0.80",
+          "report_sha256": "79e828fb68fb603a9b3af025991ce4dc09c4fa51cde494f5137aeb491255522b"
+        },
+        {
+          "task_id": "U2_COLD_CHAIN_PRIORITY_SLACK_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [
+            "OB-U2-SOLAR-DROPOUT-SHED-AND-EPOCH"
+          ],
+          "rejection_reason": "REJECTED_VACUOUS_OR_LOW_NOMINAL_COVERAGE:0.00<0.80",
+          "report_sha256": "fccfc92c07c5c0a9f989a0b85650c6c22963fdeacb9bb897339c7043ab766e94"
+        },
+        {
+          "task_id": "U3_RECEIVER_MANDATE_INTERSECTION_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [
+            "OB-U3-REPLAY-AND-CLOCK-SKEW"
+          ],
+          "rejection_reason": "REJECTED_VACUOUS_OR_LOW_NOMINAL_COVERAGE:0.00<0.80",
+          "report_sha256": "ab23606854a8079e8f58fe1af91773f0a84f11665c5b400078321bd82be16826"
+        },
+        {
+          "task_id": "U4_STS3215_DELAY_AND_BROWNOUT_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 0.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [
+            "OB-U4-VOLTAGE-SAG-AND-ESTOP"
+          ],
+          "rejection_reason": "REJECTED_VACUOUS_OR_LOW_NOMINAL_COVERAGE:0.00<0.80",
+          "report_sha256": "203a7c50861d75e15732821e97f9a4cec02f7282d735f05637b6a171fa9d70aa"
+        }
+      ]
+    },
+    "Arm3_Naive_Standard_Unit_Tests": {
+      "tasks_total": 4,
+      "tasks_independently_accepted": 0,
+      "mean_nominal_coverage_ratio": 1.0,
+      "total_false_acceptances_on_hazards": 9,
+      "task_reports": [
+        {
+          "task_id": "U1_MEMBRANE_VISCOSITY_AND_REFERENCE_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 3,
+          "discovered_missing_obligations": [
+            "OB-U1-MISSING-REF-AND-NONPOSITIVE-FLOW"
+          ],
+          "rejection_reason": "REJECTED_FALSE_ACCEPTANCE_ON_HAZARD:3",
+          "report_sha256": "6fe472aee5ee12613ad392b9dbe6cd38e3748a763b80da01742123a67f3f0059"
+        },
+        {
+          "task_id": "U2_COLD_CHAIN_PRIORITY_SLACK_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 1,
+          "discovered_missing_obligations": [
+            "OB-U2-SOLAR-DROPOUT-SHED-AND-EPOCH"
+          ],
+          "rejection_reason": "REJECTED_FALSE_ACCEPTANCE_ON_HAZARD:1",
+          "report_sha256": "776b3ecbbb4c82cfd9683eb971a8245bad009d5e000a622c957c655ec50e02bc"
+        },
+        {
+          "task_id": "U3_RECEIVER_MANDATE_INTERSECTION_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 3,
+          "discovered_missing_obligations": [
+            "OB-U3-REPLAY-AND-CLOCK-SKEW"
+          ],
+          "rejection_reason": "REJECTED_FALSE_ACCEPTANCE_ON_HAZARD:3",
+          "report_sha256": "4a14c750ef8d5ea9efebf56e985a6b27d8996a124d9b044a769b325fab73923e"
+        },
+        {
+          "task_id": "U4_STS3215_DELAY_AND_BROWNOUT_GATE",
+          "independently_accepted": false,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 2,
+          "discovered_missing_obligations": [
+            "OB-U4-VOLTAGE-SAG-AND-ESTOP"
+          ],
+          "rejection_reason": "REJECTED_FALSE_ACCEPTANCE_ON_HAZARD:2",
+          "report_sha256": "e80fc15083c4642cf72becc1221201571cc85890543413c4202ad4a443010280"
+        }
+      ]
+    },
+    "Arm4_Guarded_Executable_RGPO": {
+      "tasks_total": 4,
+      "tasks_independently_accepted": 4,
+      "mean_nominal_coverage_ratio": 1.0,
+      "total_false_acceptances_on_hazards": 0,
+      "task_reports": [
+        {
+          "task_id": "U1_MEMBRANE_VISCOSITY_AND_REFERENCE_GATE",
+          "independently_accepted": true,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": null,
+          "report_sha256": "1c1b92e3e03a9caa549ff1c830b6df915dbe4a8eacf9f39db35aa3d62cf4f808"
+        },
+        {
+          "task_id": "U2_COLD_CHAIN_PRIORITY_SLACK_GATE",
+          "independently_accepted": true,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": null,
+          "report_sha256": "35c48110cba8a538b0526e7a21a7e3f4290ec482598bbcf1648136cb6b5b8a38"
+        },
+        {
+          "task_id": "U3_RECEIVER_MANDATE_INTERSECTION_GATE",
+          "independently_accepted": true,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": null,
+          "report_sha256": "736a8ad1e061706fe6a9838e978afdd9292c72e5f1beea8bb0cce4b899c2ebb6"
+        },
+        {
+          "task_id": "U4_STS3215_DELAY_AND_BROWNOUT_GATE",
+          "independently_accepted": true,
+          "nominal_coverage_ratio": 1.0,
+          "false_acceptances_on_hazards": 0,
+          "discovered_missing_obligations": [],
+          "rejection_reason": null,
+          "report_sha256": "5f861d5186829fc7bcb79a157ae26bf9b81c932602cbc01acc248967cd2f5993"
+        }
+      ]
+    }
+  }
+}

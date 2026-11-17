@@ -1,0 +1,82 @@
+version: 1.0.0
+name: openline_advocate_benefits_rules_ontology
+format: ossie
+datasets:
+- name: county_benefits_eligibility_catalog
+  tables:
+  - name: household_ledger
+    description: Household income and grant deposit records
+    columns:
+    - name: entry_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: deposit_amount_usd
+      data_type: FLOAT
+    - name: is_nonrecurring_disaster_grant
+      data_type: BOOLEAN
+    - name: days_held_in_checking
+      data_type: INTEGER
+  - name: medical_recertifications
+    description: Pulmonary clinic attestation & fax transmission logs
+    columns:
+    - name: recert_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: fax_confirmation_status
+      data_type: TEXT
+  terms:
+  - id: TERM_EXEMPT_DISASTER_ASSISTANCE_GRANT
+    name: Exempt Emergency Disaster Assistance Grant
+    description: One-time disaster relief payments excluded from countable monthly
+      income under Cal. Welf. & Inst. Code § 11008.17 and County Admin Code § 14-203(b).
+    synonyms:
+    - nonrecurring_disaster_grant
+    - fema_county_relief_exclusion
+    mapped_columns:
+    - table: household_ledger
+      column: deposit_amount_usd
+    - table: household_ledger
+      column: is_nonrecurring_disaster_grant
+    unit: USD
+    grain: monthly_eligibility_determination
+    denominator: household_unit
+    version: 1
+    certified: true
+    related_terms: []
+  - id: TERM_MEDICAL_BASELINE_PORTAL_RECEIPT
+    name: Timely Medical Baseline Recertification Receipt
+    description: Verified clinic submission via portal or confirmed fax transmission
+      prior to termination date.
+    synonyms:
+    - mb_2026b_timely_filing
+    mapped_columns:
+    - table: medical_recertifications
+      column: fax_confirmation_status
+    unit: BOOLEAN_STATUS
+    grain: annual_recert
+    denominator: claimant_account
+    version: 1
+    certified: true
+    related_terms: []
+  sql_attributes:
+  - id: SQL_ATTR_COUNTABLE_INCOME_EXCLUSION
+    term_id: TERM_EXEMPT_DISASTER_ASSISTANCE_GRANT
+    name: countable_monthly_income_usd
+    expression: SUM(CASE WHEN household_ledger.is_nonrecurring_disaster_grant = TRUE
+      THEN 0.0 ELSE household_ledger.deposit_amount_usd END)
+    purpose: Excludes 100% of verified non-recurring disaster assistance grants from
+      countable monthly income
+    unit: USD
+    grain: household_month
+    version: 1
+    certified: true
+  - id: SQL_ATTR_VALID_MEDICAL_RECERT
+    term_id: TERM_MEDICAL_BASELINE_PORTAL_RECEIPT
+    name: timely_recert_count
+    expression: COUNT(medical_recertifications.recert_id)
+    purpose: Counts verified clinic recertification submissions
+    unit: COUNT
+    grain: claimant
+    version: 1
+    certified: true
+  relationships: []

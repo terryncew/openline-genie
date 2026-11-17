@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# DEVELOPMENT/TEST HARNESS — NOT USER DOCUMENTATION.
+# This file drives a dogfood comparison between a direct model baseline and
+# Genie. The model-instruction prompts defined below ("You are an expert
+# front-end developer ...") are test fixtures for that harness only; they are
+# not instructions to the user and not user documentation.
 """Dogfood vs competent baseline (Step 6).
 
 Baseline: direct Haiku calls producing a single-file barber app WITHOUT
@@ -48,6 +53,9 @@ def _resolve_chrome_path():
 CHROME = _resolve_chrome_path()
 results: list[dict] = []
 
+# Test-fixture prompt for the development/test harness (see the header
+# comment at the top of this file): sent to a model as part of the baseline
+# comparison only, not user documentation.
 BASELINE_SYSTEM = (
     "You are an expert front-end developer. Build the requested tool as ONE "
     "self-contained HTML file: inline CSS and JavaScript, no external "
@@ -131,6 +139,9 @@ def main() -> int:
         try:
             rep = call_once(
                 adapter,
+                # Test-fixture prompt (see the header comment at the top of this
+                # file): repair instruction sent to the model during the harness
+                # run only, not user documentation.
                 "You are an expert front-end developer. Repair the HTML app below "
                 "so it passes the browser tests. Output ONLY the complete fixed HTML file.",
                 f"The app below FAILED its automated browser test with: {failure_text}\n\n"

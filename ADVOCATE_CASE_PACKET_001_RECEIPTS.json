@@ -1,0 +1,256 @@
+{
+  "conventional_workflow_comparisons": {
+    "CASE-001-BENEFITS-MISSING-DOC": {
+      "case_id": "CASE-001-BENEFITS-MISSING-DOC",
+      "competent_conventional_folder": {
+        "automatic_decision_recall_on_new_evidence": false,
+        "exact_span_offsets_pinned": false,
+        "expired_or_conflicting_rules_missed": 1,
+        "expired_or_conflicting_rules_programmatically_flagged": 0,
+        "files_written": 5,
+        "manual_file_scans_to_locate_quotes": 20,
+        "missing_evidence_blocks_finalization": false,
+        "post_export_tamper_detected": false,
+        "reconstruction_completeness_score_pct": 50.0,
+        "summary_markdown": "# Case Summary: Fictional Case 1 \u2014 Medical Baseline & Utility Arrearage Benefits Denial\nInstitution: Bay Valley Regional Utility & Benefits Administration (Fictional)\nDecision Date: 2026-11-01\n\n## Claims & Evidence Summary\n- [INSTITUTION_CLAIM] Institution claims no Annual Respiratory Device Recertification Form MB-2026B was logged in the portal. (Source: DOC-001-ADVERSE-NOTICE)\n- [INSTITUTION_CLAIM] Institution claims the $1,200.00 October deposit is recurring monthly income under 2021 Temp Guideline 4-B. (Source: DOC-001-ADVERSE-NOTICE)\n- [VERIFIED_EVIDENCE_FACT] County voucher #DR-9921 proves the $1,200.00 deposit was a one-time, non-recurring emergency disaster assistance grant. (Source: DOC-001-DISASTER-AWARD)\n- [USER_ASSERTION] Claimant asserts a call-center representative verbally waived future medical recertification forms on Oct 15. (Source: DOC-001-USER-CALL-NOTE)\n- [DISPUTED_OR_UNKNOWN] Signed Pulmonary Clinic Attestation Form MB-2026B is missing from the initial packet and must be obtained before Issue 1 is fully corroborated. (Source: none)",
+        "unflagged_blocking_unknowns": 1,
+        "user_assertions_mixed_in_prose_summary": 1,
+        "workflow_type": "COMPETENT_CONVENTIONAL_FOLDER_AND_SUMMARY"
+      },
+      "openline_case_packet": {
+        "automatic_decision_recall_on_new_evidence": true,
+        "exact_span_offsets_pinned": true,
+        "expired_or_conflicting_rules_flagged": 1,
+        "manual_file_scans_to_locate_quotes": 0,
+        "missing_evidence_blocks_finalization": true,
+        "post_export_tamper_detected": true,
+        "reconstruction_completeness_score_pct": 100.0,
+        "user_assertions_segregated": 1
+      }
+    },
+    "CASE-002-HOA-RULE-CONFLICT": {
+      "case_id": "CASE-002-HOA-RULE-CONFLICT",
+      "competent_conventional_folder": {
+        "automatic_decision_recall_on_new_evidence": false,
+        "exact_span_offsets_pinned": false,
+        "expired_or_conflicting_rules_missed": 1,
+        "expired_or_conflicting_rules_programmatically_flagged": 0,
+        "files_written": 4,
+        "manual_file_scans_to_locate_quotes": 6,
+        "missing_evidence_blocks_finalization": false,
+        "post_export_tamper_detected": false,
+        "reconstruction_completeness_score_pct": 50.0,
+        "summary_markdown": "# Case Summary: Fictional Case 2 \u2014 HOA $250 Fine Where Cited Board Rule Conflicts with Recorded CC&Rs\nInstitution: Sycamore Ridge Homeowners Association Board (Fictional)\nDecision Date: 2026-11-02\n\n## Claims & Evidence Summary\n- [INSTITUTION_CLAIM] HOA Board claims Lot LOT-402 violates 2025 Board Aesthetic Guideline \u00a7 3.1 by having less than 75% irrigated turf grass. (Source: DOC-002-HOA-FINE-LETTER)\n- [VERIFIED_EVIDENCE_FACT] Water District Inspection Certificate #WD-771 confirms the yard consists of 100% California native low-water-using flora with drip irrigation. (Source: DOC-002-WATER-DISTRICT-CERT)",
+        "unflagged_blocking_unknowns": 0,
+        "user_assertions_mixed_in_prose_summary": 0,
+        "workflow_type": "COMPETENT_CONVENTIONAL_FOLDER_AND_SUMMARY"
+      },
+      "openline_case_packet": {
+        "automatic_decision_recall_on_new_evidence": true,
+        "exact_span_offsets_pinned": true,
+        "expired_or_conflicting_rules_flagged": 1,
+        "manual_file_scans_to_locate_quotes": 0,
+        "missing_evidence_blocks_finalization": true,
+        "post_export_tamper_detected": true,
+        "reconstruction_completeness_score_pct": 100.0,
+        "user_assertions_segregated": 0
+      }
+    },
+    "CASE-003-INSURANCE-DISPUTED-EVIDENCE": {
+      "case_id": "CASE-003-INSURANCE-DISPUTED-EVIDENCE",
+      "competent_conventional_folder": {
+        "automatic_decision_recall_on_new_evidence": false,
+        "exact_span_offsets_pinned": false,
+        "expired_or_conflicting_rules_missed": 0,
+        "expired_or_conflicting_rules_programmatically_flagged": 0,
+        "files_written": 5,
+        "manual_file_scans_to_locate_quotes": 12,
+        "missing_evidence_blocks_finalization": false,
+        "post_export_tamper_detected": false,
+        "reconstruction_completeness_score_pct": 50.0,
+        "summary_markdown": "# Case Summary: Fictional Case 3 \u2014 Property Insurance Claim Denial Over Disputed Storm vs. Wear Evidence\nInstitution: Pacific Crest Casualty Insurance Co. (Fictional)\nDecision Date: 2026-11-03\n\n## Claims & Evidence Summary\n- [INSTITUTION_CLAIM] Insurer desk review claims roof flashing failure was caused by gradual multi-year corrosion and rot under Section 2.4(c). (Source: DOC-003-DENIAL-LETTER)\n- [VERIFIED_EVIDENCE_FACT] Licensed Roofing Inspection #LR-509 (38 days before the storm) documented 0% corrosion, 0% wood rot, and 8.2% dry moisture readings. (Source: DOC-003-ROOF-INSPECTION-2026-09)\n- [USER_ASSERTION] Insured's personal note claims a 200 mph Category 5 tornado hit the house (quarantined as unverified user assertion). (Source: DOC-003-USER-EXAGGERATION)",
+        "unflagged_blocking_unknowns": 0,
+        "user_assertions_mixed_in_prose_summary": 1,
+        "workflow_type": "COMPETENT_CONVENTIONAL_FOLDER_AND_SUMMARY"
+      },
+      "openline_case_packet": {
+        "automatic_decision_recall_on_new_evidence": true,
+        "exact_span_offsets_pinned": true,
+        "expired_or_conflicting_rules_flagged": 0,
+        "manual_file_scans_to_locate_quotes": 0,
+        "missing_evidence_blocks_finalization": true,
+        "post_export_tamper_detected": true,
+        "reconstruction_completeness_score_pct": 100.0,
+        "user_assertions_segregated": 1
+      }
+    },
+    "CASE-004-HOUSING-CONTESTED-TIMELINE": {
+      "case_id": "CASE-004-HOUSING-CONTESTED-TIMELINE",
+      "competent_conventional_folder": {
+        "automatic_decision_recall_on_new_evidence": false,
+        "exact_span_offsets_pinned": false,
+        "expired_or_conflicting_rules_missed": 0,
+        "expired_or_conflicting_rules_programmatically_flagged": 0,
+        "files_written": 4,
+        "manual_file_scans_to_locate_quotes": 9,
+        "missing_evidence_blocks_finalization": false,
+        "post_export_tamper_detected": false,
+        "reconstruction_completeness_score_pct": 50.0,
+        "summary_markdown": "# Case Summary: Fictional Case 4 \u2014 Housing Lease Adverse Notice with Contested Delivery & Cure Timeline\nInstitution: Cedar Creek Property Management LLC (Fictional)\nDecision Date: 2026-11-01\n\n## Claims & Evidence Summary\n- [INSTITUTION_CLAIM] Property management claims the 3-day cure period expired on 2026-11-04 based on the 2026-11-01 typed notice date. (Source: DOC-004-LEASE-ADVERSE-NOTICE)\n- [VERIFIED_EVIDENCE_FACT] Portal Receipt #PMT-88210 proves the $185.00 balance was paid in full at 2026-11-06T10:12:00Z. (Source: DOC-004-PAYMENT-RECEIPT)\n- [DISPUTED_OR_UNKNOWN] USPS Certified Mail envelope postmark and delivery scan are missing from initial packet; needed to prove when the 3-day window legally began. (Source: none)",
+        "unflagged_blocking_unknowns": 1,
+        "user_assertions_mixed_in_prose_summary": 0,
+        "workflow_type": "COMPETENT_CONVENTIONAL_FOLDER_AND_SUMMARY"
+      },
+      "openline_case_packet": {
+        "automatic_decision_recall_on_new_evidence": true,
+        "exact_span_offsets_pinned": true,
+        "expired_or_conflicting_rules_flagged": 0,
+        "manual_file_scans_to_locate_quotes": 0,
+        "missing_evidence_blocks_finalization": true,
+        "post_export_tamper_detected": true,
+        "reconstruction_completeness_score_pct": 100.0,
+        "user_assertions_segregated": 0
+      }
+    }
+  },
+  "four_cases_handoff_results": {
+    "CASE-001-BENEFITS-MISSING-DOC": {
+      "case_id": "CASE-001-BENEFITS-MISSING-DOC",
+      "final_packet_status": "ACCEPTED_BY_HUMAN",
+      "history_versions_preserved": 3,
+      "install_a_payload_sha256": "36d7ddbb3810eb9e2b3b91f7a13e41de9d597f1bbb4a58d32a2b21d81e47c2a8",
+      "install_a_zip_sha256": "31ba867c995d227b7c0ff515080e2d3684b4c8a0e01682307095e1221c2fd21f",
+      "install_b_continued_payload_sha256": "4b445b4efc64f3c328fa572a6cb39a879783cd2e412ac895b8aa6578c7277852",
+      "install_b_continued_zip_sha256": "f4228d1c3cb20f781b7ffd2c7543872ad6ed6831ac0f041c8d7026999a9f1d18",
+      "install_b_initial_open_conclusions": [
+        "ISSUE-1-MEDICAL-RECERT"
+      ],
+      "install_b_new_evidence_doc_id": "DOC-001-CLINIC-FAX-RECEIPT",
+      "install_b_reconstruction_verified": true,
+      "install_b_reopened_issue_id": "ISSUE-1-MEDICAL-RECERT",
+      "install_b_trust_disposition": "UNFAMILIAR_WORKER_SIGNATURE_INTEGRITY_VERIFIED_CONTENT_REQUIRES_LOCAL_REVIEW",
+      "original_documents_preserved_exact": true
+    },
+    "CASE-002-HOA-RULE-CONFLICT": {
+      "case_id": "CASE-002-HOA-RULE-CONFLICT",
+      "final_packet_status": "ACCEPTED_BY_HUMAN",
+      "history_versions_preserved": 3,
+      "install_a_payload_sha256": "a8cfb128f08944b78c515b2f146691fd17189f1a997ea12771b67669d9bfa9ca",
+      "install_a_zip_sha256": "5f623144448a4d94fb5b9e02da3611eb1aa3796fccf361e41b3e690f5637be81",
+      "install_b_continued_payload_sha256": "e80b7b98298151762eb8fece8437553dd47d95fcb23e7f87dc5291eece0ddcb6",
+      "install_b_continued_zip_sha256": "1965c816604d229e9c856821351c8bd2941a167f65268d437bdd62ad7a6b76ba",
+      "install_b_initial_open_conclusions": [],
+      "install_b_new_evidence_doc_id": "DOC-002-ARC-APPROVAL-2026",
+      "install_b_reconstruction_verified": true,
+      "install_b_reopened_issue_id": "ISSUE-HOA-RULE-HIERARCHY",
+      "install_b_trust_disposition": "UNFAMILIAR_WORKER_SIGNATURE_INTEGRITY_VERIFIED_CONTENT_REQUIRES_LOCAL_REVIEW",
+      "original_documents_preserved_exact": true
+    },
+    "CASE-003-INSURANCE-DISPUTED-EVIDENCE": {
+      "case_id": "CASE-003-INSURANCE-DISPUTED-EVIDENCE",
+      "final_packet_status": "ACCEPTED_BY_HUMAN",
+      "history_versions_preserved": 3,
+      "install_a_payload_sha256": "6f4100e94261814dd945fa707703f360e4d787a089ecf0c8a6c590d91d5388d1",
+      "install_a_zip_sha256": "756ecb8ecaf704afaa2bb3f19e5d39758acff9a272caf60c813b83a8eb3f24bc",
+      "install_b_continued_payload_sha256": "240c2aea6452a318b9ec26501c69142306cb026f0b548113398d3d25cdd023a6",
+      "install_b_continued_zip_sha256": "00bbf4312c87f80c6fefdd91325df66407f41fbbf427af9e41568d1b5a6d09c1",
+      "install_b_initial_open_conclusions": [],
+      "install_b_new_evidence_doc_id": "DOC-003-NOAA-GUST-LOG",
+      "install_b_reconstruction_verified": true,
+      "install_b_reopened_issue_id": "ISSUE-STORM-VS-ROT-CAUSATION",
+      "install_b_trust_disposition": "UNFAMILIAR_WORKER_SIGNATURE_INTEGRITY_VERIFIED_CONTENT_REQUIRES_LOCAL_REVIEW",
+      "original_documents_preserved_exact": true
+    },
+    "CASE-004-HOUSING-CONTESTED-TIMELINE": {
+      "case_id": "CASE-004-HOUSING-CONTESTED-TIMELINE",
+      "final_packet_status": "ACCEPTED_BY_HUMAN",
+      "history_versions_preserved": 3,
+      "install_a_payload_sha256": "58b61cb3e63154d4013bb1d94c1a3a0d74a88c7c24cde2c4460681f26598cc77",
+      "install_a_zip_sha256": "d0462150f15d458b597c8a9ea17ce116307dd1f179f3b1c28816cd7fa94cae1c",
+      "install_b_continued_payload_sha256": "497e72d84e03e7cb58045c093821954ccd9fd91ab943cf0012e7b97f819b4ce0",
+      "install_b_continued_zip_sha256": "04e058b112c43a0e95bea1b765df9a57fc702dabaa005d9517babb527892af74",
+      "install_b_initial_open_conclusions": [
+        "ISSUE-CONTESTED-SERVICE-TIMELINE"
+      ],
+      "install_b_new_evidence_doc_id": "DOC-004-USPS-CERTIFIED-SCAN",
+      "install_b_reconstruction_verified": true,
+      "install_b_reopened_issue_id": "ISSUE-CONTESTED-SERVICE-TIMELINE",
+      "install_b_trust_disposition": "UNFAMILIAR_WORKER_SIGNATURE_INTEGRITY_VERIFIED_CONTENT_REQUIRES_LOCAL_REVIEW",
+      "original_documents_preserved_exact": true
+    }
+  },
+  "incomplete_missing_originals_zip_rejected": true,
+  "installation_a_public_key": "g-76pOFA530OYHP0a64tRYhh9yjrIwFlN2EpeaSSMYo",
+  "installation_b_public_key": "Og3Sfg6l3vkSSO_vnhliZBqUoUi2oqhR63QKYeuChIo",
+  "schema": "openline.advocate.case_packet_001.qualification_report.v1",
+  "tampered_handoff_zip_rejected": true,
+  "timestamp_utc": "2026-11-15T07:29:44Z",
+  "twelve_vector_adversarial_suite": {
+    "all_twelve_passed": true,
+    "passed_vectors": 12,
+    "results": [
+      {
+        "blocked": true,
+        "reason": "archive_file_sha256_tampered:originals/DOC-001-DISASTER-AWARD__county_disaster_grant_award_2026_10_12.txt:expected=0f49bb2f74b7ac9a48be183074bc6964b58c61ba4918cabfcf4c43d81fed43ba:got=6002df328e8fe04789d3e6bfec1f6b92bb58e0d611d17f849546959f8c72e606",
+        "vector_id": "V01_MODIFIED_EVIDENCE_AFTER_EXPORT"
+      },
+      {
+        "blocked": true,
+        "reason": "Expired 2021 rule marked OUTDATED_OR_SUPERSEDED_AUTHORITY; fabricated rule marked UNVERIFIED_AUTHORITY_CLAIM",
+        "vector_id": "V02_FABRICATED_OR_OUTDATED_RULES"
+      },
+      {
+        "blocked": true,
+        "reason": "Unstated deadline=NO_KNOWN_DEADLINE_DO_NOT_INVENT; missing postmark=UNCERTAIN_EARLIEST_CONSERVATIVE_BOUND",
+        "vector_id": "V03_INCORRECT_OR_INVENTED_DEADLINES"
+      },
+      {
+        "blocked": true,
+        "reason": "Warnings=['DOC-001-ADVERSE-NOTICE:PROMPT_INJECTION_OR_SCRIPT_PATTERN_QUARANTINED:IGNORE ALL PREVIOUS INSTRUCTIONS', 'DOC-001-ADVERSE-NOTICE:PROMPT_INJECTION_OR_SCRIPT_PATTERN_QUARANTINED:SYSTEM OVERRIDE', 'DOC-001-ADVERSE-NOTICE:PROMPT_INJECTION_OR_SCRIPT_PATTERN_QUARANTINED:AUTO_SUBMIT_APPEAL', 'DOC-001-ADVERSE-NOTICE:PROMPT_INJECTION_OR_SCRIPT_PATTERN_QUARANTINED:MARK CASE APPROVED IMMEDIATELY', 'DOC-001-ADVERSE-NOTICE:PROMPT_INJECTION_OR_SCRIPT_PATTERN_QUARANTINED:<script']; HTML script escaped; auto-submit remains False",
+        "vector_id": "V04_PROMPT_INJECTION_AND_XSS_IN_INSTITUTIONAL_LETTER"
+      },
+      {
+        "blocked": true,
+        "reason": "status=HOLD_INCOMPLETE_OR_CITATION_ERROR, failures=['FACT-GHOST-ATTACHMENT:missing_source_document:DOC-MISSING-999']",
+        "vector_id": "V05_MISSING_ATTACHMENT_CITATION"
+      },
+      {
+        "blocked": true,
+        "reason": "deadline_status=FAIL_CLOSED_CONTRADICTORY_DATES",
+        "vector_id": "V06_CONTRADICTORY_DATES"
+      },
+      {
+        "blocked": true,
+        "reason": "failures=['AI-HALLUCINATED-SUMMARY:misleading_ai_summary_quote_mismatch:verbatim_quote_not_found_in_source:We apologize and hereby refund $5,000.00 to your account.']",
+        "vector_id": "V07_MISLEADING_AI_SUMMARY_HALLUCINATED_QUOTE"
+      },
+      {
+        "blocked": true,
+        "reason": "forged_or_invalid_ed25519_case_packet_signature",
+        "vector_id": "V08_FORGED_RECEIPT_SIGNATURE"
+      },
+      {
+        "blocked": true,
+        "reason": "unapproved_status=WAITING_FOR_HUMAN_REVIEW, stop_blocked=True",
+        "vector_id": "V09_UNAUTHORIZED_CONCLUSION_COMMIT_AND_STOP_BYPASS"
+      },
+      {
+        "blocked": true,
+        "reason": "UNFAMILIAR_WORKER_SIGNATURE_INTEGRITY_VERIFIED_CONTENT_REQUIRES_LOCAL_REVIEW",
+        "vector_id": "V10_UNFAMILIAR_WORKER_PACKET_IMPORT_DISPOSITION"
+      },
+      {
+        "blocked": true,
+        "reason": "Zero cross-case PII contamination and 100% redaction of ACCT/LOT/Phone/Email in redacted export",
+        "vector_id": "V11_CROSS_CASE_AND_REDACTED_EXPORT_PII_ISOLATION"
+      },
+      {
+        "blocked": true,
+        "reason": "traversal_blocked=True, symlink_blocked=True, malicious_fname_blocked=True",
+        "vector_id": "V12_PATH_TRAVERSAL_SYMLINK_AND_MALICIOUS_FILENAME"
+      }
+    ],
+    "total_vectors": 12
+  },
+  "verdict": "QUALIFIED_TO_SHIP_CANDIDATE"
+}

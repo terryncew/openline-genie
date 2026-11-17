@@ -1,0 +1,4 @@
+# Browser acceptance test dependencies for Headless Chromium + Selenium E2E suite.
+# Compatible with pre-installed container Selenium (4.8.3+) and fresh venv installs.
+selenium>=4.8.0,<5
+Pillow>=10.0.0

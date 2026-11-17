@@ -28,8 +28,6 @@ python3 -m unittest tests/test_civilization_applications_001.py -v
 # Run the complete 167-test unit, regression, and browser E2E suite
 python3 -m unittest discover -s tests -p "test_*.py"
 
-# Run the 24 independent browser & security checks
-python3 muse_independent_checks.py
 
 # Run the 24 OpenLine 007/008 capability flywheel unit tests
 python3 -m unittest discover -s capabilities_007_008/tests -v

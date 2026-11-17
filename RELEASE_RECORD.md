@@ -65,7 +65,7 @@ Known boundaries users must understand. Nothing here is concealed.
 - Neighborhood is a local single-user tool for one household or association. It does not separate multiple households on one server, and multi-household separation is not a supported deployment. The multi-household isolation boundary was removed (it rested on self-asserted request parameters and was never real) and replaced with loopback-only plus Host/Origin checks.
 - Not legal advice. Advocate and Neighborhood organize evidence, dates, and rules for human review. They are not legal advice, do not create an attorney-client relationship, and never submit anything to an outside agency automatically. Neighborhood covers California, Florida, Texas, South Carolina, and a general U.S. baseline; other states need the statute text or local counsel.
 - No guaranteed savings or outcomes. Energy Commons compares costs; it does not promise savings. Science verifies computational reproducibility on recorded datasets; it does not validate a finding in the physical world. Civic compares proposals; it does not decide which one a community should choose.
-- Not tested: macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls, browser end-to-end tests. The 5 Python errors and 1 failure are browser tests that need Chrome/Chromium (not installed in the test environment) and 2 tests that check external archive files not included in this package; they are recorded as NOT VERIFIED, not passed. `muse_independent_checks.py` (24 checks) was not re-run here for the same reason.
+- Not tested: macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls, browser end-to-end tests. The 5 Python errors and 1 failure are browser tests that need Chrome/Chromium (not installed in the test environment) and 2 tests that check external archive files not included in this package; they are recorded as NOT VERIFIED, not passed. the independent browser and security check script (24 checks) was not re-run here for the same reason.
 - `launch_genie.py --verify-only` lists the five applications (energy, advocate, commons, science, civic). Neighborhood readiness is confirmed separately by the live `/neighborhood` route and `/api/neighborhood/state` checks recorded in the acceptance evidence, not by that script.
 - A frozen evidence record (`applications/NEIGHBORHOOD_001_ACCEPTANCE_RECEIPTS.json`) still contains a `VERIFIED_0_LEAKS` claim that is superseded by the repaired single-operator model. The frozen record was left intact as evidence and is not repeated for the current code. Do not quote that claim for the current code.
 - The deterministic builder covers the built-in domains; unfamiliar requests without a paid model fall back to the local synthesizer, which may produce a generic app. Paid model dispatch is OFF by default with a local $5.00 spend cap when opted in.
@@ -186,7 +186,7 @@ Manifest correction (parent, 2026-11-15):
 ## LIMITATIONS
 
 - Browser tests need Chrome/Chromium (NOT VERIFIED here): the Case Packet
-  workbench browser test, `muse_independent_checks.py` (24 checks),
+  workbench browser test, the independent browser and security checks (24 checks),
   mobile/desktop overflow checks, the Neighborhood browser journey test.
 - Applications suite: 186 ran, 175 passed, 1 failure, 5 errors, 5 skipped.
   The 1 failure and 5 errors are environmental (2 external-archive
@@ -491,6 +491,109 @@ could not be repaired in scope; the two foreseen defects were repaired
   empty folder before extracting. Contents and manifests are correct;
   this is a packaging wart, not an integrity failure.
 
+## v1.2.0-rc2 (R7.2 STOP/Resume repair — PR only, NOT merged/tagged/published)
+
+- Candidate archive: OPENLINE_GENIE_R7_2_STOP_RESUME_REPAIR_PRIVATE.zip,
+  5,240,615 bytes, SHA-256
+  e2f269c51216298e99687c2e7c225d3b0ece70b966dfe86873dbb6f01d6c8886.
+  Single top-level dir openline-genie/, 233 archive entries, in-tree
+  manifest 231/231 OK on clean extraction. Base: R7.1 candidate 643c0bf0
+  (GPT-6 household repair, preserved). R7.2 repair diff vs R7.1: exactly
+  genie_engine.py, genie_server.py, openline_five_products.html changed,
+  plus the stop-resume repair handoff, tests/test_r7_2_stop_resume_race.py,
+  tools/browser_stop_race_probe.py new, and INSTALL.md, RELEASE_NOTES.md,
+  SHA256SUMS.txt regenerated.
+- STOP/Resume race repair (R7.2, GPT-6): the page queues a Resume clicked
+  while STOP is in flight until STOP returns its authoritative new_epoch,
+  then clears with that exact epoch. Engine and server bind the clear to
+  the expected epoch and reject stale, malformed, or foreign-epoch attempts
+  (stale_owner_intent, invalid_expected_epoch); a newer STOP cannot be
+  cleared by stale intent, and there is no automatic retry against a newer
+  STOP. ReceiverGuard keeps its transaction-level check.
+- Household boundary repair preserved (R7.1): out-of-range household values
+  (0, -1, 5001, 99999, 1.5, true, NaN, Infinity) are refused at stage with
+  400 and never enter accepted state via the API; 1 and 5000 stage and
+  accept. openline_009_living_project.py is byte-identical to R7.1.
+- Independent qualification (R7.2): Python suite 237 ran, 1 failure and 18
+  errors, all environmental (missing Chromium binary, missing external
+  archives and scripts, test-server load failures), 0 product failures, 4
+  skipped; Node 11/11; new race tests 15/15; prompt STOP then Resume 3/3
+  desktop, 3/3 mobile, 3/3 fresh-server seeding, one click resumes with
+  accepted SHA unchanged; stale-queue v2 3/3 (newer STOP survives, delayed
+  clear refused 409); household attack 16/16; signed replay 12/12;
+  Decision Recall, import/export byte-identical, unauthorized role 403.
+  ASTRA-equivalent REVIEW only on the stale "Living World v0.7.1" label,
+  pre-existing cosmetic, byte-identical to R7.1.
+- Public-tree preservation: this PR adds/modifies files only; zero public
+  paths deleted. The applications/ subtree is untouched. ECOSYSTEM.md is
+  kept from public main (the owner's Nov 15 ecosystem map) instead of the
+  candidate's product table; the candidate's ECOSYSTEM.md stays in the
+  frozen archive. LICENSE is the full Apache 2.0 text with the copyright
+  line (Copyright 2025-2026 Terrynce Anson White / OpenLine Protocol
+  Contributors). SHA256SUMS.txt is regenerated for the merged public tree.
+- Known limitations (stated, not smoothed): Robotics Studio is simulation
+  only. iOS Safari, macOS, and Windows installs NOT VERIFIED. Browser tests
+  NOT VERIFIED where Chrome is absent. openline_robotics_001/SHA256SUMS.txt
+  lists 4 files absent from the tree (pre-existing, byte-identical to R7.1).
+  Dogfood first-run flakiness: 4 checks fail on first run and pass on
+  retest (same as R7.1). Concurrent-STOP returns 409 (fail-closed;
+  trigger_stop TOCTOU unchanged, the UI cannot produce the interleaving).
+- Status: PR prepared only. Publication requires GPT-6 independent review
+  of the receipts and this PR, plus the owner's explicit authorization.
+  Do not merge, tag, or publish on this record alone.
+
 ## 2026-11-16 — Chip-package research published (computational only, hardware on HOLD)
 
 research/chip-packaging/ publishes the MIF-PWS v2 chip-package research and its independent falsification (closes #3). Tournament model, independent ablation (+0.332% parity under equal assumptions), split-plane repair round, first-principles gates, MIF004 screening package, and the eight feasibility findings (F1-F8). One-command reproduction: research/chip-packaging/simulation/run_reproduction.py. Hardware on HOLD; the 50 W electrical test design would draw 614.4 W; step-by-step manufacturing instructions withheld; freshwater-production claim not established.
+
+## v1.2.0-rc3 (merged candidate: R7.2 authority + RC3 additive — PR only, NOT merged/tagged/published)
+
+- Candidate archive: OPENLINE_GENIE_v1.2.0_RC3_FINAL.zip, 5,379,274 bytes,
+  SHA-256 ac81ffce7a641c317a5a4eb023bbe38e57b6bf3b4465fd67d7ee1f5b348111e2.
+  Single top-level dir openline-genie/, 266 files, in-tree manifest 264/264
+  OK on clean extraction; robotics sub-manifest 17/17 OK. Base: R7.2
+  candidate e2f269c5 (PR #2, commit 16fbda8) + RC3 candidate 9fa9c38f
+  (Drive 1TJ9rq6_UxKk-7QwuAmOXIpkz6af14Xf-).
+- Reconciliation (verified by direct diff): RC3 regressed all three R7-line
+  authority fixes -- epoch-bound clear_stop, the 1..5000 household check,
+  and syncAcceptedForms -- and carried the abbreviated LICENSE. The merge
+  takes R7.2 on every authority path and RC3's additive work only: visual
+  repair (propose_visual_artifact_repair, adapted to the R7.2 signature),
+  visual-intelligence harness, evaluation boundary, real-browser runner,
+  dogfood/inheritance tests. 29 files differed; see closure/MERGE_LOG.md.
+- Repairs after the merge (all in the candidate): concurrent-STOP TOCTOU
+  (trigger_stop retries once on stale_owner_intent; the CLEAR path never
+  retries); seeding ready-banner (flag-owned, survives STOP/Resume during
+  first use); fail-open reject (reject only pending or authority-revoked
+  proposals; rejecting an accepted proposal is still refused);
+  seed-poisoned recall standing (accept recalls the intersection of
+  snapshots; support groups extend instead of early-returning); Robotics
+  sub-manifest regenerated over the 17 files present (4 stale entries
+  removed, not fabricated).
+- Independent qualification (merged tree): Python suite 247 ran, 228 pass,
+  1 failure and 18 errors, all environmental (missing Chromium binary,
+  missing external archives/scripts), 0 product failures, in normal and
+  -O modes (identical sets); Node 11/11; race + spend-ledger tests 19/19;
+  STOP/Resume matrix PASS desktop 1280px and mobile 390px (immediate,
+  repeated, delayed stale, concurrent 6/6, seeding, accepted-state);
+  cross-feature STOP x visual repair PASS (stale repair refused
+  cannot_promote_revoked_proposal, accepted SHA unchanged, fresh
+  stage+accept works); household attack 16/16; Decision Recall, signed
+  receipts, role 403, import/export byte-identical, spend-ledger
+  fail-closed; corrected first-run dogfood 33/0 desktop, 8/0 mobile,
+  zero console errors.
+- Public-tree preservation: this PR adds/modifies files only; zero public
+  paths deleted. The applications/ subtree is untouched. ECOSYSTEM.md is
+  kept from public main a6d0a72 (the owner's Nov 15 map plus the chip
+  research reference) instead of any candidate's product table.
+  research/chip-packaging/ from main is preserved untouched. LICENSE is
+  the full Apache 2.0 text with the copyright line. SHA256SUMS.txt is
+  regenerated for the merged public tree.
+- Known limitations (stated, not smoothed): Robotics Studio is simulation
+  only. iOS Safari, macOS, Windows, OS-identity security NOT VERIFIED.
+  Browser tests NOT VERIFIED where Chrome is absent (11 suite tests error
+  on /usr/bin/chromedriver). The concurrent-STOP TOCTOU note in the R7.2
+  entry above is superseded by the trigger_stop retry in this candidate.
+- Status: PR prepared only. Publication requires GPT-6 independent review
+  of the exact final SHA and the owner's explicit authorization. Do not
+  merge, tag, or publish on this record alone.

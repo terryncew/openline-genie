@@ -4,20 +4,60 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openline-genie"
-version = "0.7.1"
-description = "OpenLine Genie Living World v0.7.1 — Local-First Visual Project Builder & Constraint Engine"
+version = "1.2.0rc3"
+description = "OpenLine Genie & Living Projects v1.2.0-rc3 — Seven-Application Local-First Suite & Receiver-Governed Runtime"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
 ]
 dependencies = [
     "cryptography>=41.0.0",
     "numpy>=1.26.0",
+    "onnxruntime>=1.16.0",
+    "Pillow>=10.0.0",
+    "selenium>=4.8.0",
 ]
 
 [project.optional-dependencies]
 browser = [
-    "playwright>=1.40.0",
+    "selenium>=4.8.0,<5",
+    "Pillow>=10.0.0",
 ]
+
+[project.scripts]
+openline-genie = "launch_genie:main"
+openline-genie-server = "genie_server:main"
+
+[tool.setuptools]
+include-package-data = true
+py-modules = [
+    "functional_runner",
+    "genie_engine",
+    "genie_server",
+    "launch_genie",
+    "openline_009_living_project",
+    "openline_boundary_standing_witness",
+    "openline_research_kernel",
+    "run_rc3_dogfood_and_browser_acceptance",
+    "run_visual_intelligence_breakthrough_001",
+]
+packages = [
+    "adapters",
+    "capabilities_007_008",
+    "capabilities_007_008.generated",
+    "capabilities_007_008.models",
+    "capabilities_007_008.tests",
+    "capabilities_007_008.upstream",
+    "core",
+    "openline_robotics_001",
+    "openline_robotics_001.examples",
+    "openline_robotics_001.tests",
+    "playwright",
+]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.onnx", "*.html", "*.css", "*.js", "*.md"]

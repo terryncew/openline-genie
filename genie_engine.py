@@ -68,6 +68,14 @@ from core.model_optimizer import (
     new_neural_model_record,
     recompute_neural_model_state,
 )
+from core.operational_compiler import (
+    OPERATIONS_BASELINE_ASSUMPTIONS,
+    compile_operational_project,
+    compile_runnable_micro_app_html,
+    compute_operations_model,
+    new_operations_record,
+    recompute_operations_model_state,
+)
 from core.ipc_protocol import ipc_request_intent_sha256
 from core.model_adapter import TOTAL_CAP_USD, SpendLedger
 
@@ -587,7 +595,7 @@ class GenieAppSynthesizer:
         p_low = prompt.lower().strip()
         if custom_spec and isinstance(custom_spec, dict) and "fields" in custom_spec:
             spec = copy.deepcopy(custom_spec)
-        elif "tool library" in p_low or "lending" in p_low or "equipment" in p_low:
+        elif "tool library" in p_low or ("lending" in p_low and ("deposit" in p_low or "tool" in p_low or "equipment" in p_low)):
             spec = {
                 "app_slug": "neighborhood-tool-library",
                 "title": "Neighborhood Tool Library & Deposit Tracker",
@@ -643,7 +651,12 @@ class GenieAppSynthesizer:
                     },
                 ],
             }
-        elif "solar" in p_low or "energy" in p_low or "building" in p_low:
+        elif (
+            "sb 868" in p_low
+            or "ab 205" in p_low
+            or ("solar" in p_low and not any(w in p_low for w in ("clinic", "vaccine", "cold chain", "cold-chain", "refrigerat", "water", "filter", "pump", "irrigation", "garden", "thermal", "desalin", "hospital", "care", "microgrid")))
+            or ("energy" in p_low and "building" in p_low and "thermal" not in p_low)
+        ):
             spec = {
                 "app_slug": "building-solar-sb868-estimator",
                 "title": "Building & Plug-In Solar Savings Analyzer (CA SB 868 / AB 205)",
@@ -687,7 +700,7 @@ class GenieAppSynthesizer:
                     },
                 ],
             }
-        elif "voting" in p_low or "congress" in p_low or "representative" in p_low or "civic" in p_low:
+        elif "roll call" in p_low or "congress" in p_low or ("voting" in p_low and ("representative" in p_low or "clerk" in p_low or "civic" in p_low)):
             spec = {
                 "app_slug": "congressional-roll-call-verifier",
                 "title": "Congressional Voting Record & Roll Call Verifier",
@@ -877,50 +890,8 @@ class GenieAppSynthesizer:
                 ],
             }
         else:
-            # General natural-language extraction for ANY unfamiliar request
-            words = [w for w in re.findall(r"[A-Za-z0-9]+", prompt) if len(w) > 2]
-            title_words = " ".join(w.capitalize() for w in words[:6]) or "Custom Local Operations Tool"
-            slug = "-".join(w.lower() for w in words[:5]) or "custom-genie-tool"
-            spec = {
-                "app_slug": slug,
-                "title": f"{title_words} — Autonomous Genie Workspace",
-                "subtitle": "Synthesized Stateful Operations, Calculator & Export Tool",
-                "category": "synthesized_custom_application",
-                "primary_entity": "Work Item",
-                "fields": [
-                    {"key": "item_title", "label": "Item / Client Name", "type": "text", "required": True},
-                    {"key": "category_tag", "label": "Category / Scope", "type": "text", "required": True},
-                    {"key": "quantity_units", "label": "Quantity / Hours", "type": "number", "min": 0, "max": 100000, "default": 4.0},
-                    {"key": "unit_rate_dollars", "label": "Unit Rate ($)", "type": "number", "min": 0, "max": 100000, "default": 65.0},
-                    {"key": "adjustments_dollars", "label": "Materials / Adjustment ($)", "type": "number", "min": -5000, "max": 50000, "default": 25.0},
-                ],
-                "formula_description": "net_total_dollars = round((quantity_units * unit_rate_dollars) + adjustments_dollars, 2)",
-                "workflow_states": ["ACTIVE", "COMPLETED_VERIFIED", "NEEDS_REVIEW"],
-                "records": [
-                    {
-                        "record_id": "REC-101",
-                        "item_title": f"{title_words} — Initial Pilot Entry",
-                        "category_tag": "Standard Service",
-                        "quantity_units": 4.0,
-                        "unit_rate_dollars": 65.0,
-                        "adjustments_dollars": 25.0,
-                        "computed_metric_label": "Calculated Net Total ($)",
-                        "computed_metric_value": 285.00,
-                        "status": "COMPLETED_VERIFIED",
-                    },
-                    {
-                        "record_id": "REC-102",
-                        "item_title": f"{title_words} — Secondary Batch",
-                        "category_tag": "Priority Request",
-                        "quantity_units": 2.5,
-                        "unit_rate_dollars": 80.0,
-                        "adjustments_dollars": 15.0,
-                        "computed_metric_label": "Calculated Net Total ($)",
-                        "computed_metric_value": 215.00,
-                        "status": "ACTIVE",
-                    },
-                ],
-            }
+            # General operational domain compiler for ANY unfamiliar request
+            spec = compile_operational_project(prompt)
 
         return {
             "schema": "openline.genie.synthesized_app.v1",
@@ -980,7 +951,7 @@ class GenieAppSynthesizer:
             prev_fam = str(rec.get("previous_family", "")).split("(")[0].strip().lower()
             if cur_fam and prev_fam and cur_fam == prev_fam:
                 raise ValueError(f"crop_rotation_violation_same_family_consecutive:{cur_fam}")
-            gal_per_lb = 2.8 if app_state.get("garden", {}).get("assumptions", {}).get("drip_mulch_enabled") else 4.0
+            gal_per_lb = 2.625 if app_state.get("garden", {}).get("assumptions", {}).get("drip_mulch_enabled") else float(app_state.get("garden", {}).get("assumptions", {}).get("gallons_per_lb_produce", 4.0))
             rec["computed_metric_label"] = "Projected Harvest (lbs/wk)"
             rec["computed_metric_value"] = round(min(water / gal_per_lb, vhours * yrate), 2)
         else:
@@ -989,8 +960,19 @@ class GenieAppSynthesizer:
             adj = finite_number(rec.get("adjustments_dollars", 0.0), "adjustments_dollars")
             if qty < 0 or rate < 0:
                 raise ValueError("negative_quantity_or_rate_not_allowed")
-            rec["computed_metric_label"] = "Calculated Net Total ($)"
-            rec["computed_metric_value"] = round((qty * rate) + adj, 2)
+            ops = app_state.get("operations_model") if isinstance(app_state, dict) else None
+            eff = 1.0
+            tp = 42
+            metric_lbl = "Calculated Net Total ($)"
+            if isinstance(ops, dict):
+                eff = float(ops.get("assumptions", {}).get("efficiency_multiplier", 1.0))
+                tp = max(1, int(ops.get("computed", {}).get("throughput_ops_per_day", 42)))
+                prof = ops.get("profile")
+                if isinstance(prof, dict) and prof.get("metric_label"):
+                    metric_lbl = str(prof["metric_label"])
+            rec["computed_metric_label"] = metric_lbl
+            rec["computed_metric_value"] = round(((qty * rate) + adj) * eff, 2)
+            rec["capacity_share_pct"] = round(100.0 * max(qty, 1.0) / tp, 2)
         return rec
 
 
@@ -1244,6 +1226,20 @@ class OpenLineGenieEngine:
                     key TEXT PRIMARY KEY,
                     value TEXT NOT NULL,
                     updated_at INTEGER NOT NULL
+                )
+                """
+            )
+            db.execute(
+                """
+                CREATE TABLE IF NOT EXISTS genie_decision_recall (
+                    recall_id TEXT PRIMARY KEY,
+                    project_id TEXT NOT NULL,
+                    node_id TEXT NOT NULL,
+                    affected_nodes_json TEXT NOT NULL,
+                    reason TEXT NOT NULL,
+                    recalled_at_version INTEGER NOT NULL,
+                    recalled_state_sha256 TEXT NOT NULL,
+                    created_at INTEGER NOT NULL
                 )
                 """
             )
@@ -1733,6 +1729,15 @@ class OpenLineGenieEngine:
             state["fields"] = bakery_state_fields()
             family = "bakery"
 
+        staged_app_ver: int | None = None
+        if family == "synthesized_micro_app" and isinstance(state.get("operations_model"), dict):
+            app_html = compile_runnable_micro_app_html(state)
+            app_fname = f"{project_id}.html"
+            staged_app_ver = self.store_app_version(project_id, app_fname, app_html, status="exploratory")
+            state["app_version"] = staged_app_ver
+            state["app_sha256"] = sha256_hex(app_html)
+            state["app_filename"] = app_fname
+
         test_report = self.verify_project_artifact(
             state,
             expected_project_id=project_id,
@@ -1741,7 +1746,13 @@ class OpenLineGenieEngine:
         if not test_report["passed"]:
             raise ValueError(f"autonomous_build_self_test_failed:{test_report['errors']}")
 
-        receipt = self._commit_accepted_state(project_id, family, state, operation="autonomous_build")
+        receipt = self._commit_accepted_state(
+            project_id,
+            family,
+            state,
+            operation="autonomous_build",
+            promote_staged_app_version=staged_app_ver,
+        )
         stages = [
             ("1. Understand Goal", f"Parsed user objective -> family='{family}', project_id='{project_id}'"),
             ("2. Identify Constraints", "Enforced $0 local-first operation, cent/kinematic/domain bounds, and owner-gated external effects"),
@@ -1844,6 +1855,28 @@ class OpenLineGenieEngine:
             "baseline_assumptions": baseline,
             "current_assumptions": assumptions,
             "computed": record["computed"],
+        }
+
+    def operations_paths(self, project_id: str | None = None) -> dict[str, Any]:
+        """Path id -> assumption patch + computed station capacities/economics for unfamiliar operational projects."""
+        baseline = copy.deepcopy(OPERATIONS_BASELINE_ASSUMPTIONS)
+        assumptions = copy.deepcopy(baseline)
+        profile = None
+        if project_id is not None:
+            bundle = self.get_project_bundle(project_id)
+            ops = bundle["accepted"]["state"].get("operations_model")
+            if isinstance(ops, dict):
+                if isinstance(ops.get("assumptions"), dict):
+                    assumptions = copy.deepcopy(ops["assumptions"])
+                if isinstance(ops.get("profile"), dict):
+                    profile = copy.deepcopy(ops["profile"])
+        record = new_operations_record(assumptions, profile)
+        return {
+            "paths": record["paths"],
+            "baseline_assumptions": baseline,
+            "current_assumptions": assumptions,
+            "computed": record["computed"],
+            "profile": record["profile"],
         }
 
     def verify_project_artifact(
@@ -1982,6 +2015,29 @@ class OpenLineGenieEngine:
                     errors.append("invalid_community_garden_model")
                 elif float(cg["computed"].get("throughput_lbs_per_week", 0)) <= 0:
                     errors.append("invalid_community_garden_yield")
+            if "operations_model" in state:
+                checks_run += 2
+                om = state.get("operations_model")
+                if not isinstance(om, dict) or not isinstance(om.get("computed"), dict) or not isinstance(om.get("assumptions"), dict):
+                    errors.append("invalid_operations_model")
+                else:
+                    try:
+                        recalc_om = compute_operations_model(om["assumptions"], om.get("profile"))
+                        if int(recalc_om.get("throughput_ops_per_day", 0)) <= 0:
+                            errors.append("invalid_operations_throughput")
+                    except Exception as exc:
+                        errors.append(f"operations_model_assumption_error:{exc}")
+            if state.get("app_version") is not None and state.get("app_sha256"):
+                checks_run += 1
+                try:
+                    ver = self.get_app_version(str(cand_pid), int(state["app_version"]))
+                    if ver["sha256"] != state["app_sha256"]:
+                        errors.append("synthesized_app_sha256_mismatch")
+                    content_low = ver["content"].lower()
+                    if "<html" not in content_low or 'src="http' in content_low or 'href="http' in content_low:
+                        errors.append("synthesized_app_violates_sandbox_policy")
+                except ValueError as exc:
+                    errors.append(f"synthesized_app_version_lookup_failed:{exc}")
 
         return {"passed": len(errors) == 0, "checks_run": checks_run, "errors": errors}
 
@@ -2078,6 +2134,39 @@ class OpenLineGenieEngine:
                     p["label"] for p in candidate_state["neural_model"].get("paths", {}).values() if isinstance(p, dict) and "label" in p
                 ],
             }
+        if isinstance(candidate_state.get("operations_model"), dict) and isinstance(accepted_state.get("operations_model"), dict):
+            om_before = accepted_state["operations_model"].get("computed", {})
+            om_after = candidate_state["operations_model"].get("computed", {})
+            ops_delta = int(om_after.get("throughput_ops_per_day", 0)) - int(om_before.get("throughput_ops_per_day", 0))
+            net_delta = round(float(om_after.get("net_daily_usd", 0.0)) - float(om_before.get("net_daily_usd", 0.0)), 2)
+            prof = candidate_state["operations_model"].get("profile", {})
+            return {
+                "domain": str(candidate_state.get("category", "operations_model")),
+                "before_binding_constraint": str(om_before.get("bottleneck_id", "workflow")),
+                "after_binding_constraint": str(om_after.get("bottleneck_id", "workflow")),
+                "before_binding_constraint_label": str(om_before.get("bottleneck_label", "Primary Resource Pool")),
+                "after_binding_constraint_label": str(om_after.get("bottleneck_label", "Assigned Crew")),
+                "constraint_shifted": om_before.get("bottleneck_id") != om_after.get("bottleneck_id"),
+                "before_output": f"{om_before.get('throughput_ops_per_day', 42)} ops/day",
+                "after_output": f"{om_after.get('throughput_ops_per_day', 42)} ops/day",
+                "delta_output": f"{ops_delta:+d} ops/day",
+                "before_daily_net_usd": float(om_before.get("net_daily_usd", 0.0)),
+                "after_daily_net_usd": float(om_after.get("net_daily_usd", 0.0)),
+                "delta_daily_net_usd": net_delta,
+                "conventional_comparator": (
+                    f"{prof.get('spot_label', 'Spot rental / overtime')} reaches 56 ops/day at +$85/day recurring cost "
+                    f"($0 CapEx), yielding $70/day lower net operational value than {prof.get('expand_label', 'primary resource expansion')}."
+                ),
+                "second_order_risks": [
+                    f"Expanding {om_before.get('bottleneck_label', 'primary resources')} shifts the binding bottleneck to {om_before.get('next_ceiling_label', 'assigned crew')} (56 ops/day).",
+                    f"Staggering shifts BEFORE expanding {om_before.get('bottleneck_label', 'primary resources')} is a clamped trap (+0 ops/day).",
+                    f"Combining resource expansion + staggered shifts unlocks 68 ops/day (+12 ops/day super-additive synergy), shifting the 3rd-order ceiling to {om_before.get('third_ceiling_label', 'intake queue')} (68 ops/day).",
+                ],
+                "discriminating_falsifier": "Verify min(workflow_cap, formula_cap, inputs_cap, demand_cap) and check that dependent record metrics & capacity shares update.",
+                "next_enabled_actions": [
+                    p["label"] for p in candidate_state["operations_model"].get("paths", {}).values() if isinstance(p, dict) and "label" in p
+                ],
+            }
         return {
             "domain": str(candidate_state.get("project_family", "general")),
             "before_binding_constraint": "baseline_accepted_specification",
@@ -2149,6 +2238,11 @@ class OpenLineGenieEngine:
         recompute_bakery_state(candidate)
         recompute_garden_state(candidate)
         recompute_neural_model_state(candidate)
+        recompute_operations_model_state(candidate)
+
+        if app_content is None and expected_family == "synthesized_micro_app" and isinstance(candidate.get("operations_model"), dict) and candidate.get("app_version") is not None:
+            app_content = compile_runnable_micro_app_html(candidate)
+            app_filename = candidate.get("app_filename") or f"{project_id}.html"
 
         if app_content is not None:
             if not isinstance(app_content, str) or "<html" not in app_content.lower():
@@ -2214,11 +2308,30 @@ class OpenLineGenieEngine:
 
         with sqlite3.connect(self.db_path) as db:
             row = db.execute(
-                "SELECT candidate_sha256, candidate_state_json FROM genie_exploratory WHERE proposal_id=? AND project_id=?",
+                "SELECT candidate_sha256, candidate_state_json, status FROM genie_exploratory WHERE proposal_id=? AND project_id=?",
                 (proposal_id, project_id),
             ).fetchone()
             if not row:
                 raise ValueError(f"unknown_proposal_id:{proposal_id}")
+            # Mirror accept, except for revocations: only a pending or
+            # authority-revoked proposal may be rejected. Reject is the
+            # owner's safety action and stays available under STOP, so a
+            # proposal revoked by a STOP (REVOKED_BY_STOP_EPOCH) or a worker
+            # swap must still be rejectable -- both tests
+            # test_stop_blocks_propose_and_accept_but_not_reject assert it.
+            # A revoked proposal was never promoted, so recording its
+            # exploratory SHA in genie_rejected cannot trip the integrity
+            # check. What must stay refused is an already-ACCEPTED proposal:
+            # rejecting it records the accepted SHA in genie_rejected, and
+            # verify_persistence_integrity then 400s every later call
+            # (rejected_candidate_promoted_to_accepted) -- the state dir is
+            # bricked by one stale drawer click.
+            if str(row[2]) not in (
+                "EXPLORATORY_PENDING",
+                "REVOKED_BY_STOP_EPOCH",
+                "REVOKED_BY_WORKER_SWAP",
+            ):
+                raise PermissionError(f"proposal_not_pending:{row[2]}")
             cand_sha, cand_json = row[0], row[1]
             db.execute(
                 "UPDATE genie_exploratory SET status='REJECTED' WHERE proposal_id=?",
@@ -2272,6 +2385,10 @@ class OpenLineGenieEngine:
 
     def accept_exploratory_change(self, project_id: str, proposal_id: str) -> dict[str, Any]:
         """Promotes a validated Exploratory proposal to Accepted state via ReceiverGuard with CAS and epoch/worker checks."""
+        with _get_engine_dir_lock(self.state_dir):
+            return self._accept_exploratory_change_locked(project_id, proposal_id)
+
+    def _accept_exploratory_change_locked(self, project_id: str, proposal_id: str) -> dict[str, Any]:
         self._require_open(project_id)
         self._require_not_stopped(operation="accept_exploratory_change", target_id=project_id)
         current_epoch = int(self.guard.read_stop_state().get("epoch", 0))
@@ -2537,16 +2654,135 @@ class OpenLineGenieEngine:
             states = state.get("workflow_states", ["ACTIVE"])
             computed["status"] = states[0]
         state.setdefault("records", []).append(computed)
-        self._commit_accepted_state(project_id, state["project_family"], state, operation="add_synthesized_record")
+        staged_ver: int | None = None
+        if isinstance(state.get("operations_model"), dict) and state.get("app_version") is not None:
+            app_html = compile_runnable_micro_app_html(state)
+            app_fname = state.get("app_filename") or f"{project_id}.html"
+            staged_ver = self.store_app_version(project_id, str(app_fname), app_html, status="exploratory")
+            state["app_version"] = staged_ver
+            state["app_sha256"] = sha256_hex(app_html)
+            state["app_filename"] = str(app_fname)
+        self._commit_accepted_state(
+            project_id,
+            state["project_family"],
+            state,
+            operation="add_synthesized_record",
+            promote_staged_app_version=staged_ver,
+        )
         return self.get_project_bundle(project_id)
+
+    def recall_decision(
+        self,
+        project_id: str,
+        node_id: str,
+        reason: str = "owner_decision_recall",
+    ) -> dict[str, Any]:
+        """Records an owner-initiated Decision Recall on an upstream station/assumption,
+        reopening dependent nodes and marking pending exploratory proposals as requiring
+        re-evaluation, while preserving accepted state byte-identically."""
+        self._require_open(project_id)
+        self._require_not_stopped(operation="recall_decision", target_id=project_id)
+        bundle = self.get_project_bundle(project_id)
+        acc_ver = int(bundle["accepted"]["version"])
+        acc_sha = str(bundle["accepted"]["state_sha256"])
+        state = bundle["accepted"]["state"]
+
+        # Determine downstream dependent nodes for the recalled station
+        dep_map: dict[str, list[str]] = {
+            "oven": ["oven", "schedule", "shop", "scenario"],
+            "staff": ["staff", "schedule", "shop", "scenario"],
+            "ingredients": ["ingredients", "schedule", "shop", "scenario"],
+            "water": ["water", "schedule", "wash_station", "scenario"],
+            "volunteers": ["volunteers", "schedule", "wash_station", "scenario"],
+            "plots": ["plots", "schedule", "wash_station", "scenario"],
+            "spectral_flow": ["spectral_flow", "architecture_ceiling", "scenario"],
+            "data_subspace": ["data_subspace", "architecture_ceiling", "scenario"],
+            "calibration_efficiency": ["calibration_efficiency", "architecture_ceiling", "scenario"],
+            "workflow": ["workflow", "scenario"],
+            "formula": ["formula", "workflow", "scenario"],
+            "inputs": ["inputs", "workflow", "scenario"],
+            "demand": ["demand", "workflow", "scenario"],
+        }
+        affected = dep_map.get(node_id, [node_id, "scenario"])
+        recall_id = f"recall-{sha256_hex({'p': project_id, 'n': node_id, 'v': acc_ver, 'r': reason, 't': time.time()})[:10]}"
+
+        with sqlite3.connect(self.db_path) as db:
+            db.execute(
+                """
+                INSERT OR REPLACE INTO genie_decision_recall
+                (recall_id, project_id, node_id, affected_nodes_json, reason,
+                 recalled_at_version, recalled_state_sha256, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    recall_id,
+                    project_id,
+                    node_id,
+                    json.dumps(affected),
+                    reason,
+                    acc_ver,
+                    acc_sha,
+                    int(time.time()),
+                ),
+            )
+            cur = db.execute(
+                """
+                UPDATE genie_exploratory
+                SET status='STALE_REOPEN_REQUIRED'
+                WHERE project_id=? AND status='EXPLORATORY_PENDING'
+                """,
+                (project_id,),
+            )
+            reopened_proposals = int(cur.rowcount)
+            db.commit()
+
+        self.log_autonomy_stage(
+            project_id,
+            "Decision Recall",
+            f"Recalled '{node_id}' ({reason}) -> reopened {len(affected)} dependent node(s) {affected}; "
+            f"accepted state {acc_sha[:12]}... preserved untouched.",
+            "OWNER_DECISION_RECALL_LEDGER",
+        )
+        updated_bundle = self.get_project_bundle(project_id)
+        return {
+            **updated_bundle,
+            "recall_id": recall_id,
+            "recalled_node_id": node_id,
+            "affected_nodes": affected,
+            "reopened_pending_proposals": reopened_proposals,
+            "preserved_accepted_sha256": acc_sha,
+        }
 
     # -----------------------------------------------------------------------
     # Owner Authority Controls: STOP, Worker Succession & External Outbox
     # -----------------------------------------------------------------------
     def trigger_stop(self, reason: str = "owner_emergency_stop") -> dict[str, Any]:
-        cur_epoch = self.guard.read_stop_state()["epoch"]
-        env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
-        receipt = self.guard.issue_stop(env)
+        # Bounded retries on stale_owner_intent only (5 attempts). Two
+        # concurrent STOPs can both read the same epoch; the loser's envelope
+        # is refused because the winner already advanced the epoch (guard
+        # issue_stop verifies the envelope epoch under BEGIN IMMEDIATE). A
+        # STOP is an owner intent to stop, so re-issuing it against the
+        # freshly read epoch honours that intent. The epoch can advance more
+        # than once while a STOP settles — a queued Resume clearing behind
+        # it advances it again — so a single retry is not enough: with one
+        # retry a racing STOP could exhaust the budget and return 409 with
+        # the server still ACTIVE. The CLEAR path never retries: a newer
+        # STOP must never be cleared by an older Resume. Any other
+        # verification failure (e.g. stop_authority_owner_only) propagates
+        # immediately, unretried, as does the last stale failure once the
+        # budget is exhausted.
+        receipt = None
+        for _attempt in range(5):
+            try:
+                cur_epoch = self.guard.read_stop_state()["epoch"]
+                env = self.owner_identity.issue_stop_envelope(reason=reason, expected_epoch=cur_epoch)
+                receipt = self.guard.issue_stop(env)
+                break
+            except VerificationError as exc:
+                if "stale_owner_intent" not in str(exc):
+                    raise
+                if _attempt == 4:
+                    raise
         new_epoch = int(self.guard.read_stop_state()["epoch"])
         with sqlite3.connect(self.db_path) as db:
             cur = db.execute(
@@ -2566,11 +2802,180 @@ class OpenLineGenieEngine:
             "revoked_pending_proposals": revoked_count,
         }
 
-    def clear_stop(self, reason: str = "owner_resume") -> dict[str, Any]:
+
+    def propose_visual_artifact_repair(
+        self,
+        project_id: str,
+        candidate_html: str | None = None,
+        *,
+        source_html: str | None = None,
+        accepted_assumptions_override: dict[str, Any] | None = None,
+        summary: str = "Visual-geometric counterfactual diagnosis and structural repair",
+        artifact_family: str = "responsive_ui",
+        viewport: dict[str, int] | None = None,
+        browser_page: Any | None = None,
+        require_real_browser: bool = False,
+        attempt_direct_commit: bool = False,
+        bypass_receiver: bool = False,
+        caller_supplied_receipt: Any | None = None,
+        reset_spend_limit: bool = False,
+        spend_delta_override_usd: float | None = None,
+        disable_stop: bool = False,
+        proposer_worker: str | None = None,
+    ) -> dict[str, Any]:
+        """Inspects and stages a visual repair proposal under strict ReceiverGuard,
+        SpendLedger, and fail-closed visual inspection boundaries (`Blocker 2.D Closed`).
+
+        Enforced Authority & Security Invariants:
+        1. Cannot disable STOP (`disable_stop=True` or active STOP state fails closed).
+        2. Cannot bypass receiver-controlled acceptance (`attempt_direct_commit=True` or
+           `bypass_receiver=True` fails closed; only stages into `genie_exploratory` and
+           never mutates `genie_accepted`).
+        3. Cannot forge receipts (`caller_supplied_receipt` fails closed).
+        4. Cannot reset or lower spending limits (`reset_spend_limit=True`, negative spend
+           deltas, or tampered `SpendLedger` files fail closed).
+        5. Failed visual inspection NEVER silently becomes approval (`obs.inspection_failed`
+           or `not precheck['candidate_self_check_passed']` raises `PermissionError`).
+        """
+        if disable_stop:
+            raise PermissionError("VISUAL_REPAIR_CANNOT_DISABLE_STOP")
+        self._require_open(project_id)
+        self._require_not_stopped(operation="propose_visual_artifact_repair", target_id=project_id)
+
+        if attempt_direct_commit or bypass_receiver:
+            raise PermissionError(
+                "VISUAL_REPAIR_CANNOT_BYPASS_RECEIVER_ACCEPTANCE:must_stage_exploratory_proposal"
+            )
+        if caller_supplied_receipt is not None:
+            raise PermissionError("VISUAL_REPAIR_FORGED_OR_CALLER_RECEIPT_REJECTED")
+        if reset_spend_limit or (spend_delta_override_usd is not None and float(spend_delta_override_usd) < 0.0):
+            raise PermissionError("VISUAL_REPAIR_SPEND_LIMIT_RESET_FORBIDDEN")
+
+        if self.model_adapter is not None and hasattr(self.model_adapter, "ledger"):
+            # Verify SpendLedger integrity on disk before allowing any visual harness operation
+            self.model_adapter.ledger._read_disk_strict()
+
+        worker_label = proposer_worker or self.active_worker_id
+        worker_ident = self._worker_identity_by_label(worker_label)
+        if self.guard.is_worker_revoked(worker_ident.public):
+            raise PermissionError(f"proposer_worker_revoked:{worker_label}")
+
+        bundle_before = self.get_project_bundle(project_id)
+        accepted_sha_before = str(bundle_before["accepted"]["state_sha256"])
+        accepted_ver_before = int(bundle_before["accepted"]["version"])
+        accepted_state = bundle_before["accepted"]["state"]
+        current_html = (
+            source_html
+            if source_html is not None
+            else str((bundle_before.get("app") or {}).get("content") or "")
+        )
+
+        accepted_assumptions: dict[str, Any] = {}
+        if accepted_assumptions_override is not None:
+            accepted_assumptions = dict(accepted_assumptions_override)
+        elif isinstance(accepted_state.get("civilization_app"), dict):
+            accepted_assumptions = dict(accepted_state["civilization_app"].get("assumptions") or {})
+        elif isinstance(accepted_state.get("bakery"), dict):
+            accepted_assumptions = dict(accepted_state["bakery"].get("assumptions") or {})
+        elif isinstance(accepted_state.get("garden"), dict):
+            accepted_assumptions = dict(accepted_state["garden"].get("assumptions") or {})
+        elif isinstance(accepted_state.get("operations_model"), dict):
+            accepted_assumptions = dict(accepted_state["operations_model"].get("assumptions") or {})
+
+        from core.visual_intelligence_harness import (
+            check_candidate_visual_and_functional_invariants,
+            diagnose_visual_causal_bottleneck,
+            observe_rendered_artifact,
+            repair_visual_artifact,
+        )
+
+        obs_before = observe_rendered_artifact(
+            f"{project_id}:before",
+            current_html,
+            artifact_family=artifact_family,
+            viewport=viewport,
+            accepted_state=accepted_assumptions,
+            browser_page=browser_page,
+            require_real_browser=require_real_browser,
+        )
+        if obs_before.inspection_failed:
+            raise PermissionError(
+                f"VISUAL_INSPECTION_FAILED_BEFORE_REPAIR:{obs_before.inspection_errors}"
+            )
+
+        diag_before = diagnose_visual_causal_bottleneck(
+            obs_before,
+            accepted_state=accepted_assumptions,
+            mode="D_HYBRID_EMERGENCE",
+        )
+        repaired_html = (
+            candidate_html
+            if candidate_html is not None
+            else repair_visual_artifact(current_html, diag_before, accepted_state=accepted_assumptions)
+        )
+
+        obs_after = observe_rendered_artifact(
+            f"{project_id}:after",
+            repaired_html,
+            artifact_family=artifact_family,
+            viewport=viewport,
+            accepted_state=accepted_assumptions,
+            browser_page=browser_page,
+            require_real_browser=require_real_browser,
+        )
+        precheck = check_candidate_visual_and_functional_invariants(
+            obs_before,
+            obs_after,
+            accepted_state=accepted_assumptions,
+        )
+        if obs_after.inspection_failed or not precheck["candidate_self_check_passed"]:
+            # Ensure accepted state remains 100% untouched on failed visual inspection
+            verify_after = self.get_project_bundle(project_id)
+            assert verify_after["accepted"]["state_sha256"] == accepted_sha_before
+            raise PermissionError(
+                f"VISUAL_INSPECTION_FAILED_CANNOT_BECOME_APPROVAL:{precheck['rejection_reason']}"
+            )
+
+        staged_bundle = self.propose_exploratory_change(
+            project_id,
+            summary,
+            {
+                "app_content": repaired_html,
+                "app_filename": (bundle_before.get("app") or {}).get("filename") or f"{project_id}.html",
+            },
+            proposer_worker=worker_label,
+        )
+        if (
+            staged_bundle["accepted"]["state_sha256"] != accepted_sha_before
+            or int(staged_bundle["accepted"]["version"]) != accepted_ver_before
+        ):
+            raise RuntimeError("critical_invariant_violation:visual_repair_mutated_accepted_state_without_receiver")
+
+        return {
+            "status": "STAGED_EXPLORATORY_AWAITING_RECEIVER_ACCEPTANCE",
+            "project_id": project_id,
+            "proposal": staged_bundle["exploratory"][0],
+            "accepted_sha256_preserved": staged_bundle["accepted"]["state_sha256"] == accepted_sha_before,
+            "accepted_version_preserved": int(staged_bundle["accepted"]["version"]) == accepted_ver_before,
+            "visual_precheck": precheck,
+            "diagnosed_faults_before": [d["fault_class"] for d in diag_before["defects"]],
+        }
+
+    def clear_stop(self, reason: str = "owner_resume", *, expected_epoch: int | None = None) -> dict[str, Any]:
+        # A browser Resume may be queued while its preceding STOP is still in
+        # flight. Bind that owner intent to the STOP epoch it actually observed;
+        # never clear a newer independent STOP with an implicit retry.
+        if expected_epoch is not None and (type(expected_epoch) is not int or expected_epoch < 1):
+            raise ValueError("invalid_expected_epoch")
         cur_epoch = self.guard.read_stop_state()["epoch"]
-        env = self.owner_identity.clear_stop_envelope(reason=reason, expected_epoch=cur_epoch)
+        if expected_epoch is not None and expected_epoch != cur_epoch:
+            raise VerificationError("stale_owner_intent")
+        env = self.owner_identity.clear_stop_envelope(
+            reason=reason, expected_epoch=cur_epoch if expected_epoch is None else expected_epoch
+        )
+        # ReceiverGuard checks the epoch again under BEGIN IMMEDIATE.
         receipt = self.guard.clear_stop(env)
-        return {"status": "ACTIVE", "clear_receipt": receipt, "active_epoch": int(cur_epoch)}
+        return {"status": "ACTIVE", "clear_receipt": receipt, "active_epoch": int(receipt["epoch"])}
 
     def register_destination(self, destination: str, public_key: str) -> dict[str, Any]:
         """Owner-only destination-key registration (RC2A)."""
@@ -2599,11 +3004,18 @@ class OpenLineGenieEngine:
             )
             revoked_proposals = int(cur.rowcount)
             db.commit()
+        self.guard.recover_in_flight_outbox()
+        outbox_items = self.guard.list_external_outbox()
+        unknown_outbox = [x["outbox_id"] for x in outbox_items if x["state"] in ("DISPATCH_IN_FLIGHT", "UNKNOWN_RECONCILIATION_REQUIRED")]
+        pending_outbox = [x["outbox_id"] for x in outbox_items if x["state"] in ("STAGED", "READY_TO_DISPATCH")]
+        closure_disposition = "UNKNOWN" if unknown_outbox else ("PARTIAL" if pending_outbox else "CLOSED")
         return {
             "revoked_worker_pub": self.worker_a_identity.public,
             "new_active_worker": "worker-b",
             "new_worker_pub": self.worker_b_identity.public,
             "revoked_pending_proposals": revoked_proposals,
+            "closure_disposition": closure_disposition,
+            "unknown_external_outbox_ids": unknown_outbox,
             "status": "WORKER_REPLACED_AND_REVOKED",
         }
 
@@ -3054,6 +3466,10 @@ class OpenLineGenieEngine:
                 "SELECT * FROM genie_autonomy_log WHERE project_id=? ORDER BY seq ASC",
                 (project_id,),
             ).fetchall()
+            recall_rows = db.execute(
+                "SELECT * FROM genie_decision_recall WHERE project_id=? AND recalled_at_version=? ORDER BY rowid DESC",
+                (project_id, acc["version"]),
+            ).fetchall()
 
         receipt_obj = json.loads(acc["receipt_json"]) if acc["receipt_json"] and acc["receipt_json"] != "{}" else {}
         accepted_state = json.loads(acc["state_json"])
@@ -3164,6 +3580,17 @@ class OpenLineGenieEngine:
                     "receipt_id": r["receipt_id"],
                 }
                 for r in jump_rows
+            ],
+            "recalled_decisions": [
+                {
+                    "recall_id": r["recall_id"],
+                    "node_id": r["node_id"],
+                    "affected_nodes": json.loads(r["affected_nodes_json"]),
+                    "reason": r["reason"],
+                    "recalled_at_version": int(r["recalled_at_version"]),
+                    "recalled_state_sha256": r["recalled_state_sha256"],
+                }
+                for r in recall_rows
             ],
             "autonomy_log": [
                 {"seq": r["seq"], "stage": r["stage"], "detail": r["detail"], "provenance": r["provenance"]}

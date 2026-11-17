@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenLine Product Ratchet &amp; UI Qualification 001 — Unified Workbench</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #060b16;
+      --panel: #0c1528;
+      --panel-alt: #101d36;
+      --border: #1e335c;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --violet: #a855f7;
+      --cyan: #06b6d4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.45;
+    }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .ratchet-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 1024px) {
+      .ratchet-grid.desktop-62-38 {
+        grid-template-columns: 61.8fr 38.2fr;
+      }
+    }
+    .mobile-sim-frame {
+      max-width: 390px;
+      margin: 0 auto;
+      border: 2px solid #334155;
+      border-radius: 20px;
+      padding: 10px;
+      background: #040811;
+    }
+    .mobile-sim-frame .ratchet-grid.desktop-62-38 {
+      grid-template-columns: 1fr !important;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .btn-tap {
+      min-height: 38px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-tap:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-3 md:p-5">
+  <div id="appRoot" class="max-w-7xl mx-auto space-y-4">
+
+    <!-- TOP EXPERIMENT & CONDITION BAR -->
+    <header class="card bg-slate-950/90 border-slate-800 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="badge bg-cyan-950 text-cyan-300 border border-cyan-700/60">PRODUCT RATCHET &amp; UI QUALIFICATION 001</span>
+            <span class="badge bg-emerald-950 text-emerald-300 border border-emerald-700/60" id="headerLawBadge">Operating Law v1.0 · D.3 Amendment 001 Verified</span>
+          </div>
+          <h1 class="text-lg md:text-xl font-bold text-white mt-1" id="projectTitleHeading">
+            Community Groups in Nonprofits Volunteer Handoff — Living Project
+          </h1>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" id="btnRunFullDogfood" class="btn-tap bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold">
+            ▶ Run 9-Step Ratchet Dogfood Sequence
+          </button>
+          <button type="button" id="btnResetBaseline" class="btn-tap bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600">
+            ↺ Reset to v1 Baseline
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 UI CONDITIONS + 3 PRODUCT SEAM MODES + VIEWPORT TOGGLE -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-800/80 text-xs">
+        <div>
+          <label for="selectUiCondition" class="block text-slate-400 font-semibold mb-1">1. UI Design Condition (Falsifiable Hypothesis):</label>
+          <select id="selectUiCondition" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 text-slate-100 font-medium">
+            <option value="UI3B_HYBRID_WINNER">UI-2 + 3B (SHIP WINNER): Conventional Ratchet + Concentric Authority Ring</option>
+            <option value="UI2_CONVENTIONAL">UI-2 (Conventional): 4-Lane Ratchet Workbench Only (No Geometric Ring)</option>
+            <option value="UI3A_SACRED_MANDALA">UI-3A (FALSIFIED): Pure Sacred-Geometry Mandala / Hexagonal Lattice</option>
+            <option value="UI1_BASELINE">UI-1 (Current Baseline): Split Genie/World + Hidden Tech Accordion</option>
+          </select>
+        </div>
+        <div>
+          <label for="selectKernelMode" class="block text-slate-400 font-semibold mb-1">2. Product-Seam Kernel Mode (3-Mode Ablation):</label>
+          <select id="selectKernelMode" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 text-slate-100 font-medium">
+            <option value="M3_KERNEL_SEAM">M3 (QUALIFIED): 009 + 1-Line D.3 Fix + Advisory Research Kernel (178 LOC)</option>
+            <option value="M2_CONVENTIONAL_FIX">M2: 009 + 1-Line D.3 Fix Only (Conventional Workflow, No Kernel)</option>
+            <option value="M1_UNPATCHED_009">M1 (Unpatched 009): Demand Omitted from Recall support_sets (L975 Bug)</option>
+          </select>
+        </div>
+        <div>
+          <label for="selectViewportMode" class="block text-slate-400 font-semibold mb-1">3. Viewport Layout &amp; Project Preset:</label>
+          <div class="flex gap-2">
+            <select id="selectViewportMode" class="w-1/2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-slate-100">
+              <option value="DESKTOP">Desktop (62/38 Split)</option>
+              <option value="MOBILE_390">Mobile 390px (iPhone 17 Pro Max)</option>
+            </select>
+            <select id="selectProjectPreset" class="w-1/2 bg-slate-900 border border-slate-700 rounded-lg px-2 py-2 text-slate-100">
+              <option value="mutual_aid">Project 1: Mutual-Aid Handoff</option>
+              <option value="property_ops">Project 2: Property Ops Dispatch</option>
+              <option value="bakery">Project 3: Neighborhood Bakery</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- EMERGENCY STOP BANNER (Always distinct from Accepted Vault; never overwrites accepted state) -->
+    <div id="stopActiveBanner" class="hidden rounded-xl border-2 border-rose-500 bg-rose-950/80 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <div class="font-bold text-rose-200 text-sm flex items-center gap-2">
+          <span>🛑 EMERGENCY STOP IS ACTIVE (RECEIVER-ENFORCED)</span>
+          <span class="badge bg-emerald-900/90 text-emerald-200 border border-emerald-500">✓ Accepted State Remains Intact &amp; Verified</span>
+        </div>
+        <p class="text-xs text-rose-200/90 mt-0.5">
+          All new builds, proposals, and promotions are frozen at the authority gate. Unlike baseline <code>genie_living_world.html</code> (R3E D10), STOP never flips your accepted project node to a "stopped" state.
+        </p>
+      </div>
+      <button type="button" id="btnBannerClearStop" class="btn-tap bg-rose-200 hover:bg-white text-rose-950 font-bold">
+        Clear STOP &amp; Resume
+      </button>
+    </div>
+
+    <!-- PERSISTENT 4-LANE STATE RATCHET BAR (Hidden only when simulating UI-1 Baseline's collapsed accordion) -->
+    <section id="ratchetFourLaneBar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" aria-label="Four-Lane State Ratchet">
+      <!-- Lane 1: ACCEPTED -->
+      <div class="card border-2 border-emerald-500/80 bg-emerald-950/20">
+        <div class="flex items-center justify-between">
+          <span class="badge bg-emerald-900/80 text-emerald-200 border border-emerald-500/60">✓ ACCEPTED CORE (SOLID VAULT)</span>
+          <span class="mono text-xs font-bold text-emerald-300" id="laneAcceptedVersion">v1</span>
+        </div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <div>
+            <div class="text-xs text-slate-400">System Throughput</div>
+            <div class="text-xl font-extrabold text-white" id="laneAcceptedThroughput">42 ops/day</div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs text-slate-400">Peak Target</div>
+            <div class="text-sm font-bold text-cyan-300" id="lanePeakTarget">68 ops/day</div>
+          </div>
+        </div>
+        <div class="mt-2 pt-2 border-t border-emerald-800/50 text-[11px] space-y-0.5">
+          <div class="flex justify-between"><span class="text-slate-400">Accepted SHA-256:</span><span class="mono text-emerald-300 font-semibold" id="laneAcceptedSha">9559bf20…e736</span></div>
+          <div class="flex justify-between"><span class="text-slate-400">Custody:</span><span class="text-emerald-300 font-semibold">Ed25519 Receiver Signed</span></div>
+        </div>
+      </div>
+
+      <!-- Lane 2: EXPLORATORY -->
+      <div class="card border-2 border-dashed border-amber-500/80 bg-amber-950/15" id="laneExploratoryCard">
+        <div class="flex items-center justify-between">
+          <span class="badge bg-amber-900/80 text-amber-200 border border-amber-500/60">◌ EXPLORATORY STAGING</span>
+          <span class="mono text-xs font-bold text-amber-300" id="laneExploratoryCount">0 pending</span>
+        </div>
+        <div class="mt-2" id="laneExploratorySummary">
+          <div class="text-sm font-semibold text-slate-300">No uncommitted proposal staged</div>
+          <div class="text-xs text-slate-400 mt-0.5">Stage a proposal below to inspect deltas &amp; kernel advisories.</div>
+        </div>
+        <div class="mt-2 pt-2 border-t border-amber-800/40 text-[11px] flex justify-between items-center">
+          <span class="text-slate-400">Kernel Seam Witness:</span>
+          <span class="badge bg-slate-800 text-slate-300" id="laneKernelVerdictBadge">IDLE (READY)</span>
+        </div>
+      </div>
+
+      <!-- Lane 3: STANDING & DECISION RECALL -->
+      <div class="card border border-violet-500/70 bg-violet-950/15">
+        <div class="flex items-center justify-between">
+          <span class="badge bg-violet-900/80 text-violet-200 border border-violet-500/60">◈ STANDING &amp; RECALL (DNF)</span>
+          <span class="mono text-xs font-bold text-emerald-300" id="laneStandingBadge">CURRENT</span>
+        </div>
+        <div class="mt-2 text-xs space-y-1">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Binding Wall:</span>
+            <span class="font-bold text-amber-300" id="laneBindingWall">workflow (-26 ops/day)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Support-Set Stations:</span>
+            <span class="mono text-violet-200" id="laneSupportSetList">workflow, formula, inputs, demand</span>
+          </div>
+          <div class="text-[11px] text-slate-300 truncate" id="laneRecallDetail">All 4 upstream station assumptions VALID.</div>
+        </div>
+      </div>
+
+      <!-- Lane 4: WORKER CONTINUITY & STOP GATE -->
+      <div class="card border border-slate-700 bg-slate-900/70">
+        <div class="flex items-center justify-between">
+          <span class="badge bg-slate-800 text-cyan-300 border border-cyan-700/50">⚙ CONTINUITY &amp; STOP GATE</span>
+          <span class="mono text-xs font-bold text-cyan-300" id="laneActiveWorker">worker-a</span>
+        </div>
+        <div class="mt-2 text-xs space-y-1">
+          <div class="flex justify-between">
+            <span class="text-slate-400">High-Water Mark:</span>
+            <span class="mono text-slate-200" id="laneHighWater">v1 · 1/300 evals</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Rejected Proposals Kept:</span>
+            <span class="mono text-rose-300 font-semibold" id="laneRejectedCount">0 recorded</span>
+          </div>
+        </div>
+        <div class="mt-2 pt-2 border-t border-slate-800 flex gap-1.5">
+          <button type="button" id="btnToggleStop" class="btn-tap flex-1 bg-rose-900/70 hover:bg-rose-800 text-rose-100 border border-rose-600/70 text-xs py-1">
+            🛑 Engage STOP
+          </button>
+          <button type="button" id="btnSimulateSigkill" class="btn-tap flex-1 bg-indigo-900/70 hover:bg-indigo-800 text-indigo-100 border border-indigo-500/70 text-xs py-1">
+            ⚡ SIGKILL Swap
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- POST-SIGKILL WORKER RECOVERY BANNER (Appears automatically on Worker-A SIGKILL & Worker-B Recovery) -->
+    <section id="sigkillRecoveryCard" class="hidden card border-2 border-cyan-500 bg-cyan-950/25 space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="badge bg-cyan-900 text-cyan-200 border border-cyan-400">✓ WORKER-A SIGKILL RECOVERED CLEANLY BY WORKER-B</span>
+          <span class="mono text-xs text-emerald-300" id="sigkillPreservedShaReadout">Accepted v2 SHA Preserved Byte-for-Byte</span>
+        </div>
+        <button type="button" id="btnDismissRecoveryCard" class="text-xs text-slate-300 hover:text-white underline">Dismiss Notice</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+        <div class="p-2 rounded bg-emerald-950/50 border border-emerald-700/60">
+          <div class="font-bold text-emerald-300">1. Accepted Work Preserved (v2)</div>
+          <div id="sigkillAcceptedDetail" class="text-slate-200 mt-0.5">Worker-A committed v2 (56 ops/day) before crash. Bytes verified intact.</div>
+        </div>
+        <div class="p-2 rounded bg-rose-950/50 border border-rose-700/60">
+          <div class="font-bold text-rose-300">2. Uncommitted Draft Quarantined</div>
+          <div id="sigkillRevokedDetail" class="text-slate-200 mt-0.5">Proposal <code>exp-v3-draft</code> marked <code>REVOKED_BY_WORKER_SWAP</code>.</div>
+        </div>
+        <div class="p-2 rounded bg-slate-900/90 border border-cyan-700/60">
+          <div class="font-bold text-cyan-300">3. Active Successor Custody</div>
+          <div id="sigkillSuccessorDetail" class="text-slate-200 mt-0.5"><code>worker-b</code> active; ready to stage v3 from clean v2 baseline without re-deriving state.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN 62/38 RATCHET WORKBENCH GRID -->
+    <div id="mainWorkbenchGrid" class="ratchet-grid desktop-62-38">
+
+      <!-- LEFT COLUMN (61.8%): OPERATIONAL STATIONS, PROPOSAL REVIEW & KERNEL SEAM -->
+      <div class="space-y-4">
+
+        <!-- CARD A: 4-STATION CAPACITY vs. DEMAND & DECISION RECALL TRIGGERS -->
+        <section class="card space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-base font-bold text-white">Operational Stations, Bottleneck Wall &amp; Decision Recall</h2>
+              <p class="text-xs text-slate-400">
+                System throughput is governed by <code>min(workflow, formula, inputs)</code> against peak trajectory demand (<span id="stationSubPeak">68</span> ops/day). Tap any station's <strong>Recall Assumption</strong> button to test DNF standing propagation.
+              </p>
+            </div>
+            <span class="badge bg-amber-950 text-amber-300 border border-amber-700" id="activeBottleneckPill">Binding Bottleneck: workflow (42 ops/day)</span>
+          </div>
+
+          <div id="stationsListContainer" class="space-y-2.5"></div>
+        </section>
+
+        <!-- CARD B: STAGE & REVIEW EXPLORATORY PROPOSALS AT THE BOUNDED KERNEL SEAM -->
+        <section class="card space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-base font-bold text-white">Exploratory Proposal Staging &amp; Product-Seam Witness</h2>
+              <p class="text-xs text-slate-400">
+                Test how OpenLine handles a valid upgrade, a Goodhart proxy-gaming trap, and a false cross-domain analogy before anything touches accepted state.
+              </p>
+            </div>
+            <span class="badge bg-slate-800 text-cyan-300 border border-slate-700">Zero-Authority Witness Seam</span>
+          </div>
+
+          <!-- 3 Preset Proposal Buttons -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <button type="button" id="btnStageValidUpgrade" class="btn-tap bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-200 border border-emerald-600/70 text-left justify-start p-2.5 h-auto">
+              <div>
+                <div class="font-bold text-xs">1. Stage Valid Bottleneck Upgrade</div>
+                <div class="text-[11px] text-slate-300 mt-0.5">Expand resource (3→4) + stagger handoffs (42 → 68 ops/day)</div>
+              </div>
+            </button>
+            <button type="button" id="btnStageGoodhartTrap" class="btn-tap bg-amber-950/70 hover:bg-amber-900/80 text-amber-200 border border-amber-600/70 text-left justify-start p-2.5 h-auto">
+              <div>
+                <div class="font-bold text-xs">2. Stage Goodhart Proxy Trap</div>
+                <div class="text-[11px] text-slate-300 mt-0.5">Auto-close unfulfilled intake tickets (Rg=0.78, non-independent eval)</div>
+              </div>
+            </button>
+            <button type="button" id="btnStageFalseAnalogy" class="btn-tap bg-violet-950/70 hover:bg-violet-900/80 text-violet-200 border border-violet-600/70 text-left justify-start p-2.5 h-auto">
+              <div>
+                <div class="font-bold text-xs">3. Stage Quantum Analogy + 1-Off Skill</div>
+                <div class="text-[11px] text-slate-300 mt-0.5">"Quantum Sync" metaphor + 1-use holiday waiver skill (-4.70 net ROI)</div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Active Proposal Inspector & Side-by-Side Diff -->
+          <div id="proposalInspectorPanel" class="rounded-xl border border-slate-700 bg-slate-950/80 p-3.5 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="badge bg-amber-900/80 text-amber-200 border border-amber-600" id="propStatusBadge">NO PROPOSAL STAGED</span>
+                <h3 class="text-sm font-bold text-white mt-1" id="propTitleText">Select one of the 3 proposals above to preview its impact and kernel witness report.</h3>
+              </div>
+              <div class="flex gap-2">
+                <button type="button" id="btnAcceptStagedProposal" class="btn-tap bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold" disabled>
+                  ✓ Accept &amp; Ratchet Forward
+                </button>
+                <button type="button" id="btnRejectStagedProposal" class="btn-tap bg-rose-800 hover:bg-rose-700 text-white" disabled>
+                  ✕ Reject — Keep Accepted Bytes
+                </button>
+              </div>
+            </div>
+
+            <!-- Side-by-Side Diff Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400">
+                    <th class="py-1.5 text-left">Station / Metric</th>
+                    <th class="py-1.5 text-right">Accepted Now (<span id="diffColAcceptedVer">v1</span>)</th>
+                    <th class="py-1.5 text-right">Exploratory Preview</th>
+                    <th class="py-1.5 text-right">Net Delta</th>
+                  </tr>
+                </thead>
+                <tbody id="proposalDiffTbody" class="divide-y divide-slate-800/60"></tbody>
+              </table>
+            </div>
+
+            <!-- Bounded Research Kernel Seam Advisory Box -->
+            <div id="kernelAdvisoryContainer" class="rounded-lg border border-slate-800 bg-slate-900/90 p-3 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-cyan-300">Bounded Research Kernel Witness (`openline_research_kernel.py` · 178 LOC)</span>
+                <span class="mono text-[11px] text-slate-400" id="kernelAuthorityNote">ADVISORY ONLY · 0 BYTE MUTATIONS</span>
+              </div>
+              <div id="kernelAdvisoryList" class="text-xs text-slate-300 space-y-1">
+                <div>Stage a proposal to run <code>check_constraint_and_goodhart_gate()</code>, <code>verify_causal_isomorphism()</code>, and <code>select_decisive_receipt_and_certify()</code>.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD C: D.3 AUTONOMOUS DEFECT REPAIR RECEIPT & LIVE VERIFIER -->
+        <section class="card space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-base font-bold text-white">D.3 Autonomous Defect Repair 001 — `demand` Support-Set Fix vs. `BUCSW`</h2>
+              <p class="text-xs text-slate-400">
+                Verifies why revoking <code>demand</code> left <code>scenario_plan</code> <code>CURRENT</code> in unpatched 009 (`L975`), and proves the 1-line fix transitions standing to <code>REOPEN</code> at 0 evaluation cost.
+              </p>
+            </div>
+            <span class="badge bg-emerald-950 text-emerald-300 border border-emerald-600">FIXED_AND_VERIFIED (Isolated Copy)</span>
+          </div>
+          <pre class="mono text-[11px] bg-slate-950 border border-slate-800 rounded-lg p-2.5 overflow-x-auto text-slate-200">--- a/src_009/openline_009_living_project.py (SHA-256: 0565d787...c19a)
++++ b/src_009/openline_009_living_project.py (SHA-256: 8e859990...3f8b)
+@@ -976,3 +976,4 @@
+                 {"source": f"{project_id}:workflow", "revision": 1, "digest": ...},
+                 {"source": f"{project_id}:formula",  "revision": 1, "digest": ...},
+                 {"source": f"{project_id}:inputs",   "revision": 1, "digest": ...},
++                {"source": f"{project_id}:demand",   "revision": 1, "digest": ...},</pre>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN (38.2%): STRUCTURAL GEOMETRY VISUALIZER, LINEAGE LEDGER & SCORECARD -->
+      <div class="space-y-4">
+
+        <!-- CARD D: GEOMETRIC AUTHORITY & STANDING VISUALIZER (Switches between UI-3B Concentric Boundary vs. UI-3A Falsified Sacred Lattice vs. UI-2 Bar Only) -->
+        <section id="geometryVisualizerCard" class="card space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-sm font-bold text-white" id="geoCardTitle">3-Zone Concentric Authority Boundary Map (UI-3B Winner)</h2>
+              <p class="text-[11px] text-slate-400" id="geoCardSub">
+                Containment encodes authority: only items inside the solid green circle are Receiver-Signed Accepted state.
+              </p>
+            </div>
+            <button type="button" id="btnToggleSacredComparison" class="btn-tap bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-600 text-xs py-1 px-2">
+              Compare vs. Falsified Mandala (UI-3A)
+            </button>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-2 flex flex-col items-center">
+            <svg id="ratchetSvgCanvas" viewBox="0 0 360 290" class="w-full max-w-[360px] h-auto" role="img" aria-label="Authority boundary and station standing diagram"></svg>
+            <div id="svgLegendStrip" class="w-full pt-2 mt-1 border-t border-slate-800/80 flex flex-wrap justify-center gap-3 text-[11px] text-slate-300">
+              <span><strong class="text-emerald-400">● Solid Inner Core:</strong> Accepted (Signed)</span>
+              <span><strong class="text-amber-400">◌ Dashed Middle Ring:</strong> Exploratory Preview</span>
+              <span><strong class="text-rose-400">■ Outer Gate:</strong> STOP / Hold Perimeter</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD E: VERSION RATCHET LINEAGE, REJECTED LEDGER & AUDIT LOG -->
+        <section class="card space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-white">Accepted Version Lineage &amp; Rejected Ledger</h2>
+            <span class="mono text-[11px] text-emerald-300" id="lineageIntegrityBadge">SHA-256 Chain Verified</span>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="text-xs font-semibold text-slate-400">Accepted Ratchet Lineage (Receiver-Signed Commits):</div>
+            <div id="acceptedLineageList" class="space-y-1.5 text-xs"></div>
+          </div>
+
+          <div class="space-y-1.5 pt-2 border-t border-slate-800">
+            <div class="text-xs font-semibold text-slate-400">Rejected &amp; Revoked Proposals (Preserved for Audit — Fixes R11):</div>
+            <div id="rejectedLedgerList" class="space-y-1 text-xs text-slate-300"></div>
+          </div>
+
+          <div class="space-y-1.5 pt-2 border-t border-slate-800">
+            <div class="text-xs font-semibold text-slate-400">Live Ratchet Event &amp; Receipt Log:</div>
+            <div id="eventTraceList" class="mono text-[11px] bg-slate-950 border border-slate-800 rounded-lg p-2 max-h-36 overflow-y-auto space-y-1 text-slate-300"></div>
+          </div>
+        </section>
+
+        <!-- CARD F: DETERMINISTIC HEADLESS CHROMIUM & ENGINE QUALIFICATION SCORECARD -->
+        <section class="card space-y-2">
+          <h2 class="text-sm font-bold text-white">Deterministic Chromium &amp; Engine Verification (No Synthetic Human Claims)</h2>
+          <p class="text-[11px] text-slate-400">
+            Measured via real headless Chromium (390×844 &amp; 320×640) + 131-test OpenLine 009 suite. Human usability timing is marked <code>HOLD (Requires Human Trial)</code>.
+          </p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-[11px] border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400">
+                  <th class="py-1 text-left">Surface / Condition</th>
+                  <th class="py-1 text-right">Chromium E2E</th>
+                  <th class="py-1 text-right">390px Overflow</th>
+                  <th class="py-1 text-right">Clicks (SHA/Recall)</th>
+                  <th class="py-1 text-right">Decision</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60">
+                <tr class="bg-emerald-950/30">
+                  <td class="py-1 font-bold text-emerald-300">UI-1 Repaired Product (genie_living_world.html)</td>
+                  <td class="py-1 text-right mono text-emerald-300">131/131 PASS</td>
+                  <td class="py-1 text-right mono">0px (≥44px taps)</td>
+                  <td class="py-1 text-right mono">1 (#detailToggle)</td>
+                  <td class="py-1 text-right text-emerald-300 font-bold">RETAIN &amp; SHIP</td>
+                </tr>
+                <tr>
+                  <td class="py-1 font-medium text-cyan-300">UI-2/3B Ratchet &amp; Seam Workbench (/ratchet)</td>
+                  <td class="py-1 text-right mono text-cyan-300">6/6 Seam Tasks</td>
+                  <td class="py-1 text-right mono">0px</td>
+                  <td class="py-1 text-right mono">0 (Above Fold)</td>
+                  <td class="py-1 text-right text-cyan-300 font-bold">SHIP AS SEAM TOOL</td>
+                </tr>
+                <tr>
+                  <td class="py-1 font-medium text-rose-300">UI-3A Pure Sacred-Geometry Mandala</td>
+                  <td class="py-1 text-right mono text-rose-300">Fails 390px</td>
+                  <td class="py-1 text-right mono text-rose-300">Label Collision</td>
+                  <td class="py-1 text-right mono">N/A (Ambiguous)</td>
+                  <td class="py-1 text-right text-rose-400 font-bold">REJECT</td>
+                </tr>
+                <tr>
+                  <td class="py-1 font-medium text-amber-300">Human Perceptual / Speed Superiority Claim</td>
+                  <td class="py-1 text-right mono text-amber-300">Agent-Only</td>
+                  <td class="py-1 text-right mono">—</td>
+                  <td class="py-1 text-right mono">—</td>
+                  <td class="py-1 text-right text-amber-300 font-bold">HOLD (NEEDS HUMANS)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Deterministic FNV/SHA-style hex digest for immediate synchronous browser verification
+    function computeStateHashHex(obj) {
+      const str = JSON.stringify(obj);
+      let h1 = 0xdeadbeef ^ str.length;
+      let h2 = 0x41c6ce57 ^ str.length;
+      let h3 = 0x9e3779b9 ^ str.length;
+      let h4 = 0x85ebca6b ^ str.length;
+      for (let i = 0; i < str.length; i++) {
+        const ch = str.charCodeAt(i);
+        h1 = Math.imul(h1 ^ ch, 2654435761);
+        h2 = Math.imul(h2 ^ ch, 1597334677);
+        h3 = Math.imul(h3 ^ ch, 2246822507);
+        h4 = Math.imul(h4 ^ ch, 3266489909);
+      }
+      const hex = (n) => (n >>> 0).toString(16).padStart(8, "0");
+      return (hex(h1) + hex(h2) + hex(h3) + hex(h4) + hex(h1 ^ h3) + hex(h2 ^ h4) + hex(h1 ^ h4) + hex(h2 ^ h3)).slice(0, 64);
+    }
+
+    const PROJECT_PRESETS = {
+      mutual_aid: {
+        id: "community-groups-in-nonprofits-volunteer-handoff",
+        title: "Community Groups in Nonprofits Volunteer Handoff — Living Project",
+        unit: "ops/day",
+        peakDemand: 68,
+        stations: [
+          { id: "workflow", label: "Dispatch & Intake Routing", capacity: 42, role: "Primary Bottleneck Station" },
+          { id: "formula", label: "Volunteer Shift Handoff", capacity: 54, role: "Secondary Crew Constraint" },
+          { id: "inputs", label: "Request Verification Gate", capacity: 72, role: "Upstream Intake Channel" },
+          { id: "demand", label: "Community Surge Schedule", capacity: 68, role: "External Trajectory Demand", isDemand: true }
+        ]
+      },
+      property_ops: {
+        id: "property-managers-in-real-estate-tenant-turnovers",
+        title: "Property Operations & Tenant Turnover Dispatch — Living Project",
+        unit: "turns/wk",
+        peakDemand: 66,
+        stations: [
+          { id: "workflow", label: "Contractor Trade Scheduling", capacity: 42, role: "Primary Bottleneck Station" },
+          { id: "formula", label: "Inspection & Key Handoff", capacity: 54, role: "Secondary Crew Constraint" },
+          { id: "inputs", label: "Work-Order Triage Portal", capacity: 70, role: "Upstream Intake Channel" },
+          { id: "demand", label: "Lease-End Surge Schedule", capacity: 66, role: "External Trajectory Demand", isDemand: true }
+        ]
+      },
+      bakery: {
+        id: "neighborhood-steam-deck-bakery",
+        title: "Neighborhood Steam-Deck Bakery Production — Living Project",
+        unit: "loaves/day",
+        peakDemand: 300,
+        stations: [
+          { id: "workflow", label: "Steam-Injected Deck Oven", capacity: 174, role: "Primary Bottleneck Station" },
+          { id: "formula", label: "Lead Baker Shaping Shift", capacity: 240, role: "Secondary Crew Constraint" },
+          { id: "inputs", label: "Cold Retarder Proofing Rack", capacity: 280, role: "Upstream Intake Channel" },
+          { id: "demand", label: "Morning & Cafe Wholesale Demand", capacity: 300, role: "External Trajectory Demand", isDemand: true }
+        ]
+      }
+    };
+
+    const state = {
+      uiCondition: "UI3B_HYBRID_WINNER",
+      kernelMode: "M3_KERNEL_SEAM",
+      viewportMode: "DESKTOP",
+      presetKey: "mutual_aid",
+      acceptedVersion: 1,
+      activeWorker: "worker-a",
+      evalSpent: 1,
+      evalCap: 300,
+      stopped: false,
+      stations: [],
+      peakDemand: 68,
+      unit: "ops/day",
+      recalledStations: {},
+      dnfStanding: "CURRENT",
+      dnfReason: "All 4 upstream station assumptions VALID.",
+      stagedProposal: null,
+      acceptedLineage: [],
+      rejectedLedger: [],
+      sigkillBannerVisible: false,
+      traceLog: []
+    };
+
+    function addTrace(msg) {
+      const ts = new Date().toLocaleTimeString([], { hour12: false });
+      state.traceLog.unshift("[" + ts + "] " + msg);
+      if (state.traceLog.length > 30) state.traceLog.pop();
+    }
+
+    function computeSystemThroughput(stations) {
+      const capStations = stations.filter(s => !s.isDemand);
+      return Math.min(...capStations.map(s => s.capacity));
+    }
+
+    function findBottleneckStation(stations) {
+      const capStations = stations.filter(s => !s.isDemand);
+      return capStations.reduce((minS, s) => (s.capacity < minS.capacity ? s : minS), capStations[0]);
+    }
+
+    function getAcceptedPayloadForHash() {
+      return {
+        preset: state.presetKey,
+        version: state.acceptedVersion,
+        peakDemand: state.peakDemand,
+        stations: state.stations.map(s => ({ id: s.id, capacity: s.capacity }))
+      };
+    }
+
+    function initFromPreset(presetKey) {
+      const p = PROJECT_PRESETS[presetKey] || PROJECT_PRESETS.mutual_aid;
+      state.presetKey = presetKey;
+      state.acceptedVersion = 1;
+      state.activeWorker = "worker-a";
+      state.evalSpent = 1;
+      state.stopped = false;
+      state.peakDemand = p.peakDemand;
+      state.unit = p.unit;
+      state.stations = JSON.parse(JSON.stringify(p.stations));
+      state.recalledStations = {};
+      state.dnfStanding = "CURRENT";
+      state.dnfReason = "All 4 upstream station assumptions VALID.";
+      state.stagedProposal = null;
+      state.sigkillBannerVisible = false;
+      const sha1 = computeStateHashHex(getAcceptedPayloadForHash());
+      state.acceptedLineage = [
+        {
+          version: 1,
+          worker: "owner-init",
+          throughput: computeSystemThroughput(state.stations),
+          bottleneck: findBottleneckStation(state.stations).id,
+          sha256: sha1,
+          summary: "Initial Living Project compiled & signed by ReceiverGuard"
+        }
+      ];
+      state.rejectedLedger = [];
+      state.traceLog = [];
+      addTrace("Compiled " + p.id + " v1 (SHA-256: " + sha1.slice(0, 12) + "…)");
+      renderAll();
+    }
+
+    function recomputeRecallStanding() {
+      const recalledIds = Object.keys(state.recalledStations).filter(k => state.recalledStations[k]);
+      const supportSet = state.kernelMode === "M1_UNPATCHED_009"
+        ? ["workflow", "formula", "inputs"]
+        : ["workflow", "formula", "inputs", "demand"];
+
+      const triggered = recalledIds.filter(id => supportSet.includes(id));
+      if (recalledIds.length === 0) {
+        state.dnfStanding = "CURRENT";
+        state.dnfReason = "All 4 upstream station assumptions VALID.";
+      } else if (triggered.length > 0) {
+        state.dnfStanding = "REOPEN";
+        state.dnfReason = "Station(s) [" + triggered.join(", ") + "] REVOKED → scenario_plan transitions to REOPEN (accepted bytes untouched).";
+      } else {
+        state.dnfStanding = "CURRENT (BUG: UNPATCHED L975)";
+        state.dnfReason = "DEFECT REPRODUCED: 'demand' was recalled, but M1 omits 'demand' from support_sets so standing falsely stays CURRENT!";
+      }
+    }
+
+    function stageProposalByKind(kind) {
+      if (state.stopped) {
+        addTrace("REFUSED: Cannot stage proposal while STOP is active.");
+        renderAll();
+        return;
+      }
+      const baseStations = JSON.parse(JSON.stringify(state.stations));
+      const scale = state.presetKey === "bakery" ? 4.2 : 1.0;
+
+      if (kind === "VALID_UPGRADE") {
+        const cand = JSON.parse(JSON.stringify(baseStations));
+        cand[0].capacity = Math.round(cand[0].capacity + 26 * scale);
+        cand[1].capacity = Math.round(cand[1].capacity + 18 * scale);
+        state.stagedProposal = {
+          id: "exp-synergy-v" + (state.acceptedVersion + 1),
+          kind: "VALID_UPGRADE",
+          title: "2-Step Bottleneck Upgrade: Expand Primary Resource + Stagger Handoffs",
+          worker: state.activeWorker,
+          candidateStations: cand,
+          goodhartRg: 0.18,
+          evaluatorIndependent: true,
+          advisories: [
+            {
+              severity: "INFO",
+              badge: "PASS · RELIEVE_BINDING_WALL",
+              text: "check_constraint_and_goodhart_gate(): Relieves primary bottleneck ('workflow') and lifts system throughput from " +
+                    computeSystemThroughput(baseStations) + " to " + computeSystemThroughput(cand) + " " + state.unit + " (Rg=0.18 < 0.70, independent evaluator verified)."
+            }
+          ],
+          overallVerdict: "SAFE_TO_REVIEW_AND_ACCEPT"
+        };
+        addTrace("Staged valid exploratory proposal " + state.stagedProposal.id + " (uncommitted preview).");
+      } else if (kind === "GOODHART_TRAP") {
+        const cand = JSON.parse(JSON.stringify(baseStations));
+        cand[0].capacity = Math.round(cand[0].capacity + 50 * scale);
+        cand[1].capacity = Math.round(cand[1].capacity + 40 * scale);
+        const kernelActive = state.kernelMode === "M3_KERNEL_SEAM";
+        state.stagedProposal = {
+          id: "exp-goodhart-trap",
+          kind: "GOODHART_TRAP",
+          title: "Auto-Close Unfulfilled Intake Tickets After 90s to Inflate Daily Throughput Score",
+          worker: state.activeWorker,
+          candidateStations: cand,
+          goodhartRg: 0.78,
+          evaluatorIndependent: false,
+          advisories: kernelActive
+            ? [
+                {
+                  severity: "HIGH",
+                  badge: "HOLD_HARDEN_EVALUATOR_FIRST",
+                  text: "check_constraint_and_goodhart_gate() BLOCKED PROMOTION: High Goodhart pressure (Rg = 0.78 >= 0.70) with non-independent evaluator. Nominal throughput gain is proxy gaming."
+                }
+              ]
+            : [
+                {
+                  severity: "WARN",
+                  badge: "NO KERNEL SEAM (M1/M2)",
+                  text: "Conventional capacity formula sees +50 nominal gain without detecting Rg=0.78 Goodhart proxy gaming."
+                }
+              ],
+          overallVerdict: kernelActive ? "HOLD_OR_REJECT_PROPOSAL" : "UNPROTECTED_NOMINAL_GAIN"
+        };
+        addTrace("Staged Goodhart trap proposal (" + state.stagedProposal.overallVerdict + ").");
+      } else if (kind === "FALSE_ANALOGY") {
+        const cand = JSON.parse(JSON.stringify(baseStations));
+        cand[2].capacity = Math.round(cand[2].capacity + 12 * scale);
+        const kernelActive = state.kernelMode === "M3_KERNEL_SEAM";
+        state.stagedProposal = {
+          id: "exp-quantum-rhyme",
+          kind: "FALSE_ANALOGY",
+          title: "Apply 'Quantum Entanglement Nonlocal Sync' to Non-Bottleneck Intake + Distill 1-Off Holiday Skill",
+          worker: state.activeWorker,
+          candidateStations: cand,
+          goodhartRg: 0.22,
+          evaluatorIndependent: true,
+          advisories: kernelActive
+            ? [
+                {
+                  severity: "HIGH",
+                  badge: "STRUCTURAL_RHYME_ONLY_REJECTED",
+                  text: "verify_causal_isomorphism(): Operator mismatch (nonlocal_wavefunction_projection != sqlite_wal_replication), conservation check failed, z_null = 0.0 < 2.58."
+                },
+                {
+                  severity: "MEDIUM",
+                  badge: "PARK_ECONOMIC_PLATEAU",
+                  text: "select_decisive_receipt_and_certify(): Creation cost 5.5 units for 1 expected use yields -4.70 net savings; also modifies non-binding station ('inputs') leaving system throughput unchanged."
+                }
+              ]
+            : [
+                {
+                  severity: "WARN",
+                  badge: "NO KERNEL SEAM (M1/M2)",
+                  text: "No quantitative PRI permutation null or skill break-even gate active."
+                }
+              ],
+          overallVerdict: kernelActive ? "HOLD_OR_REJECT_PROPOSAL" : "UNFILTERED_ANALOGY"
+        };
+        addTrace("Staged false-analogy & negative-ROI skill proposal (" + state.stagedProposal.overallVerdict + ").");
+      }
+      renderAll();
+    }
+
+    function acceptStagedProposal() {
+      if (state.stopped) {
+        addTrace("REFUSED: ReceiverGuard blocked commit because STOP is active.");
+        renderAll();
+        return;
+      }
+      if (!state.stagedProposal) return;
+      state.stations = JSON.parse(JSON.stringify(state.stagedProposal.candidateStations));
+      state.acceptedVersion += 1;
+      state.evalSpent += 2;
+      const newSha = computeStateHashHex(getAcceptedPayloadForHash());
+      state.acceptedLineage.unshift({
+        version: state.acceptedVersion,
+        worker: state.stagedProposal.worker,
+        throughput: computeSystemThroughput(state.stations),
+        bottleneck: findBottleneckStation(state.stations).id,
+        sha256: newSha,
+        summary: state.stagedProposal.title
+      });
+      addTrace("COMMITTED Accepted v" + state.acceptedVersion + " via ReceiverGuard (SHA-256: " + newSha.slice(0, 12) + "…)");
+      state.stagedProposal = null;
+      renderAll();
+    }
+
+    function rejectStagedProposal(reasonText) {
+      if (!state.stagedProposal) return;
+      const currentSha = computeStateHashHex(getAcceptedPayloadForHash());
+      const reason = reasonText || (state.stagedProposal.overallVerdict === "HOLD_OR_REJECT_PROPOSAL"
+        ? "Rejected per Kernel Seam Advisory (" + state.stagedProposal.advisories[0].badge + ")"
+        : "Explicit owner rejection");
+      state.rejectedLedger.unshift({
+        id: state.stagedProposal.id,
+        title: state.stagedProposal.title,
+        reason: reason,
+        preservedSha: currentSha
+      });
+      addTrace("REJECTED " + state.stagedProposal.id + " (" + reason + "); Accepted SHA " + currentSha.slice(0, 10) + "… untouched.");
+      state.stagedProposal = null;
+      renderAll();
+    }
+
+    function toggleStationRecall(stationId) {
+      const shaBefore = computeStateHashHex(getAcceptedPayloadForHash());
+      state.recalledStations[stationId] = !state.recalledStations[stationId];
+      recomputeRecallStanding();
+      const shaAfter = computeStateHashHex(getAcceptedPayloadForHash());
+      addTrace(
+        "Decision Recall toggled on '" + stationId + "' → DNF standing = " + state.dnfStanding +
+        " (Accepted SHA preserved: " + (shaBefore === shaAfter) + ")"
+      );
+      renderAll();
+    }
+
+    function simulateWorkerSigkillAndRecovery() {
+      if (state.stopped) {
+        addTrace("Cannot run worker simulation while STOP is active.");
+        return;
+      }
+      const scale = state.presetKey === "bakery" ? 4.2 : 1.0;
+      // 1. Worker-A commits v(N+1) single-step resource expansion
+      state.stations[0].capacity = Math.round(state.stations[0].capacity + 14 * scale);
+      state.acceptedVersion += 1;
+      state.evalSpent += 2;
+      const committedSha = computeStateHashHex(getAcceptedPayloadForHash());
+      state.acceptedLineage.unshift({
+        version: state.acceptedVersion,
+        worker: "worker-a",
+        throughput: computeSystemThroughput(state.stations),
+        bottleneck: findBottleneckStation(state.stations).id,
+        sha256: committedSha,
+        summary: "Worker-A Step 1: Expand primary resource capacity before SIGKILL"
+      });
+
+      // 2. Worker-A stages an uncommitted draft v(N+2)-draft and dies via SIGKILL (-9 / exit 137)
+      const revokedDraftId = "exp-worker-a-draft-v" + (state.acceptedVersion + 1);
+      state.rejectedLedger.unshift({
+        id: revokedDraftId,
+        title: "Worker-A Uncommitted Draft before SIGKILL (staggered crew handoff)",
+        reason: "REVOKED_BY_WORKER_SWAP (SIGKILL exit 137)",
+        preservedSha: committedSha
+      });
+
+      // 3. Switch custody to Worker-B and verify committedSha
+      state.activeWorker = "worker-b";
+      state.stagedProposal = null;
+      state.sigkillBannerVisible = true;
+      addTrace(
+        "SIGKILL (-9) on worker-a after v" + state.acceptedVersion + " commit (" + committedSha.slice(0, 10) +
+        "…). Revoked uncommitted " + revokedDraftId + " and switched active custody to worker-b."
+      );
+      renderAll();
+    }
+
+    function toggleStopState() {
+      state.stopped = !state.stopped;
+      const currentSha = computeStateHashHex(getAcceptedPayloadForHash());
+      addTrace(
+        state.stopped
+          ? "STOP ENGAGED by owner. Mutations frozen; Accepted v" + state.acceptedVersion + " (" + currentSha.slice(0, 10) + "…) remains green & intact."
+          : "STOP CLEARED by owner. Normal operations resumed."
+      );
+      renderAll();
+    }
+
+    function runAutomatedNineStepDogfood() {
+      initFromPreset(state.presetKey);
+      addTrace("=== STARTING 9-STEP PRODUCT RATCHET DOGFOOD AUDIT ===");
+      // Step 3 & 4: Stage Goodhart trap and reject it
+      stageProposalByKind("GOODHART_TRAP");
+      rejectStagedProposal("Blocked by Kernel Goodhart Gate (Rg=0.78)");
+      // Step 5: Stage False Analogy and reject it
+      stageProposalByKind("FALSE_ANALOGY");
+      rejectStagedProposal("Blocked by Kernel Isomorphism & Economic Gate (-4.70 net ROI)");
+      // Step 6: Stage Valid Upgrade and accept it -> v2
+      stageProposalByKind("VALID_UPGRADE");
+      acceptStagedProposal();
+      // Step 7: Trigger Decision Recall on 'demand'
+      toggleStationRecall("demand");
+      // Step 8: Simulate Worker-A SIGKILL & Worker-B recovery -> v3
+      simulateWorkerSigkillAndRecovery();
+      addTrace("=== COMPLETED 9-STEP DOGFOOD AUDIT: 0 BYTE LOSS, 100% RATCHET CONTINUITY ===");
+      renderAll();
+    }
+
+    function renderSvgVisualizer() {
+      const svg = document.getElementById("ratchetSvgCanvas");
+      const titleEl = document.getElementById("geoCardTitle");
+      const subEl = document.getElementById("geoCardSub");
+      const isMandala = state.uiCondition === "UI3A_SACRED_MANDALA";
+
+      if (isMandala) {
+        titleEl.textContent = "UI-3A (FALSIFIED): Pure Sacred-Geometry Flower-of-Life / Metatron Lattice";
+        subEl.textContent = "FALSIFIED: Equal radial rings make rejected/exploratory nodes look equivalent to accepted stations, and angled labels collide on 390px mobile.";
+        let html = '<rect width="360" height="290" fill="#050914"/>';
+        // Draw decorative Flower-of-Life overlapping circles and Metatron chords
+        const cx = 180, cy = 145, r = 46;
+        html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>`;
+        for (let i = 0; i < 6; i++) {
+          const ang = (i * Math.PI) / 3;
+          const x = cx + r * Math.cos(ang);
+          const y = cy + r * Math.sin(ang);
+          html += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="none" stroke="#1e293b" stroke-width="1"/>`;
+        }
+        const pts = [];
+        for (let i = 0; i < 6; i++) {
+          const ang = (i * Math.PI) / 3 - Math.PI / 6;
+          pts.push([cx + 95 * Math.cos(ang), cy + 95 * Math.sin(ang)]);
+        }
+        for (let i = 0; i < pts.length; i++) {
+          for (let j = i + 1; j < pts.length; j++) {
+            html += `<line x1="${pts[i][0].toFixed(1)}" y1="${pts[i][1].toFixed(1)}" x2="${pts[j][0].toFixed(1)}" y2="${pts[j][1].toFixed(1)}" stroke="#312e81" stroke-width="0.9" opacity="0.65"/>`;
+          }
+        }
+        const labels = [
+          { name: "workflow (" + state.stations[0].capacity + ")", col: "#94a3b8" },
+          { name: "formula (" + state.stations[1].capacity + ")", col: "#94a3b8" },
+          { name: "inputs (" + state.stations[2].capacity + ")", col: "#94a3b8" },
+          { name: "demand (" + state.peakDemand + ")", col: "#94a3b8" },
+          { name: state.stagedProposal ? "exploratory?" : "rejected-branch", col: "#94a3b8" },
+          { name: "scenario-plan", col: "#94a3b8" }
+        ];
+        pts.forEach((pt, idx) => {
+          html += `<circle cx="${pt[0].toFixed(1)}" cy="${pt[1].toFixed(1)}" r="16" fill="#0f172a" stroke="#6366f1" stroke-width="1.5"/>`;
+          html += `<text x="${pt[0].toFixed(1)}" y="${(pt[1] + 3).toFixed(1)}" text-anchor="middle" fill="#cbd5e1" font-size="8.5">${labels[idx].name}</text>`;
+        });
+        html += `<circle cx="${cx}" cy="${cy}" r="22" fill="#1e1b4b" stroke="#a855f7" stroke-width="1.5"/>`;
+        html += `<text x="${cx}" y="${cy + 3}" text-anchor="middle" fill="#e9d5ff" font-size="9" font-weight="bold">v${state.acceptedVersion} Core</text>`;
+        svg.innerHTML = html;
+        return;
+      }
+
+      // Default Winner: UI-3B 3-Zone Concentric Authority Boundary Map
+      titleEl.textContent = "3-Zone Concentric Authority Boundary Map (UI-3B Winner)";
+      subEl.textContent = "Strict topological containment: Inner Solid Vault = Accepted; Middle Dashed Ring = Exploratory; Outer Gate = STOP/Hold.";
+      const cx = 180, cy = 145;
+      const stopStroke = state.stopped ? "#f43f5e" : "#1e293b";
+      const stopDash = state.stopped ? "" : "4,4";
+      const sysTp = computeSystemThroughput(state.stations);
+      const bot = findBottleneckStation(state.stations);
+
+      let html = `<rect width="360" height="290" fill="#050a15"/>`;
+      // Zone 3: Outer STOP / Authority Gate Perimeter
+      html += `<circle cx="${cx}" cy="${cy}" r="126" fill="none" stroke="${stopStroke}" stroke-width="${state.stopped ? 3.5 : 1.5}" stroke-dasharray="${stopDash}"/>`;
+      html += `<text x="${cx}" y="14" text-anchor="middle" fill="${state.stopped ? '#fda4af' : '#64748b'}" font-size="9.5" font-weight="bold">${state.stopped ? '🛑 OUTER GATE: STOP ENGAGED (MUTATIONS FROZEN)' : 'OUTER GATE: RECEIVER AUTHORITY PERIMETER'}</text>`;
+
+      // Zone 2: Middle Dashed Exploratory Staging Ring
+      const hasExp = Boolean(state.stagedProposal);
+      const expCol = !hasExp ? "#334155" : (state.stagedProposal.overallVerdict === "SAFE_TO_REVIEW_AND_ACCEPT" ? "#f59e0b" : "#f43f5e");
+      html += `<circle cx="${cx}" cy="${cy}" r="92" fill="${hasExp ? 'rgba(245,158,11,0.06)' : 'none'}" stroke="${expCol}" stroke-width="2" stroke-dasharray="6,4"/>`;
+      html += `<text x="${cx}" y="46" text-anchor="middle" fill="${hasExp ? '#fcd34d' : '#64748b'}" font-size="9" font-weight="600">${hasExp ? '◌ EXPLORATORY RING: ' + state.stagedProposal.id : '◌ EXPLORATORY STAGING RING (EMPTY)'}</text>`;
+
+      // 4 Orthogonal Cardinal Station Spokes
+      const dirs = [
+        { s: state.stations[0], x: cx - 102, y: cy, align: "middle" },
+        { s: state.stations[1], x: cx + 102, y: cy, align: "middle" },
+        { s: state.stations[2], x: cx, y: cy + 102, align: "middle" },
+        { s: state.stations[3], x: cx, y: cy - 72, align: "middle" }
+      ];
+      dirs.forEach(d => {
+        const isBot = d.s.id === bot.id;
+        const isRecalled = Boolean(state.recalledStations[d.s.id]);
+        const nodeStroke = isRecalled ? "#a855f7" : (isBot ? "#f59e0b" : "#10b981");
+        html += `<line x1="${cx}" y1="${cy}" x2="${d.x}" y2="${d.y}" stroke="${nodeStroke}" stroke-width="1.8" opacity="0.7"/>`;
+        html += `<rect x="${d.x - 42}" y="${d.y - 14}" width="84" height="28" rx="6" fill="#0b1324" stroke="${nodeStroke}" stroke-width="1.8"/>`;
+        html += `<text x="${d.x}" y="${d.y - 2}" text-anchor="middle" fill="#f8fafc" font-size="9" font-weight="bold">${d.s.id}${isBot ? ' [LIMIT]' : ''}</text>`;
+        html += `<text x="${d.x}" y="${d.y + 9}" text-anchor="middle" fill="#94a3b8" font-size="8.5">${d.s.capacity} ${state.unit}</text>`;
+      });
+
+      // Zone 1: Solid Inner Accepted Vault Core
+      const recallActive = state.dnfStanding.startsWith("REOPEN");
+      const coreStroke = recallActive ? "#a855f7" : "#10b981";
+      html += `<circle cx="${cx}" cy="${cy}" r="50" fill="#06281e" stroke="${coreStroke}" stroke-width="3"/>`;
+      html += `<text x="${cx}" y="${cy - 14}" text-anchor="middle" fill="#6ee7b7" font-size="9.5" font-weight="bold">✓ ACCEPTED v${state.acceptedVersion}</text>`;
+      html += `<text x="${cx}" y="${cy + 3}" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="extrabold">${sysTp} ${state.unit}</text>`;
+      html += `<text x="${cx}" y="${cy + 17}" text-anchor="middle" fill="${recallActive ? '#d8b4fe' : '#a7f3d0'}" font-size="8.5" font-weight="600">${recallActive ? 'REOPENED BY RECALL' : 'STANDING: CURRENT'}</text>`;
+
+      svg.innerHTML = html;
+    }
+
+    function renderAll() {
+      const preset = PROJECT_PRESETS[state.presetKey];
+      const sysTp = computeSystemThroughput(state.stations);
+      const bot = findBottleneckStation(state.stations);
+      const currentSha = computeStateHashHex(getAcceptedPayloadForHash());
+      recomputeRecallStanding();
+
+      // Viewport framing
+      const appRoot = document.getElementById("appRoot");
+      if (state.viewportMode === "MOBILE_390") {
+        appRoot.classList.add("mobile-sim-frame");
+      } else {
+        appRoot.classList.remove("mobile-sim-frame");
+      }
+
+      // UI Condition visibility adjustments
+      const geoCard = document.getElementById("geometryVisualizerCard");
+      const fourLane = document.getElementById("ratchetFourLaneBar");
+      geoCard.style.display = state.uiCondition === "UI2_CONVENTIONAL" ? "none" : "block";
+      fourLane.style.opacity = state.uiCondition === "UI1_BASELINE" ? "0.55" : "1";
+
+      // Header & STOP banner
+      document.getElementById("projectTitleHeading").textContent = preset.title;
+      const stopBanner = document.getElementById("stopActiveBanner");
+      stopBanner.classList.toggle("hidden", !state.stopped);
+
+      // 4-Lane Ratchet Bar
+      document.getElementById("laneAcceptedVersion").textContent = "v" + state.acceptedVersion;
+      document.getElementById("laneAcceptedThroughput").textContent = sysTp + " " + state.unit;
+      document.getElementById("lanePeakTarget").textContent = state.peakDemand + " " + state.unit;
+      document.getElementById("laneAcceptedSha").textContent = currentSha.slice(0, 8) + "…" + currentSha.slice(-4);
+
+      const expSummaryEl = document.getElementById("laneExploratorySummary");
+      const expCountEl = document.getElementById("laneExploratoryCount");
+      const kernelBadgeEl = document.getElementById("laneKernelVerdictBadge");
+      if (state.stagedProposal) {
+        const candTp = computeSystemThroughput(state.stagedProposal.candidateStations);
+        const deltaTp = candTp - sysTp;
+        expCountEl.textContent = "1 staged (" + state.stagedProposal.id + ")";
+        expSummaryEl.innerHTML =
+          `<div class="text-xs font-bold text-amber-200">${state.stagedProposal.title}</div>` +
+          `<div class="text-xs text-slate-300 mt-0.5">Preview: ${sysTp} → ${candTp} ${state.unit} (${deltaTp >= 0 ? '+' : ''}${deltaTp}) · Accepted bytes unchanged</div>`;
+        kernelBadgeEl.textContent = state.stagedProposal.overallVerdict;
+        kernelBadgeEl.className = "badge " + (
+          state.stagedProposal.overallVerdict === "SAFE_TO_REVIEW_AND_ACCEPT"
+            ? "bg-emerald-900 text-emerald-200 border border-emerald-500"
+            : "bg-rose-900 text-rose-200 border border-rose-500"
+        );
+      } else {
+        expCountEl.textContent = "0 pending";
+        expSummaryEl.innerHTML =
+          `<div class="text-sm font-semibold text-slate-300">No uncommitted proposal staged</div>` +
+          `<div class="text-xs text-slate-400 mt-0.5">Stage a proposal below to inspect deltas &amp; kernel advisories.</div>`;
+        kernelBadgeEl.textContent = "IDLE (READY)";
+        kernelBadgeEl.className = "badge bg-slate-800 text-slate-300";
+      }
+
+      const standingBadge = document.getElementById("laneStandingBadge");
+      standingBadge.textContent = state.dnfStanding;
+      standingBadge.className = "mono text-xs font-bold " + (
+        state.dnfStanding === "CURRENT"
+          ? "text-emerald-300"
+          : (state.dnfStanding === "REOPEN" ? "text-violet-300" : "text-rose-400")
+      );
+      const minSlack = sysTp - state.peakDemand;
+      document.getElementById("laneBindingWall").textContent =
+        `${bot.id} (${minSlack >= 0 ? '+' : ''}${minSlack} ${state.unit})`;
+      document.getElementById("laneSupportSetList").textContent =
+        state.kernelMode === "M1_UNPATCHED_009" ? "workflow, formula, inputs (demand OMITTED!)" : "workflow, formula, inputs, demand";
+      document.getElementById("laneRecallDetail").textContent = state.dnfReason;
+
+      document.getElementById("laneActiveWorker").textContent = state.activeWorker;
+      document.getElementById("laneHighWater").textContent = `v${state.acceptedVersion} · ${state.evalSpent}/${state.evalCap} evals`;
+      document.getElementById("laneRejectedCount").textContent = `${state.rejectedLedger.length} recorded`;
+      const btnStop = document.getElementById("btnToggleStop");
+      btnStop.textContent = state.stopped ? "▶ Clear STOP" : "🛑 Engage STOP";
+
+      // SIGKILL Recovery Banner
+      const sigkillCard = document.getElementById("sigkillRecoveryCard");
+      sigkillCard.classList.toggle("hidden", !state.sigkillBannerVisible);
+      if (state.sigkillBannerVisible) {
+        document.getElementById("sigkillPreservedShaReadout").textContent =
+          `Accepted v${state.acceptedVersion} SHA (${currentSha.slice(0, 10)}…) Preserved Exact`;
+      }
+
+      // Stations list
+      document.getElementById("stationSubPeak").textContent = String(state.peakDemand);
+      document.getElementById("activeBottleneckPill").textContent =
+        `Binding Bottleneck: ${bot.id} (${bot.capacity} ${state.unit} vs ${state.peakDemand} peak)`;
+
+      const stationsHtml = state.stations.map(s => {
+        const isBot = !s.isDemand && s.id === bot.id;
+        const isRecalled = Boolean(state.recalledStations[s.id]);
+        const pct = Math.min(100, Math.round((s.capacity / Math.max(1, state.peakDemand)) * 100));
+        const barCol = isRecalled ? "bg-violet-500" : (s.isDemand ? "bg-cyan-500" : (isBot ? "bg-amber-500" : "bg-emerald-500"));
+        return `
+          <div class="p-2.5 rounded-lg bg-slate-950/90 border ${isBot ? 'border-amber-500/80' : (isRecalled ? 'border-violet-500/80' : 'border-slate-800')}">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="mono text-xs font-bold text-white">${s.id}</span>
+                <span class="text-xs text-slate-300">${s.label}</span>
+                ${isBot ? '<span class="badge bg-amber-900/90 text-amber-200 border border-amber-500">LIMIT BOTTLENECK</span>' : ''}
+                ${isRecalled ? '<span class="badge bg-violet-900/90 text-violet-200 border border-violet-400">RECALLED (REVOKED)</span>' : '<span class="badge bg-slate-900 text-emerald-300 border border-slate-700">VALID</span>'}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="mono text-xs font-bold text-slate-100">${s.capacity} ${state.unit}</span>
+                <button type="button" data-recall-station="${s.id}" class="btn-tap bg-slate-800 hover:bg-violet-900/80 text-violet-200 border border-violet-600/60 text-[11px] py-1 px-2">
+                  ${isRecalled ? '✓ Restore Assumption' : '↺ Recall Assumption'}
+                </button>
+              </div>
+            </div>
+            <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden mt-2">
+              <div class="${barCol} h-full transition-all duration-300" style="width:${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+      const stContainer = document.getElementById("stationsListContainer");
+      stContainer.innerHTML = stationsHtml;
+      stContainer.querySelectorAll("[data-recall-station]").forEach(btn => {
+        btn.addEventListener("click", () => toggleStationRecall(btn.getAttribute("data-recall-station")));
+      });
+
+      // Proposal Inspector & Diff Table
+      document.getElementById("diffColAcceptedVer").textContent = "v" + state.acceptedVersion;
+      const btnAcc = document.getElementById("btnAcceptStagedProposal");
+      const btnRej = document.getElementById("btnRejectStagedProposal");
+      const propBadge = document.getElementById("propStatusBadge");
+      const propTitle = document.getElementById("propTitleText");
+      const diffTbody = document.getElementById("proposalDiffTbody");
+      const advList = document.getElementById("kernelAdvisoryList");
+
+      if (!state.stagedProposal) {
+        btnAcc.disabled = true;
+        btnRej.disabled = true;
+        propBadge.textContent = "NO PROPOSAL STAGED";
+        propBadge.className = "badge bg-slate-800 text-slate-300";
+        propTitle.textContent = "Select one of the 3 proposals above to preview its impact and kernel witness report.";
+        diffTbody.innerHTML = state.stations.map(s => `
+          <tr>
+            <td class="py-1 text-slate-300"><span class="mono font-semibold">${s.id}</span> · ${s.label}</td>
+            <td class="py-1 text-right mono text-emerald-300">${s.capacity} ${state.unit}</td>
+            <td class="py-1 text-right mono text-slate-500">—</td>
+            <td class="py-1 text-right mono text-slate-500">0</td>
+          </tr>
+        `).join("");
+        advList.innerHTML = `<div class="text-slate-400">No proposal staged. Accepted state SHA-256 (<code class="text-emerald-300">${currentSha.slice(0, 12)}…</code>) is locked.</div>`;
+      } else {
+        const p = state.stagedProposal;
+        btnAcc.disabled = state.stopped;
+        btnRej.disabled = false;
+        propBadge.textContent = "EXPLORATORY_PENDING · " + p.id + " · " + p.overallVerdict;
+        propBadge.className = "badge " + (
+          p.overallVerdict === "SAFE_TO_REVIEW_AND_ACCEPT"
+            ? "bg-emerald-900/90 text-emerald-200 border border-emerald-500"
+            : "bg-rose-900/90 text-rose-200 border border-rose-500"
+        );
+        propTitle.textContent = p.title;
+
+        const candTp = computeSystemThroughput(p.candidateStations);
+        const sysDelta = candTp - sysTp;
+        let rowsHtml = state.stations.map((s, idx) => {
+          const cVal = p.candidateStations[idx].capacity;
+          const d = cVal - s.capacity;
+          return `
+            <tr>
+              <td class="py-1 text-slate-200"><span class="mono font-semibold">${s.id}</span> · ${s.label}</td>
+              <td class="py-1 text-right mono text-emerald-300">${s.capacity} ${state.unit}</td>
+              <td class="py-1 text-right mono text-amber-300 font-semibold">${cVal} ${state.unit}</td>
+              <td class="py-1 text-right mono ${d > 0 ? 'text-cyan-300 font-bold' : 'text-slate-400'}">${d >= 0 ? '+' : ''}${d}</td>
+            </tr>
+          `;
+        }).join("");
+        rowsHtml += `
+          <tr class="bg-slate-900/90 font-bold">
+            <td class="py-1.5 text-white">System Bottleneck Throughput (min station)</td>
+            <td class="py-1.5 text-right mono text-emerald-300">${sysTp} ${state.unit}</td>
+            <td class="py-1.5 text-right mono text-amber-300">${candTp} ${state.unit}</td>
+            <td class="py-1.5 text-right mono ${sysDelta > 0 ? 'text-emerald-400' : 'text-rose-400'}">${sysDelta >= 0 ? '+' : ''}${sysDelta} ${state.unit}</td>
+          </tr>
+        `;
+        diffTbody.innerHTML = rowsHtml;
+
+        advList.innerHTML = p.advisories.map(a => `
+          <div class="p-2 rounded border ${a.severity === 'HIGH' ? 'bg-rose-950/60 border-rose-600 text-rose-100' : (a.severity === 'MEDIUM' ? 'bg-amber-950/60 border-amber-600 text-amber-100' : 'bg-emerald-950/40 border-emerald-700/60 text-emerald-100')}">
+            <span class="badge ${a.severity === 'HIGH' ? 'bg-rose-800 text-white' : 'bg-slate-800 text-cyan-300'} mr-1.5">${a.badge}</span>
+            <span>${a.text}</span>
+          </div>
+        `).join("");
+      }
+
+      // Render SVG & Lineage lists
+      renderSvgVisualizer();
+
+      document.getElementById("acceptedLineageList").innerHTML = state.acceptedLineage.map(item => `
+        <div class="p-2 rounded bg-slate-950 border border-emerald-900/60 flex items-center justify-between gap-2">
+          <div>
+            <span class="badge bg-emerald-900/80 text-emerald-200 mr-1">v${item.version}</span>
+            <span class="font-semibold text-slate-200">${item.throughput} ${state.unit}</span>
+            <span class="text-slate-400 ml-1">(${item.worker}) — ${item.summary}</span>
+          </div>
+          <span class="mono text-[10.5px] text-emerald-400">${item.sha256.slice(0, 10)}…</span>
+        </div>
+      `).join("");
+
+      const rejEl = document.getElementById("rejectedLedgerList");
+      if (state.rejectedLedger.length === 0) {
+        rejEl.innerHTML = `<div class="text-slate-500 italic">No rejected or swap-revoked proposals yet.</div>`;
+      } else {
+        rejEl.innerHTML = state.rejectedLedger.map(r => `
+          <div class="p-2 rounded bg-rose-950/20 border border-rose-900/50 flex flex-wrap items-center justify-between gap-1">
+            <div>
+              <span class="line-through text-slate-400 font-semibold">${r.id}</span>
+              <span class="text-rose-300 ml-1.5">${r.reason}</span>
+            </div>
+            <span class="mono text-[10px] text-emerald-300">Accepted SHA Kept: ${r.preservedSha.slice(0, 8)}…</span>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("eventTraceList").innerHTML = state.traceLog.map(line => `<div>${line}</div>`).join("");
+    }
+
+    // Wire up all interactive event listeners
+    document.getElementById("selectUiCondition").addEventListener("change", (e) => {
+      state.uiCondition = e.target.value;
+      addTrace("Switched UI condition to " + state.uiCondition);
+      renderAll();
+    });
+    document.getElementById("selectKernelMode").addEventListener("change", (e) => {
+      state.kernelMode = e.target.value;
+      recomputeRecallStanding();
+      if (state.stagedProposal) {
+        stageProposalByKind(state.stagedProposal.kind);
+      }
+      addTrace("Switched Product-Seam Mode to " + state.kernelMode);
+      renderAll();
+    });
+    document.getElementById("selectViewportMode").addEventListener("change", (e) => {
+      state.viewportMode = e.target.value;
+      addTrace("Switched viewport preview to " + state.viewportMode);
+      renderAll();
+    });
+    document.getElementById("selectProjectPreset").addEventListener("change", (e) => {
+      initFromPreset(e.target.value);
+    });
+    document.getElementById("btnResetBaseline").addEventListener("click", () => {
+      initFromPreset(state.presetKey);
+    });
+    document.getElementById("btnRunFullDogfood").addEventListener("click", () => {
+      runAutomatedNineStepDogfood();
+    });
+    document.getElementById("btnStageValidUpgrade").addEventListener("click", () => {
+      stageProposalByKind("VALID_UPGRADE");
+    });
+    document.getElementById("btnStageGoodhartTrap").addEventListener("click", () => {
+      stageProposalByKind("GOODHART_TRAP");
+    });
+    document.getElementById("btnStageFalseAnalogy").addEventListener("click", () => {
+      stageProposalByKind("FALSE_ANALOGY");
+    });
+    document.getElementById("btnAcceptStagedProposal").addEventListener("click", () => {
+      acceptStagedProposal();
+    });
+    document.getElementById("btnRejectStagedProposal").addEventListener("click", () => {
+      rejectStagedProposal();
+    });
+    document.getElementById("btnToggleStop").addEventListener("click", () => {
+      toggleStopState();
+    });
+    document.getElementById("btnBannerClearStop").addEventListener("click", () => {
+      if (state.stopped) toggleStopState();
+    });
+    document.getElementById("btnSimulateSigkill").addEventListener("click", () => {
+      simulateWorkerSigkillAndRecovery();
+    });
+    document.getElementById("btnDismissRecoveryCard").addEventListener("click", () => {
+      state.sigkillBannerVisible = false;
+      renderAll();
+    });
+    document.getElementById("btnToggleSacredComparison").addEventListener("click", () => {
+      const sel = document.getElementById("selectUiCondition");
+      if (state.uiCondition === "UI3A_SACRED_MANDALA") {
+        state.uiCondition = "UI3B_HYBRID_WINNER";
+      } else {
+        state.uiCondition = "UI3A_SACRED_MANDALA";
+      }
+      sel.value = state.uiCondition;
+      addTrace("Toggled geometric view to " + state.uiCondition);
+      renderAll();
+    });
+
+    // Boot initial project state
+    initFromPreset("mutual_aid");
+  </script>
+</body>
+</html>

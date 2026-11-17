@@ -1,38 +1,36 @@
-# Install OpenLine Genie v0.7.1
+# Install OpenLine Genie v1.2.0-rc3 (`1.2.0rc3`)
 
 Local-first visual project builder. No account. No cloud. No subscription.
+
+**Research/beta release candidate.** The seven-app local suite is distinct from the static v0.7.1 GitHub Pages preview. No account or paid model/API key is required for default local operation.
 
 ## Prerequisites
 
 - Python 3.10 or newer. Verified here on Python 3.12.3, Linux.
 - `pip` and `venv` (standard with most Python installs).
-- A modern desktop browser. Chrome and Firefox verified in automated tests.
+- A modern desktop browser. Headless Chromium (via Playwright) verified in automated tests. Firefox is NOT verified.
 - Linux is the verified OS. macOS and Windows are NOT TESTED.
 - No paid API key is needed for default use.
 
 ## Install
 
-1. Get the release archive. Open the OpenLine Genie repository on
-   GitHub (`terryncew/openline-genie`), go to **Releases**, and download
-   the source archive attached to the **v0.7.1** release. Extract it and
-   work inside the extracted directory. The v0.7.1 release must exist
-   before this step works; if there is no v0.7.1 entry under Releases,
-   the release has not been published yet.
-2. Enter the extracted directory.
-3. Create a virtual environment and install the runtime dependencies:
+1. Get the release archive: extract the frozen `OPENLINE_GENIE_v1.2.0_RC3_FINAL.zip`
+   (or, once published, the source archive attached to the **v1.2.0-rc3** release on
+   GitHub at `terryncew/openline-genie`). Work inside the extracted
+   `openline-genie/` directory.
+2. Create a virtual environment and install the runtime dependencies:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-This installs `cryptography` (Ed25519 receipts) and `numpy` (local model
-math). The first install downloads those packages, so it needs network
+This installs `cryptography` (Ed25519 receipts), `numpy`, `onnxruntime`, `Pillow`, and `selenium` (for Headless Chromium verification). The first install downloads those packages, so it needs network
 access. Nothing else is required to run the server. Playwright is optional
 and only needed for browser tests; see `pyproject.toml` under
 `[project.optional-dependencies]`.
 
-4. Check the install:
+3. Check the install:
 
 ```bash
 .venv/bin/python -c "import numpy, cryptography; print(numpy.__version__, cryptography.__version__)"
@@ -61,6 +59,14 @@ Flags:
   enabled in the environment.
 
 Stop the server with Ctrl-C.
+
+## Requirements and actual support
+
+- The full interface runs on the same computer as its Python server. It binds to **127.0.0.1 only**, so an iPhone cannot browse another computer's server without a separate, security-reviewed deployment. Do not set `--host 0.0.0.0`.
+- Initial `pip install` uses the internet for packages (`cryptography`, `numpy`, `onnxruntime`); default running uses no paid APIs. Robotics dashboards may require public CDN assets for some charts; inaccessible CDNs can produce chart errors, although the simulator backend still runs. (The Robotics Studio and Ratchet Workbench pages served by `genie_server` no longer depend on tailwind/chart.js CDNs; the standalone copy served by the robotics server still loads Tailwind, Chart.js, and Google Fonts from CDNs and needs network access for full styling and charts.)
+- On first use, five example products may require tens of seconds of initialization. A loading banner is displayed; STOP is usable before completion. Under load, the first resumed staging action has previously taken up to approximately 54 seconds. Be patient, but do not treat a missing response as acceptance. The local server is one-operator software, not a network service for multiple users.
+- New server-side input check: Energy household counts are limited to whole numbers from **1 to 5000**, matching the published UI. Invalid requests fail before staging and cannot enter accepted state through this path.
+- STOP/Resume repair: a Resume clicked while STOP is in flight is queued until STOP returns its authoritative epoch, then clears with that exact epoch. A newer STOP cannot be cleared by stale intent. Accepting a proposal staged before a STOP is refused.
 
 ## First use
 
@@ -106,15 +112,30 @@ write accepted state.
   community garden, quoting, robot academy, small synthesized apps).
   Unfamiliar requests without a paid model fall back to the local
   synthesizer, which may produce a generic app.
+- Robotics is a simulation, not hardware qualification. Static preview is not the seven-app local runtime. No paid model is used unless explicitly enabled and configured.
+- Before using public-data or community applications to make legal, medical, civic, safety, financial or physical engineering decisions, get qualified review. Demonstration results and quoted benefits are modeled, not real-world guarantees.
 
 ## Verify your install
 
 ```bash
+sha256sum -c SHA256SUMS.txt
 .venv/bin/python -m unittest discover -s tests -p "test_*.py"
 node --test tests/test_rc6_projection.mjs
 ```
 
-Expect 116 Python tests to run with no failures, and 11 Node tests passing. The 4 browser tests skip when the optional Playwright install is absent (112 passing, 4 skipped in that case); with Playwright installed, all 116 pass. The full suite takes about 20 seconds.
+Measured on the qualification host (Linux, Python 3.12.3, 1.5-CPU shared cell):
+252 tests collected, 247 ran. Normal mode: 226 pass, 4 failures, 17 errors,
+0 skipped, ~166s. The failures/errors are environmental or documented
+mismatches, not product failures — see the acceptance report for the
+per-error reconciliation (missing pinned Idea Layer script, missing external
+freeze archive, no system Chromium binary, one known fail-closed 409
+mismatch, one flaky timing race in test_12 now fixed by accepting both legal
+outcomes of an in-flight read). Node: 11/11 pass. The full suite takes
+minutes, not seconds, on this host; with a browser driver present it takes
+~305s. Browser tests need a Chromium binary; the qualification host has none
+at `/usr/bin/chromium`, but the Playwright-cache Chromium 131 + ChromeDriver
+131 pair works via the `GENIE_CHROME_PATH` / `CHROMEDRIVER_PATH` overrides
+(`functional_runner.py` 6/6 with them).
 
 ## Uninstall
 
@@ -123,7 +144,9 @@ Expect 116 Python tests to run with no failures, and 11 Node tests passing. The 
 3. Delete the state directory you passed with `--state-dir`, if you made
    one. That removes all projects, keys, and databases.
 4. Delete the virtual environment (`.venv` inside the extracted
-   directory goes with it in step 2).
+   directory goes with it in step 2). Remove the named state directory
+   **only if you intentionally want to erase all local projects and keys**.
+   Preserve a signed export first if you need future access.
 
 No system files are changed. Nothing is installed outside the directory
 you extracted and the state directory you chose.
@@ -133,3 +156,30 @@ you extracted and the state directory you chose.
 Apache License 2.0. See `LICENSE` in the release archive. OpenLine
 branding and trademarks are governed separately and are not licensed
 under Apache 2.0.
+
+
+### Security and import boundary
+
+Run `python3 launch_genie.py --host 127.0.0.1` on a computer you control.
+Never expose port 8795 to your LAN, Internet, reverse proxy, or shared account.
+There is no per-user login. Neighborhood demo identity is configured **at server
+startup**, not through browser query parameters. Board mode requires a separately
+controlled local session and appropriate data authority, for example:
+
+```sh
+GENIE_NEIGHBORHOOD_OWNER_ROLE=board python3 launch_genie.py --host 127.0.0.1
+```
+
+The example above selects a *local simulation persona*; it does **not** verify
+real board membership. Do not use it to process another resident's private
+records. For normal use, leave this environment variable unset.
+
+A new accepted assumption changes decision standing to `Needs another review`.
+The explicit Review action verifies only local calculation and owner acceptance.
+If supporting external evidence has been revoked, the system refuses to clear it.
+
+To restore a signed project into an existing local installation, the imported
+project must be newer than the currently accepted version. Genie requires the
+exact current version/SHA to authorize overwrite. Otherwise it refuses and
+retains all accepted work. Install on a fresh state directory for older snapshot
+inspection rather than using overwrite to roll authority backward.

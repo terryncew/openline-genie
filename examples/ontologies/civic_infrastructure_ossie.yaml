@@ -1,0 +1,105 @@
+version: 1.0.0
+name: openline_civic_infrastructure_ontology
+format: ossie
+datasets:
+- name: municipal_water_and_safety_warehouse
+  tables:
+  - name: intake_stations
+    description: Municipal raw water treatment intake stations
+    columns:
+    - name: station_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: normal_channel_gauge_id
+      data_type: TEXT
+    - name: fire_debris_basin_gauge_id
+      data_type: TEXT
+  - name: turbidity_gauges
+    description: USGS & municipal turbidity sensor time-series
+    columns:
+    - name: gauge_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: p95_dry_season_ntu
+      data_type: FLOAT
+    - name: p99_post_fire_storm_ntu
+      data_type: FLOAT
+  - name: acoustic_monitors
+    description: Property-line dBA acoustic telemetry
+    columns:
+    - name: monitor_id
+      data_type: TEXT
+      is_primary_key: true
+    - name: leq_night_dba
+      data_type: FLOAT
+  terms:
+  - id: TERM_RAW_WATER_TURBIDITY_DESIGN_BASIS
+    name: Raw Water Turbidity Design Basis (NTU)
+    description: Certified design-basis raw water turbidity metric for municipal filtration
+      qualification.
+    synonyms:
+    - design_turbidity_ntu
+    - raw_water_ntu_threshold
+    mapped_columns:
+    - table: turbidity_gauges
+      column: p95_dry_season_ntu
+    unit: NTU
+    grain: storm_event_p95
+    denominator: raw_intake_flow
+    version: 1
+    certified: true
+    related_terms: []
+  - id: TERM_ACOUSTIC_BOUNDARY_DBA
+    name: Property-Line Nighttime Acoustic Limit (dBA)
+    description: Certified residential property-line nighttime noise metric.
+    synonyms:
+    - property_line_noise_dba
+    mapped_columns:
+    - table: acoustic_monitors
+      column: leq_night_dba
+    unit: DBA
+    grain: night_leq_1hr
+    denominator: boundary_receiver
+    version: 1
+    certified: true
+    related_terms: []
+  sql_attributes:
+  - id: SQL_ATTR_DESIGN_TURBIDITY_NTU
+    term_id: TERM_RAW_WATER_TURBIDITY_DESIGN_BASIS
+    name: design_turbidity_ntu
+    expression: MAX(turbidity_gauges.p95_dry_season_ntu)
+    purpose: 95th-percentile dry-season turbidity design basis (38.0 NTU)
+    unit: NTU
+    grain: station_design
+    version: 1
+    certified: true
+  - id: SQL_ATTR_BOUNDARY_NOISE_DBA
+    term_id: TERM_ACOUSTIC_BOUNDARY_DBA
+    name: max_night_noise_dba
+    expression: MAX(acoustic_monitors.leq_night_dba)
+    purpose: Maximum nighttime property-line acoustic level in dBA
+    unit: DBA
+    grain: parcel_boundary
+    version: 1
+    certified: true
+  relationships:
+  - id: REL_INTAKE_TO_NORMAL_GAUGE
+    source_table: intake_stations
+    source_column: normal_channel_gauge_id
+    target_table: turbidity_gauges
+    target_column: gauge_id
+    role: normal_channel_gauge
+    cardinality: many_to_one
+    is_default: true
+    active: true
+    certified: true
+  - id: REL_INTAKE_TO_FIRE_DEBRIS_GAUGE
+    source_table: intake_stations
+    source_column: fire_debris_basin_gauge_id
+    target_table: turbidity_gauges
+    target_column: gauge_id
+    role: all_fire_debris_basin_gauge
+    cardinality: many_to_one
+    is_default: false
+    active: true
+    certified: true
