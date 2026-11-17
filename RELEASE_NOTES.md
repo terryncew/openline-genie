@@ -83,6 +83,11 @@ all environmental, 0 product failures, 4 skipped; Node 11/11; new race tests
   missing response as acceptance.
 - At 390px the page scrolls after an accept, taking STOP out of the viewport
   until the user scrolls back.
+- The frozen `NEIGHBORHOOD_001_ACCEPTANCE_RECEIPTS.json` record contains a
+  superseded `VERIFIED_0_LEAKS` claim (a pre-repair multi-household
+  isolation claim that was false at the HTTP layer and was replaced by the
+  single-operator model). The record is kept intact as evidence; do not
+  quote that claim for the current code.
 
 ## Status
 
