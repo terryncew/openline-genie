@@ -65,7 +65,7 @@ Known boundaries users must understand. Nothing here is concealed.
 - Neighborhood is a local single-user tool for one household or association. It does not separate multiple households on one server, and multi-household separation is not a supported deployment. The multi-household isolation boundary was removed (it rested on self-asserted request parameters and was never real) and replaced with loopback-only plus Host/Origin checks.
 - Not legal advice. Advocate and Neighborhood organize evidence, dates, and rules for human review. They are not legal advice, do not create an attorney-client relationship, and never submit anything to an outside agency automatically. Neighborhood covers California, Florida, Texas, South Carolina, and a general U.S. baseline; other states need the statute text or local counsel.
 - No guaranteed savings or outcomes. Energy Commons compares costs; it does not promise savings. Science verifies computational reproducibility on recorded datasets; it does not validate a finding in the physical world. Civic compares proposals; it does not decide which one a community should choose.
-- Not tested: macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls, browser end-to-end tests. The 5 Python errors and 1 failure are browser tests that need Chrome/Chromium (not installed in the test environment) and 2 tests that check external archive files not included in this package; they are recorded as NOT VERIFIED, not passed. `muse_independent_checks.py` (24 checks) was not re-run here for the same reason.
+- Not tested: macOS and Windows installs, iPhone Safari, uncoached human testing, paid-model calls, browser end-to-end tests. The 5 Python errors and 1 failure are browser tests that need Chrome/Chromium (not installed in the test environment) and 2 tests that check external archive files not included in this package; they are recorded as NOT VERIFIED, not passed. the independent browser and security check script (24 checks) was not re-run here for the same reason.
 - `launch_genie.py --verify-only` lists the five applications (energy, advocate, commons, science, civic). Neighborhood readiness is confirmed separately by the live `/neighborhood` route and `/api/neighborhood/state` checks recorded in the acceptance evidence, not by that script.
 - A frozen evidence record (`applications/NEIGHBORHOOD_001_ACCEPTANCE_RECEIPTS.json`) still contains a `VERIFIED_0_LEAKS` claim that is superseded by the repaired single-operator model. The frozen record was left intact as evidence and is not repeated for the current code. Do not quote that claim for the current code.
 - The deterministic builder covers the built-in domains; unfamiliar requests without a paid model fall back to the local synthesizer, which may produce a generic app. Paid model dispatch is OFF by default with a local $5.00 spend cap when opted in.
@@ -186,7 +186,7 @@ Manifest correction (parent, 2026-11-15):
 ## LIMITATIONS
 
 - Browser tests need Chrome/Chromium (NOT VERIFIED here): the Case Packet
-  workbench browser test, `muse_independent_checks.py` (24 checks),
+  workbench browser test, the independent browser and security checks (24 checks),
   mobile/desktop overflow checks, the Neighborhood browser journey test.
 - Applications suite: 186 ran, 175 passed, 1 failure, 5 errors, 5 skipped.
   The 1 failure and 5 errors are environmental (2 external-archive
@@ -500,7 +500,7 @@ could not be repaired in scope; the two foreseen defects were repaired
   manifest 231/231 OK on clean extraction. Base: R7.1 candidate 643c0bf0
   (GPT-6 household repair, preserved). R7.2 repair diff vs R7.1: exactly
   genie_engine.py, genie_server.py, openline_five_products.html changed,
-  plus R7_2_STOP_RESUME_REPAIR_HANDOFF.md, tests/test_r7_2_stop_resume_race.py,
+  plus the stop-resume repair handoff, tests/test_r7_2_stop_resume_race.py,
   tools/browser_stop_race_probe.py new, and INSTALL.md, RELEASE_NOTES.md,
   SHA256SUMS.txt regenerated.
 - STOP/Resume race repair (R7.2, GPT-6): the page queues a Resume clicked

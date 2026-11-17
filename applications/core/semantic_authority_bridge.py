@@ -275,7 +275,8 @@ class SemanticOntologyModel:
     """Represents an imported NVIDIA Auto-Ontology or Apache Ossie semantic model.
 
     Normalizes both interchange formats supported by `POST /api/model/import` and
-    `POST /api/model/export` (`docs/openapi/auto-ontology-api.json`):
+    `POST /api/model/export` (file-level YAML interchange only; no live
+    integration, and no OpenAPI document ships in this tree):
       1. `ossie` format (`version`, `name`, `datasets` at root)
       2. `auto_ontology` native format (`data_layer`, `semantic_layer` at root)
     """

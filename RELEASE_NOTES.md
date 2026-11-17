@@ -46,7 +46,15 @@ package) and the acceptance report.
   is removed; the runner executes real selenium + Headless Chromium suites
   and fails closed on skipped tests.
 - **Offline hardening (RC3, additive):** the Robotics Studio and Ratchet
-  Workbench pages no longer depend on tailwind/chart.js CDNs.
+  Workbench pages served by `genie_server` (the root copies) no longer depend
+  on tailwind/chart.js CDNs. The standalone Robotics Studio copy served by
+  the robotics server (`openline_robotics_001/openline_robotics_studio.html`)
+  still loads Tailwind, Chart.js, and Google Fonts from CDNs and needs network
+  access for full styling and charts.
+- **Semantic Authority Bridge (additive):** file-level YAML interchange only
+  — semantic models (NVIDIA Auto-Ontology / Apache Ossie) are imported and
+  exported as files, with no live integration; certification badges are kept
+  separate from receiver-pinned Ed25519 attestations.
 - **Robotics manifest (closure repair):** `openline_robotics_001/SHA256SUMS.txt`
   was regenerated over the 17 files actually present (17/17 verified). Three
   stale entries referencing files never shipped in this tree (two external

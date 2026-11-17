@@ -67,8 +67,6 @@ python3 run_final_closure_001.py
 # 2. Run the full 159-test unit & integration suite
 python3 -m unittest discover -s tests -p "test_*.py"
 
-# 3. Run the 24 independent browser & security checks
-python3 muse_independent_checks.py
 ```
 
 ---

@@ -33,6 +33,15 @@ python3 launch_genie.py
 6. **Neighborhood / ClearCovenant (`/neighborhood`)**: Role-separated homeowner, board, and community covenant governance.
 7. **Robotics Studio (`/robotics`)**: Multi-body Lagrangian/contact physics simulator and hardware safety adapter for **Open Duck Mini v2 (14-DoF Biped)** and **LeRobot SO-101 (6-DoF Arm)** (`SIMULATED_VERIFIED_ONLY`; physical servo hardware remains `HOLD` until benchtop robot run).
 
+## Semantic Authority Bridge
+
+`core/semantic_authority_bridge.py` exchanges semantic models (NVIDIA
+Auto-Ontology / Apache Ossie) as files only (YAML interchange, no live
+integration with any external system). Certification badges shown by an
+upstream model are kept separate from receiver-pinned Ed25519 certification
+attestations, and consequential commits fail closed on stale or forged
+certification.
+
 ## 3. Security, Authority & Honest Scope Boundaries
 
 - **Loopback & CSRF Protection**: Binds strictly to `127.0.0.1` / `localhost` with `Host`, `Origin`, and `Content-Type: application/json` guards on all mutating `POST` routes.
@@ -41,11 +50,12 @@ python3 launch_genie.py
 - **Browser & Viewport Scope**: Verified in headless Chromium at desktop (`1280x800`) and mobile width (`390x844`, `0px` horizontal overflow). Physical iOS Safari hardware is marked `UNTESTED_ON_PHYSICAL_IOS_DEVICE`.
 
 
-## Private RC3 release candidate (`v1.2.0-rc3`) — independent reviewer notes
+## Release candidate notes (`v1.2.0-rc3`)
 
-The source in this archive is a **private post-Argon repair candidate**, not the
-published GitHub main branch. Public release remains **HOLD** until a separate
-browser/installation reviewer accepts the exact new ZIP hash and the owner approves.
+This is the `v1.2.0-rc3` public release candidate: the local-first,
+single-operator suite described above. It is not production-safe
+multi-user software; see the honest limitations below before relying on it
+for anything consequential.
 
 - HTTP listening is restricted to `127.0.0.1` or `localhost`. Host and Origin
   are validated for **GET and POST**; non-loopback bind requests are refused.
@@ -69,8 +79,7 @@ browser/installation reviewer accepts the exact new ZIP hash and the owner appro
   private `/working_dir` paths. Their external research inputs are not bundled.
 
 For detailed source-level tests, remaining browser-review and full-suite limits,
-see `GPT6_RELEASE_ACCEPTANCE.md`. Do not market this private candidate as
-production-safe multi-user software.
+see `RELEASE_NOTES.md`.
 - **Preview before saving:** every calculation or edit is staged as a draft first. Nothing changes your saved record until you accept it. Rejecting leaves the accepted work untouched.
 - **STOP:** pausing all changes freezes edits and approvals until you explicitly resume. Accepted work is never lost by STOP.
 - **Decision Recall:** accepted work can be recalled and verified later, with a signed receipt for what was accepted or refused.
@@ -87,11 +96,11 @@ production-safe multi-user software.
 
 ## Chip-package research (computational only, hardware on HOLD)
 
-**[Chip-package research: a proposed cooling and power-delivery design, independently challenged](research/chip-packaging/README.md).** A one-person AI-assisted team generated and independently challenged a chip-package research hypothesis: consolidating power delivery, liquid cooling, signal wiring, and structural support into one metal package. The nearly twofold modeled advantage collapses to +0.332% parity when the assigned yield, cost, and power-delivery values are equalized with a matched conventional design. The proposed design cannot route high-bandwidth memory on a single 8 µm wiring layer (343 of 1,750 connections). The independent audit found the electrical test design would draw 614.4 W instead of the stated 50 W, the transistor packages do not fit the stated 45 mm face, and the STEP files are not manufacturable solids. No hardware has been built. The step-by-step manufacturing instructions are withheld; what is published is a read-only computational snapshot with a one-command reproduction. **The freshwater-production claim is not established.**
+**[Chip-package research: a proposed cooling and power-delivery design, independently challenged](https://github.com/terryncew/openline-genie/blob/main/research/chip-packaging/).** A one-person AI-assisted team generated and independently challenged a chip-package research hypothesis: consolidating power delivery, liquid cooling, signal wiring, and structural support into one metal package. The nearly twofold modeled advantage collapses to +0.332% parity when the assigned yield, cost, and power-delivery values are equalized with a matched conventional design. The proposed design cannot route high-bandwidth memory on a single 8 µm wiring layer (343 of 1,750 connections). The independent audit found the electrical test design would draw 614.4 W instead of the stated 50 W, the transistor packages do not fit the stated 45 mm face, and the STEP files are not manufacturable solids. No hardware has been built. The step-by-step manufacturing instructions are withheld; what is published is a read-only computational snapshot with a one-command reproduction. **The freshwater-production claim is not established.**
 
 ## For AI coding agents
 
-See `AGENTS.md` in this repository. It documents the layout, entry points, interfaces, how to run the tests, the safety boundaries, and what is implemented versus what is only proposed.
+The layout, entry points, interfaces, how to run the tests, the safety boundaries, and what is implemented versus what is only proposed are documented in the guides alongside the code; no separate agent guide ships in this release archive.
 
 ## License
 

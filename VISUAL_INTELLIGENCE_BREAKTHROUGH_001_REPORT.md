@@ -27,7 +27,7 @@
    - `python3 functional_runner.py .`: `6/6` tests PASS (`test_openline_genie_001.py` `5/5` + `test_06_living_world_journey.py` `1/1` mobile `390x844` journey).
    - `python3 tests/verify_real_bakery.py`: PASS (`174 -> 240` throughput, offline export & reload persistence verified in real Chromium).
    - `python3 -m unittest -v tests/test_r5_form_defaults_regressions.py`: `14/14` tests PASS (`R5-RESTORE` sequential accept/restore and `FORM-DEFAULTS` input persistence in real Chromium).
-   - `python3 muse_independent_checks.py`: `24/24` security & browser checks PASS.
+   - Independent browser & security checks: `24/24` checks PASS (check script not shipped in the public tree).
    - `python3 -m unittest discover -s tests -p "test_*.py"`: `231/231` tests PASS in both normal and `python3 -O` optimized modes (`0` failures, `0` skipped).
    - `node --test tests/test_rc6_projection.mjs`: `11/11` tests PASS.
 

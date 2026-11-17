@@ -39,7 +39,6 @@ py-modules = [
     "genie_engine",
     "genie_server",
     "launch_genie",
-    "muse_independent_checks",
     "openline_009_living_project",
     "openline_boundary_standing_witness",
     "openline_research_kernel",

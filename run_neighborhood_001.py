@@ -210,9 +210,9 @@ def main() -> None:
                 },
             },
             "security_and_privacy_invariants": {
-                "cross_resident_private_record_isolation": "VERIFIED_0_LEAKS",
+                "cross_resident_private_record_isolation": "VERIFIED",
                 "board_cannot_read_homeowner_private_drafts": "VERIFIED",
-                "community_commons_pii_redaction": "VERIFIED_0_LEAKS",
+                "community_commons_pii_redaction": "VERIFIED",
                 "hostile_prompt_injection_quarantined": "VERIFIED",
                 "prohibited_hoa_dictator_actions_blocked": sorted(PROHIBITED_DICTATOR_ACTIONS),
                 "human_approval_required_for_consequential_packets": True,

@@ -11,7 +11,7 @@ Connects OpenLine's verified mechanisms into one persistent, receiver-governed s
      deletion, rollback, budget reset, `STOP` erasure, or rejected-to-accepted promotion.
    - Real worker process termination (`SIGKILL`) and clean successor recovery (`worker-a` -> `worker-b`)
      preserving accepted artifacts byte-identically.
-2. Idea Layer (`upstream_repos/openline-idea-layer`, commit `4c4ac81d32db7e0ca573bea4cfca031e1e875198`):
+2. Idea Layer (the pinned OpenLine Idea Layer repository, commit `4c4ac81d32db7e0ca573bea4cfca031e1e875198`):
    - Discovers candidate opportunities and exports deterministic briefs into the reconstructed
      Direct Public Planning Contract (`openline.living_project.plan_contract.v1`).
 3. Genie (`genie_engine.py`, `core/operational_compiler.py`, `living_world/graph_core.mjs`):
@@ -24,7 +24,7 @@ Connects OpenLine's verified mechanisms into one persistent, receiver-governed s
      Pareto-envelope + critical-epoch stabilizer (`operational-trajectory-stabilizer-v1`),
      registers it with exact `source_sha256` and `applicability_scope`, and transfers it to
      successor Living Projects.
-5. Connect & World (`core/openline_guard.py`, `upstream_repos/openline-connect`, `living_world/graph_core.mjs`):
+5. Connect & World (`core/openline_guard.py`, the pinned OpenLine Connect repository, `living_world/graph_core.mjs`):
    - Enforces owner-pinned destination keys and blocks unauthorized consequential external effects.
    - Projects only receiver-verified, Ed25519-attested state into `openline.graph-communication.v0.5`
      and `openline.graph-event.v0.5`, isolating tentative, rejected, stopped, and unverified states.
@@ -84,7 +84,11 @@ GOVERNING_LAW_V1_VERSION = "v1.0-20261103"
 GOVERNING_LAW_V1_SHA256 = "a3ea42f6cde5355acea07fa1f0c947cf4b96b5a4efcb48bd80133bb38afb9c81"
 CANDIDATE_LAW_D2_DISPOSITION = "RESEARCH_CANDIDATE_NON_GOVERNING"
 
-IDEA_LAYER_DIR = HERE / "upstream_repos" / "openline-idea-layer"
+# The Idea Layer location is configured by the operator only, via the
+# OPENLINE_IDEA_LAYER_DIR environment variable. When unset, no default
+# location is assumed and intake fails closed with
+# `missing_pinned_idea_layer_script:`.
+IDEA_LAYER_DIR = Path(os.environ.get("OPENLINE_IDEA_LAYER_DIR") or "")
 LIVING_WORLD_GRAPH_MJS = HERE / "living_world" / "graph_core.mjs"
 
 ALLOWED_CAPABILITY_SCOPES = frozenset({

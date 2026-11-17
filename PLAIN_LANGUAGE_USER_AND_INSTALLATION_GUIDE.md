@@ -48,8 +48,6 @@ python3 -m unittest discover -s tests -p "test_neighborhood_001.py" -v
 # Run the full 174-test suite across all OpenLine 009 + Five Products + Neighborhood modules
 python3 -m unittest discover -s tests -p "test_*.py"
 
-# Run the 24 independent security and browser checks
-python3 muse_independent_checks.py
 
 # Roll back bit-for-bit to the untouched Five-Product Release Candidate baseline (b9debb4b...)
 patch -R -p1 < ../OPENLINE_NEIGHBORHOOD_001.patch

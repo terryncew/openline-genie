@@ -32,7 +32,7 @@ from openline_009_living_project import (
     solve_operational_trajectory_conventional,
 )
 
-WORKSPACE_ROOT = pathlib.Path(os.environ.get("OPENLINE_RESEARCH_WORKSPACE", str(HERE / "research_inputs"))).resolve()
+WORKSPACE_ROOT = pathlib.Path(os.environ.get("OPENLINE_RESEARCH_WORKSPACE", str(HERE / "external_inputs"))).resolve()
 FROZEN_BASELINE_DIR = WORKSPACE_ROOT / "frozen_baseline"
 DOWNLOADS_DIR = WORKSPACE_ROOT / "downloads"
 UPLOADED_DIR = WORKSPACE_ROOT / "user_uploaded_files" / "ttl=63d" / "user_uploaded"

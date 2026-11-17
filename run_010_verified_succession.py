@@ -33,7 +33,7 @@ def compute_file_sha256(path: Path) -> str:
 
 def main() -> None:
     root = Path(__file__).resolve().parent
-    downloads_dir = Path(os.environ.get("OPENLINE_RESEARCH_DOWNLOADS", str(HERE / "research_inputs" / "downloads"))).resolve()
+    downloads_dir = Path(os.environ.get("OPENLINE_RESEARCH_DOWNLOADS", str(HERE / "external_inputs" / "downloads"))).resolve()
     evidence_dir = root / "evidence_010"
     evidence_dir.mkdir(parents=True, exist_ok=True)
 

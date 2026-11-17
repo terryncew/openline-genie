@@ -26,7 +26,7 @@ GPT-6 must repair those, re-hash, and the new exact SHA must be
 independently re-accepted before any merge, tag, release, or publication.
 
 ## 1. Private Drive identifiers redacted
-- `FOUNDER_REPORT_CIVILIZATION_APPLICATIONS_001.md` — 14 unique private
+- The founder civilization-applications report (removed from the public tree; preserved in the closure workspace) — 14 unique private
   Google Drive file/folder IDs (15 occurrences), each explicitly labeled
   "Drive File / Drive Folder / Drive Doc" in the report's source table,
   replaced with `[private Drive location redacted for public release]`.
@@ -34,7 +34,7 @@ independently re-accepted before any merge, tag, release, or publication.
   the table are unchanged.
 
 ## 2. Private local path redacted
-- `FOUNDER_CLOSURE_REPORT_001.md` (line 22) — the author's private
+- The founder closure report (removed from the public tree; preserved in the closure workspace) (line 22) — the author's private
   `<isolated_workspace>/src_009`
   workspace path replaced with "an isolated local workspace (private
   path redacted for public release)". Claim unchanged.
@@ -47,7 +47,7 @@ identity, or with a neutral reference to the retired working name where
 the text is the historical record of the naming decision. The
 `/be_neighborly` URL alias is intentionally kept as a compatibility
 route (genie_server.py), as is the changelog line in RELEASE_NOTES.md
-and the repair record in GPT6_RELEASE_ACCEPTANCE.md, which describe the
+and the repair record in the release acceptance report (removed from the public tree; preserved in the closure workspace), which describe the
 removal itself. The boundary test
 `tests/test_final_release_boundaries.py` (assertNotIn) is unchanged.
 - `CLEARCOVENANT_BOARD_PORTABLE_RECORD.html`,

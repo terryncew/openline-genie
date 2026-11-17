@@ -59,13 +59,14 @@ MODEL_RATES_USD_PER_TOKEN = {
     "claude-sonnet-5-5": (2.00e-6, 10.00e-6),
 }
 
+# The Anthropic helper is configured by the operator only, via the
+# OPENLINE_ANTHROPIC_HELPER_PATH environment variable. There is no default
+# on-disk location. When unset, the helper is unavailable and paid model
+# calls fail closed with `anthropic_helper_not_found`.
 HELPER_PATH = (
-    Path.home()
-    / "workspace"
-    / "custom-connectors"
-    / "custom.anthropic"
-    / "bin"
-    / "anthropic-messages"
+    Path(os.environ["OPENLINE_ANTHROPIC_HELPER_PATH"])
+    if os.environ.get("OPENLINE_ANTHROPIC_HELPER_PATH")
+    else None
 )
 
 DEFAULT_LEDGER_DIR = Path(__file__).resolve().parents[2]
@@ -660,7 +661,7 @@ class AnthropicAdapter(ModelAdapter):
         self.total_cap_usd = float(total_cap_usd)
         self.helper_path = Path(helper_path) if helper_path else HELPER_PATH
         self._explicit_helper = helper_path is not None
-        self.available = self.helper_path.exists()
+        self.available = self.helper_path.exists() if self.helper_path is not None else False
         if call_log_path is not None:
             self.call_log_path = Path(call_log_path)
         elif ledger_dir is not None:
@@ -748,9 +749,10 @@ class AnthropicAdapter(ModelAdapter):
         subprocess_is_stubbed = (subprocess.run is not _ORIG_SUBPROCESS_RUN) and not self._explicit_helper
         if not self.available and not subprocess_is_stubbed:
             record["outcome"] = "helper_not_found"
-            record["error"] = f"anthropic_helper_not_found:{self.helper_path}"
+            helper_label = str(self.helper_path) if self.helper_path is not None else "not configured"
+            record["error"] = f"anthropic_helper_not_found:{helper_label}"
             self._log_call(record)
-            raise ModelUnavailable(f"anthropic_helper_not_found:{self.helper_path}")
+            raise ModelUnavailable(f"anthropic_helper_not_found:{helper_label}")
 
         reservation: dict[str, Any] | None = None
         settled = False

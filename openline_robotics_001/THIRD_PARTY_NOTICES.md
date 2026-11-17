@@ -20,5 +20,5 @@ It interoperates with and models specifications from the following open-source p
    - Upstream Repositories: [ros-controls/ros2_control](https://index.ros.org/p/controller_manager/), [ros-teleop/twist_mux](https://github.com/ros-teleop/twist_mux), and [micro-ROS/micro_ros_setup](https://github.com/micro-ros/micro_ros_setup)
    - License: Apache-2.0 / BSD-3-Clause
 6. **Python Scientific & Cryptographic Runtime Dependencies**
-   - `numpy` (BSD-3-Clause), `scipy` (BSD-3-Clause), `onnxruntime` (MIT), `cryptography` (Apache-2.0 / BSD-3-Clause)
+   - `numpy` (BSD-3-Clause), `onnxruntime` (MIT), `cryptography` (Apache-2.0 / BSD-3-Clause)
    - Front-End UI Libraries (CDN): Tailwind CSS (MIT), Chart.js (MIT)
