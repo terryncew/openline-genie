@@ -11,7 +11,7 @@ logic, no Host/identity/STOP/import/recall/capsule/binding/auth behavior
 was changed. Every file below was edited only as described; all other
 files are byte-identical to the source candidate.
 
-This tree is NOT publication-ready: two consequential defects in the
+At the time of this repair, this tree was NOT publication-ready: two consequential defects in the
 Energy decision / recall flow were found live and returned to GPT-6 for
 re-acceptance (see `../evidence/GPT6_REACCEPTANCE_PACK_R5_RESTORE_AND_FORM_DEFAULTS.md`
 and `../evidence/r5-restore-fix-proposal.patch` in the acceptance
