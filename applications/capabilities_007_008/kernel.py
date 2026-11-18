@@ -118,6 +118,8 @@ def set_authority_state(
     if authority_epoch is not None:
         if not isinstance(authority_epoch, int) or isinstance(authority_epoch, bool) or authority_epoch < 1:
             raise ContractError("invalid_authority_epoch")
+        if authority_epoch < _AUTHORITY_STATE["authority_epoch"]:
+            raise ContractError("authority_epoch_rollback")
         _AUTHORITY_STATE["authority_epoch"] = authority_epoch
     if owner_stop is not None:
         _AUTHORITY_STATE["owner_stop"] = bool(owner_stop)
@@ -787,8 +789,35 @@ def evaluate_receipt_standing(
             "invalidated_dependencies": [],
         }
 
-    req_epoch = int(limits.get("min_authority_epoch", _AUTHORITY_STATE["authority_epoch"]))
-    rec_epoch = int(receipt.get("authority_epoch", 1))
+    # Caller constraints may only tighten, never lower, the receiver-owned standing floor.
+    receiver_epoch = _AUTHORITY_STATE["authority_epoch"]
+    policy_minimum = limits.get("min_authority_epoch", receiver_epoch)
+    if not isinstance(policy_minimum, int) or isinstance(policy_minimum, bool) or policy_minimum < 1:
+        return {
+            "decision_id": dec_id,
+            "standing": "REOPEN",
+            "valid": False,
+            "reason": "invalid_min_authority_epoch",
+            "invalidated_dependencies": [],
+        }
+    req_epoch = max(receiver_epoch, policy_minimum)
+    rec_epoch = receipt.get("authority_epoch", 1)
+    if not isinstance(rec_epoch, int) or isinstance(rec_epoch, bool) or rec_epoch < 1:
+        return {
+            "decision_id": dec_id,
+            "standing": "REOPEN",
+            "valid": False,
+            "reason": "invalid_receipt_authority_epoch",
+            "invalidated_dependencies": [],
+        }
+    if rec_epoch > receiver_epoch:
+        return {
+            "decision_id": dec_id,
+            "standing": "REOPEN",
+            "valid": False,
+            "reason": "receipt_authority_epoch_not_issued",
+            "invalidated_dependencies": [],
+        }
     if rec_epoch < req_epoch:
         return {
             "decision_id": dec_id,
@@ -978,7 +1007,11 @@ def execute(task: dict[str, Any], registry_path: Path | None = None) -> dict[str
         return {"disposition": "REFUSE", "reason": "budget_exceeded", "needed_relative_cost_units": cost, "executed": []}
 
     results = []
-    auth_epoch = int(limits.get("authority_epoch", _AUTHORITY_STATE["authority_epoch"]))
+    # Receipt issuance authority belongs to the receiver, not task-supplied fields.
+    auth_epoch = _AUTHORITY_STATE["authority_epoch"]
+    claimed_epoch = limits.get("authority_epoch", auth_epoch)
+    if not isinstance(claimed_epoch, int) or isinstance(claimed_epoch, bool) or claimed_epoch != auth_epoch:
+        return {"disposition": "DENY", "reason": "caller_authority_epoch_mismatch", "executed": [], "no_owner_effects": True}
     allow_decision_reuse = bool(limits.get("allow_decision_reuse", False))
 
     for cap in chosen:
