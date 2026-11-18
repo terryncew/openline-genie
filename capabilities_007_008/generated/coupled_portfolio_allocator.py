@@ -1,15 +1,18 @@
-"""Generation 2 (G2) Compressed Capability: `coupled_portfolio_allocator.py`.
+"""Generation 2 (G2) Repaired Compressed Capability: `coupled_portfolio_allocator.py`.
 
-Provenance disclosure:
-  - Authored by Argon engineering lead during OpenLine 008 Experiment 2 (`AUTHORED_BY_ARGON_ENGINEER`).
-  - Directly reuses Generation 1 (`compressed_trajectory_stabilizer.py`) to achieve cross-task transfer:
-    Instead of searching the joint Cartesian product of multi-step trajectories across facilities from scratch,
-    G2 calls G1's `extract_pareto_upgrade_envelope` and critical-epoch decomposition to reduce each facility i
-    to its small set of feasible trajectory-stabilizing options `{(interventions, capex, cum_opex, min_tp)}`,
-    combines them with `upstream/energy_planning.py` (`plan_charge`), and solves the coupled multi-facility
-    + microgrid knapsack under `shared_capex_budget_usd` and `shared_daily_ops_budget_usd`.
+Provenance & Repair Disclosure:
+  - Authored by Argon engineering lead (`AUTHORED_BY_ARGON_ENGINEER`).
+  - Repaired for OpenLine 008 Compression Integrity & Ultimate Dogfood:
+      1. Uses G1's dependency-closure-bound `_discover_and_load_with_closure` and `extract_pareto_upgrade_envelope`
+         so any mutation to facility domain modules or their transitive imports immediately invalidates
+         stale envelopes and recomputes facility Pareto curves.
+      2. Dynamically verifies and reloads `upstream/energy_planning.py` via `kernel.resolve_dependency_closure`
+         and `kernel.sync_local_python_modules` so changes to `energy_planning.py` (or its transitive imports)
+         cannot silently preserve stale microgrid schedules.
+      3. Enforces pre/post-execution TOCTOU dependency closure equality across all facilities and energy modules.
 """
 from __future__ import annotations
+
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -20,13 +23,26 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import kernel
 from generated.compressed_trajectory_stabilizer import (
-    _discover_and_load,
+    _discover_and_load_with_closure,
     _extract_metrics,
     apply_patch_sequence,
     extract_pareto_upgrade_envelope,
+    invalidate_caches as _g1_invalidate_caches,
 )
-from upstream import energy_planning
+
+
+def invalidate_caches() -> None:
+    _g1_invalidate_caches()
+
+
+def _load_verified_energy_module():
+    closure = kernel.resolve_dependency_closure(["upstream/energy_planning.py"], base_dir=ROOT)
+    kernel.sync_local_python_modules(closure, base_dir=ROOT)
+    p = (ROOT / "upstream/energy_planning.py").resolve()
+    sha = closure["dependency_hashes"]["upstream/energy_planning.py"]
+    return kernel._mod("upstream.energy_planning", p, sha, closure["dependency_closure_sha256"])
 
 
 def _enumerate_facility_stabilization_options(
@@ -35,13 +51,13 @@ def _enumerate_facility_stabilization_options(
     max_cum_opex_ceiling: float,
     use_g1_compression: bool = True,
 ) -> tuple[list[dict[str, Any]], int]:
-    """Use G1's Pareto envelope + critical-epoch check to extract non-dominated feasible options for one facility."""
+    """Use G1's dependency-bound Pareto envelope + critical-epoch check to extract feasible options for one facility."""
     rel_mod = fac["domain_module"]
     traj = fac["trajectory_assumptions"]
     target = int(fac["target_throughput"])
     horizon = len(traj)
 
-    base_fn, comp_fn, patch_fn = _discover_and_load(rel_mod, use_cache=use_g1_compression)
+    base_fn, comp_fn, patch_fn, _, _, _ = _discover_and_load_with_closure(rel_mod, use_cache=use_g1_compression)
     domain_evals = 0
 
     base_tps: list[int] = []
@@ -74,10 +90,21 @@ def _enumerate_facility_stabilization_options(
         key=lambda t: (base_tps[t], sum(base_comps[t].get("capacities", {}).values())),
     )
 
-    caps_w = base_comps[t_worst].get("capacities", {})
-    for fixed_key in ("demand", "shop", "wash_station", "schedule", "wish", "scenario"):
-        if fixed_key in caps_w and int(caps_w[fixed_key]) < target:
-            return ([], domain_evals)
+    resource_worst_epochs: set[int] = {t_breach, t_worst, t_end}
+    for t in range(t_breach, horizon):
+        for rk, rv in base_comps[t].get("capacities", {}).items():
+            if int(rv) < target:
+                t_rk = min(
+                    range(t_breach, horizon),
+                    key=lambda idx: (int(base_comps[idx].get("capacities", {}).get(rk, 10**9)), base_tps[idx]),
+                )
+                resource_worst_epochs.add(t_rk)
+
+    for tc_check in sorted(resource_worst_epochs):
+        caps_w = base_comps[tc_check].get("capacities", {})
+        for fixed_key in ("demand", "shop", "wash_station", "schedule", "wish", "scenario"):
+            if fixed_key in caps_w and int(caps_w[fixed_key]) < target:
+                return ([], domain_evals)
 
     packages, env_evals = extract_pareto_upgrade_envelope(rel_mod, max_steps=3, use_cache=use_g1_compression)
     domain_evals += env_evals
@@ -89,7 +116,7 @@ def _enumerate_facility_stabilization_options(
                 domain_evals += 1
 
     rem_steps = horizon - t_breach
-    critical_epochs = sorted({t_worst, t_breach, t_end})
+    critical_epochs = sorted(resource_worst_epochs)
     valid_options: list[dict[str, Any]] = []
 
     for pkg in packages:
@@ -97,28 +124,35 @@ def _enumerate_facility_stabilization_options(
             continue
         if pkg["capex_delta"] > max_capex_ceiling + 1e-9:
             continue
-        cum_opex = round(pkg["opex_delta"] * rem_steps, 2)
-        if cum_opex <= max_cum_opex_ceiling + 1e-9:
+        cum_opex_est = round(pkg["opex_delta"] * rem_steps, 2)
+        if cum_opex_est <= max_cum_opex_ceiling + 1e-9:
             ok_crit = True
             crit_tps = []
+            verified_capex = pkg["capex_delta"]
+            verified_opex_rate = pkg["opex_delta"]
             for tc in critical_epochs:
                 st_c = apply_patch_sequence(base_states[tc], pkg["sequence"], patch_fn)
                 c_c = comp_fn(st_c)
                 domain_evals += 1
-                tp_c, _, _ = _extract_metrics(c_c)
-                if tp_c < target:
+                tp_c, cap_c, op_c = _extract_metrics(c_c)
+                _, base_cap_c, base_op_c = _extract_metrics(base_comps[tc])
+                verified_capex = max(verified_capex, round(cap_c - base_cap_c, 2))
+                verified_opex_rate = max(verified_opex_rate, round(op_c - base_op_c, 4))
+                if tp_c < target or verified_capex > max_capex_ceiling + 1e-9:
                     ok_crit = False
                     break
                 crit_tps.append(tp_c)
             if ok_crit:
-                min_tp = min([min(base_tps[:t_breach])] + crit_tps) if t_breach > 0 else min(crit_tps)
-                valid_options.append({
-                    "facility_id": fac.get("facility_id", rel_mod),
-                    "interventions": [{"step": t_breach, "upgrade_sequence": pkg["sequence"]}],
-                    "capex_usd": pkg["capex_delta"],
-                    "cumulative_opex_usd": cum_opex,
-                    "min_throughput": int(min_tp),
-                })
+                cum_opex = round(verified_opex_rate * rem_steps, 2)
+                if cum_opex <= max_cum_opex_ceiling + 1e-9:
+                    min_tp = min([min(base_tps[:t_breach])] + crit_tps) if t_breach > 0 else min(crit_tps)
+                    valid_options.append({
+                        "facility_id": fac.get("facility_id", rel_mod),
+                        "interventions": [{"step": t_breach, "upgrade_sequence": pkg["sequence"]}],
+                        "capex_usd": verified_capex,
+                        "cumulative_opex_usd": cum_opex,
+                        "min_throughput": int(min_tp),
+                    })
 
     if t_end != t_breach:
         for pkg1 in packages:
@@ -177,15 +211,20 @@ def _enumerate_facility_stabilization_options(
 
 
 def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
-    """Solve coupled multi-facility + EV microgrid allocation using G1's compressed envelope."""
+    """Solve coupled multi-facility + EV microgrid allocation using G1's dependency-bound compressed envelope."""
     facilities: list[dict[str, Any]] = facts["facilities"]
     energy_req: dict[str, Any] = facts["energy_request"]
     shared_capex = float(facts["shared_capex_budget_usd"])
     shared_ops = float(facts["shared_daily_ops_budget_usd"])
     use_g1 = bool(facts.get("use_g1_compression", True))
 
+    root_mods = ["upstream/energy_planning.py"] + [f["domain_module"] for f in facilities if "domain_module" in f]
+    pre_closure = kernel.resolve_dependency_closure(root_mods, facts, base_dir=ROOT)
+    pre_closure_sha = pre_closure["dependency_closure_sha256"]
+
+    energy_mod = _load_verified_energy_module()
     tariffs = [
-        energy_planning.TariffSlot(
+        energy_mod.TariffSlot(
             datetime.fromisoformat(t["start"]),
             datetime.fromisoformat(t["end"]),
             float(t["usd_kwh"]),
@@ -193,7 +232,7 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
         for t in energy_req["tariffs"]
     ]
     charge_plan = asdict(
-        energy_planning.plan_charge(
+        energy_mod.plan_charge(
             datetime.fromisoformat(energy_req["now"]),
             datetime.fromisoformat(energy_req["deadline"]),
             float(energy_req["need_grid_kwh"]),
@@ -212,6 +251,7 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
             "total_portfolio_capex_usd": 0.0,
             "total_portfolio_ops_usd": 0.0,
             "domain_evaluations": 1,
+            "portfolio_closure_sha256": pre_closure_sha,
         }
 
     energy_cost = round(float(charge_plan["estimated_plan_cost"]), 2)
@@ -224,6 +264,7 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
             "total_portfolio_capex_usd": 0.0,
             "total_portfolio_ops_usd": energy_cost,
             "domain_evaluations": 1,
+            "portfolio_closure_sha256": pre_closure_sha,
         }
 
     fac_curves: list[list[dict[str, Any]]] = []
@@ -237,6 +278,10 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
         )
         total_evals += evs
         if not opts:
+            post_closure = kernel.resolve_dependency_closure(root_mods, facts, base_dir=ROOT)
+            if post_closure["dependency_closure_sha256"] != pre_closure_sha:
+                invalidate_caches()
+                raise kernel.ContractError("concurrent_dependency_mutation_toctou")
             return {
                 "portfolio_feasible": False,
                 "facility_plans": [],
@@ -244,6 +289,7 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
                 "total_portfolio_capex_usd": 0.0,
                 "total_portfolio_ops_usd": energy_cost,
                 "domain_evaluations": total_evals,
+                "portfolio_closure_sha256": pre_closure_sha,
             }
         fac_curves.append(opts)
 
@@ -264,6 +310,11 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
 
     _search_knapsack(0, [], 0.0, 0.0)
 
+    post_closure = kernel.resolve_dependency_closure(root_mods, facts, base_dir=ROOT)
+    if post_closure["dependency_closure_sha256"] != pre_closure_sha:
+        invalidate_caches()
+        raise kernel.ContractError("concurrent_dependency_mutation_toctou")
+
     if best_combo is None:
         return {
             "portfolio_feasible": False,
@@ -272,6 +323,7 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
             "total_portfolio_capex_usd": 0.0,
             "total_portfolio_ops_usd": energy_cost,
             "domain_evaluations": total_evals,
+            "portfolio_closure_sha256": pre_closure_sha,
         }
 
     (tot_cap, tot_ops), plans = best_combo
@@ -282,4 +334,5 @@ def allocate_coupled_portfolio(facts: dict[str, Any]) -> dict[str, Any]:
         "total_portfolio_capex_usd": tot_cap,
         "total_portfolio_ops_usd": tot_ops,
         "domain_evaluations": total_evals,
+        "portfolio_closure_sha256": pre_closure_sha,
     }

@@ -146,7 +146,7 @@
         "max_capex_usd"
       ],
       "scope": "LOCAL_READ_ONLY_SIMULATION",
-      "source_sha256": "0245c51a40f5f9798403152d9b2369c3193181571af8e7dbb1e86f01f1dbb37a",
+      "source_sha256": "92afaf661323c85866ce2f3ffa54a5838ad949be540fe3dd980755c61019f75c",
       "status": "SCOPED_TESTED_LOCAL"
     },
     {
@@ -236,7 +236,7 @@
         "max_cumulative_opex_delta_usd"
       ],
       "scope": "LOCAL_READ_ONLY_SIMULATION",
-      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7",
+      "source_sha256": "32128991e366cec4d575c6059b1fb11c14d8d437dfc17d779638802b052816c9",
       "status": "SCOPED_TESTED_LOCAL"
     }
   ],
