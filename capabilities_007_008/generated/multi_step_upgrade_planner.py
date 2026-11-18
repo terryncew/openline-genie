@@ -1,28 +1,32 @@
-"""Auto-synthesized Candidate v2: Exact Bounded Dijkstra Frontier Multi-Step Upgrade Planner.
-
-Repaired after Candidate v1 development failure inspection:
-  - Resolves `LOCAL_PLATEAU_CO_BOTTLENECK` by expanding zero-immediate-gain states up to `max_steps`
-    when multiple capacities tie at the bottleneck.
-  - Resolves `MYOPIC_BUDGET_EXHAUSTION` by ordering the search frontier by cumulative
-    `(total_capex_delta_usd, periodic_cost_delta_usd, len(sequence), -throughput)` to guarantee
-    minimum-CapEx feasible unlocking within budget.
+"""Auto-synthesized Candidate v2 (Repaired for Transitive Dependency Closure):
+Exact Bounded Dijkstra Frontier Multi-Step Upgrade Planner (`generated/multi_step_upgrade_planner.py`).
 """
 from __future__ import annotations
+
 import ast
 import copy
 import heapq
 import importlib.util
 import json
 from pathlib import Path
+import sys
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+import kernel
+
 
 def _discover_and_load(rel_path: str):
     p = (ROOT / rel_path).resolve()
     if not p.is_relative_to(ROOT.resolve()) or not p.is_file():
         raise ValueError("unauthorized_or_missing_domain_module")
-    tree = ast.parse(p.read_text())
+    closure = kernel.resolve_dependency_closure([rel_path], base_dir=ROOT)
+    kernel.sync_local_python_modules(closure, base_dir=ROOT)
+    raw_bytes = kernel.check_dependency_permission_and_read(p, ROOT)
+    tree = ast.parse(raw_bytes.decode("utf-8"))
     baseline_fn = compute_fn = patches_fn = None
     for node in tree.body:
         if isinstance(node, ast.FunctionDef):
@@ -36,18 +40,22 @@ def _discover_and_load(rel_path: str):
                     patches_fn = node.name
     if not (baseline_fn and compute_fn and patches_fn):
         raise ValueError("missing_domain_primitives")
-    spec = importlib.util.spec_from_file_location("domain_mod", p)
+    spec = importlib.util.spec_from_file_location(f"domain_mod_{p.stem}_{closure['dependency_closure_sha256'][:12]}", p)
+    assert spec and spec.loader
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return getattr(mod, baseline_fn), getattr(mod, compute_fn), getattr(mod, patches_fn)
+
 
 def _extract_metrics(comp: dict[str, Any]) -> tuple[int, float, float]:
     tp_key = next(k for k in comp if k.startswith("throughput_") and not k.startswith("throughput_band"))
     cost_key = next(k for k in comp if k.endswith("_cost_usd") or k.endswith("_cost_usd_per_day"))
     return int(comp[tp_key]), float(comp["capex_usd"]), float(comp[cost_key])
 
+
 def _state_key(state: dict[str, Any]) -> str:
     return json.dumps(state, sort_keys=True, separators=(",", ":"))
+
 
 def plan_multi_step_upgrade(facts: dict[str, Any]) -> dict[str, Any]:
     rel_mod = facts.get("domain_module", "upstream/community_garden.py")
@@ -64,7 +72,6 @@ def plan_multi_step_upgrade(facts: dict[str, Any]) -> dict[str, Any]:
     init_comp = comp_fn(init_state)
     init_tp, init_capex, init_opex = _extract_metrics(init_comp)
 
-    # Priority queue ordered by: (d_capex, d_opex, len(seq), -tp, seq, state_dict, comp_dict)
     pq: list[tuple[float, float, int, int, list[str], dict[str, Any], dict[str, Any]]] = [
         (0.0, 0.0, 0, -init_tp, [], init_state, init_comp)
     ]

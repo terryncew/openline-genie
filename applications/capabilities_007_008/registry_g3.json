@@ -146,7 +146,7 @@
         "max_capex_usd"
       ],
       "scope": "LOCAL_READ_ONLY_SIMULATION",
-      "source_sha256": "0245c51a40f5f9798403152d9b2369c3193181571af8e7dbb1e86f01f1dbb37a",
+      "source_sha256": "92afaf661323c85866ce2f3ffa54a5838ad949be540fe3dd980755c61019f75c",
       "status": "SCOPED_TESTED_LOCAL"
     },
     {
@@ -236,7 +236,7 @@
         "max_cumulative_opex_delta_usd"
       ],
       "scope": "LOCAL_READ_ONLY_SIMULATION",
-      "source_sha256": "9d5d73412c2e20ae9120a81865ef878bb2460ad2441f70805e5a1378b79d8ba7",
+      "source_sha256": "32128991e366cec4d575c6059b1fb11c14d8d437dfc17d779638802b052816c9",
       "status": "SCOPED_TESTED_LOCAL"
     },
     {
@@ -274,7 +274,7 @@
         "shared_daily_ops_budget_usd"
       ],
       "scope": "LOCAL_READ_ONLY_SIMULATION",
-      "source_sha256": "a59042b973a8374207f7d48fd96fc6f2467ff1f35fc847753573c620d66d2814",
+      "source_sha256": "8d3c5ad167f72a560bd6b5f8fbd7fa9a160e0f24b375ea3927bd55ccffccc5fe",
       "status": "SCOPED_TESTED_LOCAL"
     },
     {
@@ -307,7 +307,7 @@
         "artifact_text"
       ],
       "scope": "LOCAL_READ_ONLY_SIMULATION",
-      "source_sha256": "e3ad39dd1d4771d9f115650f8ff95f170af72cb93ec7a6370cc53868166e5f61",
+      "source_sha256": "171ee6cea67c0cf47ed148bc2110dcd370604f92d677186c205757431f2b365d",
       "status": "SCOPED_TESTED_LOCAL"
     }
   ],
